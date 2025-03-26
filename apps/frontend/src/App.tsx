@@ -14,8 +14,8 @@ export default function App() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Check for Command+C (Mac) or Ctrl+C (Windows)
-      if ((e.metaKey || e.ctrlKey) && e.key === "c") {
+      // Check for Command+SHIFT+C (Mac) or Ctrl+SHIFT+C (Windows)
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === "c") {
         e.preventDefault();
         setShowChat((prev) => !prev);
       }
@@ -33,8 +33,8 @@ export default function App() {
           {showChat && <ChatInterface onClose={() => setShowChat(false)} />}
           <div className="controls-hint">
             <p>
-              Use arrow keys to move. Press <kbd>Cmd</kbd>+<kbd>C</kbd> to chat
-              with AI
+              Use arrow keys to move. Press <kbd>Cmd</kbd>+<kbd>SHIFT</kbd>+
+              <kbd>C</kbd> to chat with AI
             </p>
           </div>
         </div>

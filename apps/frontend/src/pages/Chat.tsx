@@ -1,6 +1,5 @@
 import type React from "react";
 
-import { UserPreferencesModal } from "@/components/custom/Profile";
 import ThinkingLoader from "@/components/custom/ThinkingLoader";
 import { Button } from "@/components/ui/button";
 import {
@@ -112,10 +111,8 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
         <CardHeader className="border-b">
           <div className="flex items-center justify-between">
             <CardTitle>Chat with AI</CardTitle>
-
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <UserPreferencesModal />
                 <Button variant="destructive" onClick={onClose}>
                   <XIcon />
                 </Button>

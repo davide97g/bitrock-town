@@ -2,6 +2,7 @@
 
 import Avatar from "@/components/custom/Avatar";
 import OfficeItem from "@/components/custom/OfficeItem";
+import { UserPreferencesModal } from "@/components/custom/Profile";
 import { useAuth } from "@/context/Auth/useAuth";
 
 import { useWebSocketContext } from "@/context/WebSocketProvider";
@@ -131,6 +132,9 @@ const VirtualSpace: React.FC = () => {
         />
       ))}
       <Avatar username="You" x={position.x} y={position.y} />
+      <div style={{ position: "absolute", top: 0, right: 0 }}>
+        <UserPreferencesModal />
+      </div>
     </div>
   );
 };
