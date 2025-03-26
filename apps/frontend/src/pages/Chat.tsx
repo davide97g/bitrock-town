@@ -12,10 +12,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/Auth/useAuth";
 import { sendMessage } from "@/services/api";
+import { parseMarkdownMessage } from "@/services/utils";
 import { Send, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-type Message = {
+export type Message = {
   id: string;
   content: string;
   role: "user" | "assistant";
@@ -119,29 +122,59 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="flex-grow-1 overflow-y-auto p-4">
+      <CardContent className="flex-grow-1 max-h-[75vh] overflow-y-auto p-4">
         <div className="space-y-4">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-            >
+          {messages.map((message) => {
+            console.info(parseMarkdownMessage(message.content));
+            const parsedMessages = parseMarkdownMessage(message.content);
+            return (
               <div
-                className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                  message.role === "user"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted"
-                }`}
+                key={message.id}
+                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
               >
-                {message.content ||
-                  (message.role === "assistant" && isLoading ? (
+                <div
+                  className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                    message.role === "user"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted"
+                  }`}
+                >
+                  {message.role === "assistant" &&
+                    !isLoading &&
+                    parsedMessages.map((part, index) =>
+                      part.type === "code" ? (
+                        <div style={{ position: "relative" }} key={index}>
+                          <span
+                            style={{
+                              position: "absolute",
+                              top: 1,
+                              left: 5,
+                              color: "white",
+                            }}
+                            className="text-xs"
+                          >
+                            {part.language}
+                          </span>
+                          <SyntaxHighlighter
+                            key={index}
+                            language={part.language ?? "plaintext"}
+                            style={oneDark}
+                          >
+                            {part.content}
+                          </SyntaxHighlighter>
+                        </div>
+                      ) : (
+                        <p key={index}>{part.content}</p>
+                      )
+                    )}
+                  {message.role === "assistant" && isLoading && (
                     <ThinkingLoader />
-                  ) : (
-                    ""
-                  ))}
+                  )}
+                  {message.role === "user" && <p>{message.content}</p>}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           <div ref={messagesEndRef} />
         </div>
       </CardContent>

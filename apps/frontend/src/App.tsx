@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { RouterProvider } from "react-router";
+import { Toaster } from "./components/ui/sonner";
 import { useAuth } from "./context/Auth/useAuth";
 import { KeyboardProvider } from "./context/KeyboardContext";
 import { WebSocketProvider } from "./context/WebSocketProvider";
@@ -38,6 +39,7 @@ export default function App() {
             </p>
           </div>
         </div>
+        <Toaster />
       </KeyboardProvider>
     </WebSocketProvider>
   );

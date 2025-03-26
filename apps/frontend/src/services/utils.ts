@@ -1,3 +1,5 @@
+import hljs from "highlight.js";
+
 // Format timestamp to a readable format
 export const formatTime = (timestamp: number) => {
   return new Date(timestamp).toLocaleTimeString([], {
@@ -106,3 +108,48 @@ export const truncateText = (text: string, maxLength = 30) => {
   if (text.length <= maxLength) return text;
   return text.substring(0, maxLength) + "...";
 };
+
+
+type MessagePart = {
+  type: "text" | "code" | "title" | "list";
+  content: string;
+  language?: string;
+};
+
+export function parseMarkdownMessage(input: string): MessagePart[] {
+  
+    const lines = input.split("\n");
+    const parsedLines: MessagePart[] = [];
+    let currentCodeBlock: string[] = [];
+    let currentCodeBlockType = "";
+  
+    for (const line of lines) {
+      if (line.startsWith("#")) {
+        parsedLines.push({ type: "title", content: line.replace(/^#+\s*/, "") });
+      } else if (line.startsWith("- ") || line.startsWith("* ")) {
+        parsedLines.push({ type: "list", content: line.replace(/^[-*]\s*/, "") });
+      } else if (line.startsWith("```") && !currentCodeBlock.length) {
+        currentCodeBlockType = line.replace(/^```/, "").trim();
+        currentCodeBlock.push(line.replace(/^```/, "").replace(currentCodeBlockType,"").replace("\n","").replace(
+          "/s",""
+        ).trim());
+      } else if (line.startsWith("```") && currentCodeBlock.length) {
+        currentCodeBlock.push(line.replace(/^```/, ""));
+        parsedLines.push({ type: "code", content: currentCodeBlock.join("\n"),language:currentCodeBlockType });
+        currentCodeBlock = [];
+        currentCodeBlockType = "";
+      } else if (currentCodeBlock.length) {
+        currentCodeBlock.push(line);
+      } else {
+        parsedLines.push({ type: "text", content: line });
+      }
+    }
+  
+    return parsedLines;
+  }
+
+export function formatCodeMessage(message: string,language:string) {
+  return hljs.highlight( message,{
+    language
+  }).value;
+}
