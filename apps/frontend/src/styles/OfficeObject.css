@@ -1,0 +1,61 @@
+.office-object {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.office-object-desk {
+  background-color: #d1c4e9;
+  border: 1px solid #b39ddb;
+}
+
+.office-object-table {
+  background-color: #bbdefb;
+  border: 1px solid #90caf9;
+}
+
+.office-object-coffee {
+  background-color: #ffccbc;
+  border: 1px solid #ffab91;
+}
+
+.office-object-plant {
+  background-color: #c8e6c9;
+  border: 1px solid #a5d6a7;
+}
+
+.office-object-chair {
+  background-color: #e6ee9c;
+  border: 1px solid #dce775;
+}
+
+.office-object-whiteboard {
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+}
+
+.office-object-bookshelf {
+  background-color: #d7ccc8;
+  border: 1px solid #bcaaa4;
+}
+
+.office-object-wall {
+  background-color: #90a4ae;
+  border: 1px solid #78909c;
+}
+
+.object-icon {
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+
+.object-label {
+  font-size: 10px;
+  color: #555;
+  text-transform: capitalize;
+}
