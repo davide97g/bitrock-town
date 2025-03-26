@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 
 import { UserPreferencesModal } from "@/components/custom/Profile";
@@ -15,6 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Send, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+
+const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 type Message = {
   id: string;
@@ -57,7 +57,7 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
 
     try {
       // Send request to backend
-      const response = await fetch("http://localhost:3000/message", {
+      const response = await fetch(`${BASE_URL}/message`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
