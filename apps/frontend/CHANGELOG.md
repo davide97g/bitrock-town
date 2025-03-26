@@ -1,5 +1,11 @@
 # @bitrock-town/frontend
 
+## 0.2.0
+
+### Minor Changes
+
+- d0578a8: basic syntax highlight
+
 ## 0.1.0
 
 ### Minor Changes
