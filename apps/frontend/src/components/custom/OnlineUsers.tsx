@@ -1,7 +1,6 @@
 "use client";
 
 import { Clock } from "lucide-react";
-import * as React from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -55,17 +54,6 @@ export function OnlineUsers({
   className,
   position = "top-right",
 }: OnlineUsersProps) {
-  const [currentTime, setCurrentTime] = React.useState(new Date());
-
-  // Update the time every minute to keep "last seen" times fresh
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   // Position classes based on the position prop
   const positionClasses = {
     "top-right": "top-4 right-4",
