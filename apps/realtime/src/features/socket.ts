@@ -3,7 +3,7 @@ import { WebSocketServer } from "ws";
 
 // Creates a new WebSocket connection to the specified URL.
 const socket = new WebSocketServer({
-  port: 3002,
+  ...(process.env.PORT && { port: parseInt(process.env.PORT) }),
 });
 
 socket.on("connection", (ws) => {
