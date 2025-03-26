@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 
 const allowedOrigins = [
   "http://localhost:8080",
-  "https://bitrock-town-frontend.vercel.app/",
+  "https://bitrock-town-frontend.vercel.app",
 ];
 
 const options = {
