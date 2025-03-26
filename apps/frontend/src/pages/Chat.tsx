@@ -3,6 +3,7 @@
 import type React from "react";
 
 import { UserPreferencesModal } from "@/components/custom/Profile";
+import ThinkingLoader from "@/components/custom/ThinkingLoader";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -141,7 +142,11 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
                   }`}
                 >
                   {message.content ||
-                    (message.role === "assistant" && isLoading ? "..." : "")}
+                    (message.role === "assistant" && isLoading ? (
+                      <ThinkingLoader />
+                    ) : (
+                      ""
+                    ))}
                 </div>
               </div>
             ))}
