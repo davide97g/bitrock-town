@@ -16,8 +16,7 @@ app.use(bodyParser.json());
 
 const allowedOrigins = [
   "http://localhost:8080",
-  "https://chat.davideghiotto.it",
-  "https://chattona.davideghiotto.it",
+  "https://bitrock-town-frontend.vercel.app/",
 ];
 
 const options = {
