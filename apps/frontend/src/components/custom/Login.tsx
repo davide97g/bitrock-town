@@ -1,6 +1,7 @@
 import { useAuth } from "@/context/Auth/useAuth";
 import { registerUser } from "@/services/api";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -29,7 +30,9 @@ export function Login() {
     registerUser({
       username: usernameInput,
       password: passwordInput,
-    });
+    })
+      .then(() => toast.success("User registered successfully"))
+      .catch(() => toast.error("User registration failed"));
   };
 
   const handleLogin = () => {
@@ -37,7 +40,9 @@ export function Login() {
     login({
       username: usernameInput,
       password: passwordInput,
-    });
+    })
+      .then(() => toast.success("User logged-in successfully"))
+      .catch(() => toast.error("User login failed"));
   };
 
   return (

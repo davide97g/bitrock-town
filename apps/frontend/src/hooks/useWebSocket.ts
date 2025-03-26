@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 
 import { websocketService } from "@/services/webSocket.service";
-import { ISocketMessage } from "@bitrock-town/types";
+import { ISocketMessage, IUserStatus } from "@bitrock-town/types";
 
 export const useWebSocket = (url: string) => {
   const [messages, setMessages] = useState<ISocketMessage[]>([]);
+  const [users, setUsers] = useState<IUserStatus[]>([]);
 
   useEffect(() => {
     websocketService.connect(url);
@@ -31,5 +32,5 @@ export const useWebSocket = (url: string) => {
     websocketService.sendMessage(message);
   };
 
-  return { messages, sendMessage };
+  return { messages, sendMessage, users, setUsers };
 };

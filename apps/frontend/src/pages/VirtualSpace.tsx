@@ -2,6 +2,7 @@
 
 import Avatar from "@/components/custom/Avatar";
 import OfficeItem from "@/components/custom/OfficeItem";
+import { OnlineUsers } from "@/components/custom/OnlineUsers";
 import { UserPreferencesModal } from "@/components/custom/Profile";
 import { useAuth } from "@/context/Auth/useAuth";
 
@@ -41,20 +42,28 @@ const VirtualSpace: React.FC = () => {
   }, [messages]);
 
   useEffect(() => {
-    sendMessage({
-      event: "position",
-      sender: "user",
-      data: {
-        id: "1",
-        username: "user",
-        position: { x: 0, y: 0 },
-      },
-    });
+    if (user && user.id && user.username) {
+      const randomX = Math.floor(Math.random() * 800);
+      const randomY = Math.floor(Math.random() * 600);
+      setPosition({ x: randomX, y: randomY });
+      sendMessage({
+        event: "position",
+        sender: user?.username,
+        data: {
+          id: user?.id,
+          username: user?.username,
+          position: { x: randomX, y: randomY },
+        },
+      });
+    }
   }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const step = 10;
+      // shift + arrow keys to move faster
+
+      const shift = e.shiftKey ? 2 : 1;
+      const step = 10 * shift;
       const newPosition = { ...position };
 
       switch (e.key) {
@@ -132,9 +141,11 @@ const VirtualSpace: React.FC = () => {
         />
       ))}
       <Avatar username="You" x={position.x} y={position.y} />
+
       <div style={{ position: "absolute", top: 0, right: 0 }}>
         <UserPreferencesModal />
       </div>
+      <OnlineUsers position="bottom-right" />
     </div>
   );
 };

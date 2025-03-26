@@ -1,10 +1,12 @@
 import { useWebSocket } from "@/hooks/useWebSocket";
-import { ISocketMessage } from "@bitrock-town/types";
-import { createContext, ReactNode, useContext } from "react";
+import { ISocketMessage, IUserStatus } from "@bitrock-town/types";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 const WebSocketContext = createContext<{
   messages: ISocketMessage[];
   sendMessage: (message: ISocketMessage) => void;
+  users: IUserStatus[];
+  setUsers: (users: IUserStatus[]) => void;
 } | null>(null);
 
 export const WebSocketProvider = ({
@@ -15,9 +17,12 @@ export const WebSocketProvider = ({
   children: ReactNode;
 }) => {
   const { messages, sendMessage } = useWebSocket(url);
+  const [users, setUsers] = useState<IUserStatus[]>([]);
 
   return (
-    <WebSocketContext.Provider value={{ messages, sendMessage }}>
+    <WebSocketContext.Provider
+      value={{ messages, users, setUsers, sendMessage }}
+    >
       {children}
     </WebSocketContext.Provider>
   );

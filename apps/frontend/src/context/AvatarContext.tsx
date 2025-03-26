@@ -11,7 +11,7 @@ interface Position {
 
 interface AvatarContextType {
   position: Position;
-  moveAvatar: (direction: Position) => void;
+  moveAvatar: (direction: Position, fast?: boolean) => void;
 }
 
 const AvatarContext = createContext<AvatarContextType | undefined>(undefined);
@@ -45,11 +45,11 @@ export const AvatarProvider: React.FC<AvatarProviderProps> = ({ children }) => {
 
   // Move avatar in the specified direction
   const moveAvatar = useCallback(
-    (direction: Position) => {
+    (direction: Position, fast?: boolean) => {
       setPosition((prev) => {
         const newPos = {
-          x: prev.x + direction.x,
-          y: prev.y + direction.y,
+          x: prev.x + direction.x * (fast ? 2 : 1),
+          y: prev.y + direction.y * (fast ? 2 : 1),
         };
 
         // Check boundaries (50x30 grid)

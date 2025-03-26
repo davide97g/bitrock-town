@@ -4,10 +4,11 @@ export interface IUser {
   password: string;
 }
 
-export interface IUserChat {
+export interface IUserStatus {
   id: string;
   username: string;
-  lastReadTime: number; // timestamp
+  status: "online" | "offline";
+  lastUpdated: number;
 }
 
 export interface IUserPosition {
