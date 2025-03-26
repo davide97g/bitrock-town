@@ -11,10 +11,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/context/Auth/useAuth";
+import { sendMessage } from "@/services/api";
 import { Send, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-
-const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 type Message = {
   id: string;
@@ -23,6 +23,7 @@ type Message = {
 };
 
 export default function ChatInterface({ onClose }: { onClose: () => void }) {
+  const { token } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -57,13 +58,8 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
 
     try {
       // Send request to backend
-      const response = await fetch(`${BASE_URL}/message`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: input }),
-      });
+      if (!token) throw new Error("No token available");
+      const response = await sendMessage({ message: input, token });
 
       if (!response.ok) {
         throw new Error("Failed to fetch response");
