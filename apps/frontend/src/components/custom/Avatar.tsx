@@ -1,11 +1,12 @@
 import type React from "react";
 
 interface AvatarProps {
+  username: string;
   x: number;
   y: number;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ x, y }) => {
+const Avatar: React.FC<AvatarProps> = ({ username, x, y }) => {
   return (
     <div
       className="avatar"
@@ -15,7 +16,7 @@ const Avatar: React.FC<AvatarProps> = ({ x, y }) => {
       }}
     >
       <div className="avatar-body"></div>
-      <div className="avatar-name">You</div>
+      <div className="avatar-name">{username}</div>
     </div>
   );
 };

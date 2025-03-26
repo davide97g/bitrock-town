@@ -9,3 +9,12 @@ export interface IUserChat {
   username: string;
   lastReadTime: number; // timestamp
 }
+
+export interface IUserPosition {
+  id: string;
+  username: string;
+  position: {
+    x: number;
+    y: number;
+  };
+}

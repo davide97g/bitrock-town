@@ -25,6 +25,8 @@ const OfficeItem: React.FC<OfficeItemProps> = ({
         return "office-item-coffee";
       case "plant":
         return "office-item-plant";
+      case "avatar":
+        return "office-item-avatar";
       default:
         return "";
     }

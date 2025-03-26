@@ -2,9 +2,12 @@
 
 import Avatar from "@/components/custom/Avatar";
 import OfficeItem from "@/components/custom/OfficeItem";
+import { useAuth } from "@/context/Auth/useAuth";
+
+import { useWebSocketContext } from "@/context/WebSocketProvider";
 
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 // Office layout configuration
 const officeItems = [
@@ -23,6 +26,30 @@ const officeItems = [
 const VirtualSpace: React.FC = () => {
   const [position, setPosition] = useState({ x: 300, y: 200 });
   const spaceRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const { messages, sendMessage } = useWebSocketContext();
+
+  const userPositions = useMemo(() => {
+    return messages
+      .filter(
+        (message) => message.event === "position" && message.sender !== "user"
+      )
+      .filter((message) => message.data !== undefined)
+      .map((message) => message.data!)
+      .filter((data) => data.id !== user?.id);
+  }, [messages]);
+
+  useEffect(() => {
+    sendMessage({
+      event: "position",
+      sender: "user",
+      data: {
+        id: "1",
+        username: "user",
+        position: { x: 0, y: 0 },
+      },
+    });
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -65,6 +92,15 @@ const VirtualSpace: React.FC = () => {
 
       if (!hasCollision) {
         setPosition(newPosition);
+        sendMessage({
+          event: "position",
+          sender: user?.username ?? "",
+          data: {
+            id: user?.id ?? "",
+            username: user?.username ?? "",
+            position: newPosition,
+          },
+        });
       }
     };
 
@@ -86,7 +122,15 @@ const VirtualSpace: React.FC = () => {
           />
         ))}
       </div>
-      <Avatar x={position.x} y={position.y} />
+      {userPositions.map((user) => (
+        <Avatar
+          key={user.id}
+          username={user.username}
+          x={user.position.x}
+          y={user.position.y}
+        />
+      ))}
+      <Avatar username="You" x={position.x} y={position.y} />
     </div>
   );
 };

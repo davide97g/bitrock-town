@@ -1,9 +1,9 @@
-import { IMessage } from "./chat.types";
+import { IUserPosition } from "./user.types";
 
-type ISocketEvent = "message" | "clear" | "typing";
+type ISocketEvent = "position";
 
 export interface ISocketMessage {
   event: ISocketEvent;
   sender?: string;
-  data?: IMessage;
+  data?: IUserPosition;
 }

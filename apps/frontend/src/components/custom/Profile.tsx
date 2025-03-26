@@ -15,9 +15,8 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/context/Auth/useAuth";
 import { useTheme } from "@/context/ThemeProvider";
-import { clearChatHistory } from "@/services/api";
 import { getInitials, getUserColor } from "@/services/utils";
-import { Bell, BellOff, LogOut, Moon, Sun, Trash } from "lucide-react";
+import { Bell, BellOff, LogOut, Moon, Sun } from "lucide-react";
 import { useState } from "react";
 
 export function UserPreferencesModal() {
@@ -26,19 +25,9 @@ export function UserPreferencesModal() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { token, user, logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const userColor = getUserColor(user?.username);
-
-  // Clear chat history
-  const clearChat = () => {
-    const confirmClear = window.confirm(
-      "Are you sure you want to clear the chat history?"
-    );
-    if (confirmClear) {
-      if (token) clearChatHistory({ token });
-    }
-  };
 
   // Handle dark mode toggle
   const handleDarkModeToggle = () => {
@@ -55,17 +44,6 @@ export function UserPreferencesModal() {
   const handleLogout = () => {
     setIsOpen(false);
     logout();
-  };
-
-  // Handle clear history
-  const handleClearHistory = () => {
-    const confirmClear = window.confirm(
-      "Are you sure you want to clear your chat history?"
-    );
-    if (confirmClear) {
-      setIsOpen(false);
-      clearChat();
-    }
   };
 
   return (
@@ -147,19 +125,6 @@ export function UserPreferencesModal() {
           </div>
 
           <Separator className="my-4" />
-
-          {/* Data Management */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-medium">Data Management</h4>
-            <Button
-              variant="outline"
-              className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50"
-              onClick={handleClearHistory}
-            >
-              <Trash className="h-4 w-4 mr-2" />
-              Clear Chat History
-            </Button>
-          </div>
         </div>
 
         <DialogFooter className="flex flex-col sm:flex-row sm:justify-between sm:space-x-2">

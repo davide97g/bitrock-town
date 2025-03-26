@@ -3,7 +3,6 @@ import { type Express, type Request, type Response } from "express";
 
 import { updateUsersFile, users } from "../../config/database";
 import { sign } from "../../features/auth";
-import { broadcast } from "../../features/socket";
 import { authenticateToken } from "../../middleware/authMiddleware";
 
 export const createAuthController = (app: Express) => {
@@ -26,17 +25,6 @@ export const createAuthController = (app: Express) => {
     const newUserId = crypto.randomUUID();
     users.push({ id: newUserId, username, password: hashedPassword });
     updateUsersFile({ users });
-    broadcast({
-      event: "message",
-      data: {
-        id: crypto.randomUUID(),
-        content: `${username} has joined the chat`,
-        sender: "System",
-        timestamp: Date.now(),
-        readBy: [],
-        read: false,
-      },
-    });
     res.status(201).json({ message: "User registered successfully" });
   });
 

@@ -6,7 +6,6 @@ import swaggerJsdoc from "swagger-jsdoc";
 import * as swaggerUi from "swagger-ui-express";
 import { version } from "../package.json";
 import { addPublicRoutes } from "./api/public";
-import "./features/socket";
 
 import bodyParser from "body-parser";
 

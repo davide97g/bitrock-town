@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { RouterProvider } from "react-router";
+import { useAuth } from "./context/Auth/useAuth";
 import { KeyboardProvider } from "./context/KeyboardContext";
+import { WebSocketProvider } from "./context/WebSocketProvider";
 import ChatInterface from "./pages/Chat";
 import { router } from "./router";
+const { VITE_WS_SERVER_URL } = import.meta.env;
 
 export default function App() {
   const [showChat, setShowChat] = useState(false);
+
+  const { token } = useAuth();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -21,17 +26,19 @@ export default function App() {
   }, []);
 
   return (
-    <KeyboardProvider>
-      <div className="app">
-        <RouterProvider router={router} />
-        {showChat && <ChatInterface onClose={() => setShowChat(false)} />}
-        <div className="controls-hint">
-          <p>
-            Use arrow keys to move. Press <kbd>Cmd</kbd>+<kbd>C</kbd> to chat
-            with AI
-          </p>
+    <WebSocketProvider url={`${VITE_WS_SERVER_URL}?token=${token}`}>
+      <KeyboardProvider>
+        <div className="app">
+          <RouterProvider router={router} />
+          {showChat && <ChatInterface onClose={() => setShowChat(false)} />}
+          <div className="controls-hint">
+            <p>
+              Use arrow keys to move. Press <kbd>Cmd</kbd>+<kbd>C</kbd> to chat
+              with AI
+            </p>
+          </div>
         </div>
-      </div>
-    </KeyboardProvider>
+      </KeyboardProvider>
+    </WebSocketProvider>
   );
 }
