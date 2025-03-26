@@ -17,7 +17,9 @@ const allowedOrigins = [
   "http://localhost:8080",
   "https://bitrock-town-frontend.vercel.app",
   "https://test.bitrock.town",
+  "https://www.test.bitrock.town",
   "https://bitrock.town",
+  "https://www.bitrock.town",
 ];
 
 const options = {
