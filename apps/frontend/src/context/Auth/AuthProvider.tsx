@@ -1,6 +1,6 @@
 import { api } from "@/config/client";
 import { supabase } from "@/config/supabase";
-import { getUserInfo, loginUser } from "@/services/api";
+import { getUserInfo, loginUser, logoutUser } from "@/services/api";
 import { IUser } from "@bitrock-town/types";
 import { Session } from "@supabase/supabase-js";
 import {
@@ -55,8 +55,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   };
 
   const logout = useCallback(() => {
-    localStorage.removeItem("bitrock-town-token");
-    window.location.reload();
+    logoutUser();
   }, []);
 
   useEffect(() => {

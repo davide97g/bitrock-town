@@ -8,8 +8,16 @@ const BASE_URL = import.meta.env.VITE_SERVER_URL;
 export async function loginUser() {
   const res = await supabase.auth.signInWithOAuth({
     provider: "google",
+    options: {
+      redirectTo: import.meta.env.VITE_REDIRECT_URL,
+    },
   });
 
+  return res;
+}
+
+export async function logoutUser() {
+  const res = await supabase.auth.signOut();
   return res;
 }
 

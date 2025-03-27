@@ -16,7 +16,8 @@ import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/context/Auth/AuthProvider";
 import { useTheme } from "@/context/ThemeProvider";
 import { getInitials, getUserColor } from "@/services/utils";
-import { Bell, BellOff, LogOut, Moon, Sun } from "lucide-react";
+import { AvatarImage } from "@radix-ui/react-avatar";
+import { Bell, BellOff, LogOut, Moon, Sun, UserCircle } from "lucide-react";
 import { useState } from "react";
 
 export function UserPreferencesModal() {
@@ -46,13 +47,15 @@ export function UserPreferencesModal() {
     logout();
   };
 
+  console.log("UserPreferencesModal", user);
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <button className="flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg transition-colors">
-          <Avatar className="h-8 w-8 cursor-pointer">
-            <AvatarFallback className={userColor}>
-              {getInitials(user?.name)}
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={user?.avatar_url} alt={user?.name} />
+            <AvatarFallback>
+              <UserCircle className="h-8 w-8" />
             </AvatarFallback>
           </Avatar>
           <span className="text-sm font-medium">{user?.name}</span>
