@@ -65,7 +65,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     return () => {
       api.interceptors.response.eject(api.interceptors.response.use());
     };
-  }, [token, toast]);
+  }, [token]);
 
   const value = useMemo(
     () => ({

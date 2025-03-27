@@ -1,43 +1,44 @@
-export function Loader() {
+export function Loader({ transparent = false }: { transparent?: boolean }) {
   return (
-    <>
-      <div className=".loader" />
+    <div
+      className={`flex justify-center items-center h-screen w-screen bg-gray-800 ${transparent ? "bg-transparent" : ""}`}
+    >
+      <div className="loader" />
       <style>{`        
         .loader {
-          width: 80px;
-          aspect-ratio: 1;
-          border: 10px solid #0000;
-          padding: 5px;
+          width: 48px;
+          height: 48px;
+          border: 5px solid #FFF;
+          border-radius: 50%;
+          display: inline-block;
           box-sizing: border-box;
-          background:
-            radial-gradient(farthest-side, #fff 98%, #0000) 0 0/20px 20px
-              no-repeat,
-            conic-gradient(from 90deg at 10px 10px, #0000 90deg, #fff 0)
-              content-box,
-            conic-gradient(from -90deg at 40px 40px, #0000 90deg, #fff 0)
-              content-box,
-            #000;
-          filter: blur(4px) contrast(10);
-          animation: l11 2s infinite;
+          position: relative;
+          animation: pulse 1s linear infinite;
         }
-        @keyframes l11 {
-          0% {
-            background-position: 0 0;
-          }
-          25% {
-            background-position: 100% 0;
-          }
-          50% {
-            background-position: 100% 100%;
-          }
-          75% {
-            background-position: 0% 100%;
-          }
-          100% {
-            background-position: 0% 0;
-          }
+        .loader:after {
+          content: '';
+          position: absolute;
+          width: 48px;
+          height: 48px;
+          border: 5px solid #FFF;
+          border-radius: 50%;
+          display: inline-block;
+          box-sizing: border-box;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          animation: scaleUp 1s linear infinite;
+        }
+
+        @keyframes scaleUp {
+          0% { transform: translate(-50%, -50%) scale(0) }
+          60% , 100% { transform: translate(-50%, -50%)  scale(1)}
+        }
+        @keyframes pulse {
+          0% , 60% , 100%{ transform:  scale(1) }
+          80% { transform:  scale(1.2)}
         }
       `}</style>
-    </>
+    </div>
   );
 }
