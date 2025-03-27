@@ -35,7 +35,20 @@ export default function App() {
           <div className="controls-hint">
             <p>
               Use arrow keys to move. Press <kbd>Cmd</kbd>+<kbd>SHIFT</kbd>+
-              <kbd>C</kbd> to chat with AI
+              <kbd>C</kbd> to chat with AI or click{" "}
+              <span
+                className="
+              text-blue-500
+              cursor-pointer
+              hover:underline
+              transition-colors
+              duration-200
+              ease-in-out
+              "
+                onClick={() => setShowChat(true)}
+              >
+                here
+              </span>
             </p>
           </div>
         </div>
