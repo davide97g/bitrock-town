@@ -15,3 +15,8 @@ export async function getUserById(id: string): Promise<IUser | null> {
   if (!res) return null;
   return res[0] as IUser;
 }
+
+export async function getUsers(): Promise<IUser[]> {
+  const res = await sql`SELECT * FROM public."USERS"`;
+  return [...res] as IUser[];
+}

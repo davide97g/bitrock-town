@@ -47,7 +47,6 @@ export function UserPreferencesModal() {
     logout();
   };
 
-  console.log("UserPreferencesModal", user);
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>

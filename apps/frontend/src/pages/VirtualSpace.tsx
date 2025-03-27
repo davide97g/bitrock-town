@@ -4,11 +4,11 @@ import { OnlineUsers } from "@/components/custom/OnlineUsers";
 import { UserPreferencesModal } from "@/components/custom/Profile";
 import { useAuth } from "@/context/Auth/AuthProvider";
 
-
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 
+import { ISocketMessage } from "@bitrock-town/types";
 import type React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ChatInterface from "./Chat";
 
 // Office layout configuration
@@ -28,7 +28,7 @@ const officeItems = [
 const VirtualSpace: React.FC = () => {
   const [position, setPosition] = useState({ x: 300, y: 200 });
   const spaceRef = useRef<HTMLDivElement>(null);
-  const { user, session } = useAuth();
+  const { session } = useAuth();
   const { messages, sendMessage } = useWebSocketContext();
 
   const [showChat, setShowChat] = useState(false);
@@ -49,29 +49,27 @@ const VirtualSpace: React.FC = () => {
   const userPositions = useMemo(() => {
     return messages
       .filter(
-        (message) => message.event === "position" && message.sender !== user?.name
+        (message) =>
+          message.event === "position" &&
+          message.senderId !== session?.user?.id,
       )
-      .filter((message) => message.data !== undefined)
-      .map((message) => message.data!)
-      .filter((data) => data.id !== user?.id);
-  }, [messages, user?.id, user?.name]);
+      .filter((message) => message.data !== undefined);
+  }, [messages, session?.user?.id]);
 
-  useEffect(() => {
-    if (user && user.id && user.name) {
-      const randomX = Math.floor(Math.random() * 800);
-      const randomY = Math.floor(Math.random() * 600);
-      setPosition({ x: randomX, y: randomY });
-      sendMessage({
+  const sendUserPosition = useCallback(
+    (position: { x: number; y: number }) => {
+      if (!session?.user.id) return;
+      const newMessage: ISocketMessage = {
         event: "position",
-        sender: user?.name,
+        senderId: session?.user.id,
         data: {
-          id: user?.id,
-          username: user?.name,
-          position: { x: randomX, y: randomY },
+          position,
         },
-      });
-    }
-  }, [sendMessage, user]);
+      };
+      sendMessage(newMessage);
+    },
+    [sendMessage, session?.user.id],
+  );
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -88,7 +86,7 @@ const VirtualSpace: React.FC = () => {
         case "ArrowDown":
           newPosition.y = Math.min(
             spaceRef.current?.clientHeight || 600,
-            position.y + step
+            position.y + step,
           );
           break;
         case "ArrowLeft":
@@ -97,7 +95,7 @@ const VirtualSpace: React.FC = () => {
         case "ArrowRight":
           newPosition.x = Math.min(
             spaceRef.current?.clientWidth || 800,
-            position.x + step
+            position.x + step,
           );
           break;
         default:
@@ -117,67 +115,57 @@ const VirtualSpace: React.FC = () => {
 
       if (!hasCollision) {
         setPosition(newPosition);
-        sendMessage({
-          event: "position",
-          sender: user?.name ?? "",
-          data: {
-            id: user?.id ?? "",
-            username: user?.name ?? "",
-            position: newPosition,
-          },
-        });
+        sendUserPosition(newPosition);
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [position, sendMessage, user?.id, user?.name]);
+  }, [position, sendMessage, sendUserPosition]);
 
-  
   return (
-    
     <div className="app">
-    <div className="virtual-space" ref={spaceRef}>
-      <div className="office-background">
-        {officeItems.map((item) => (
-          <OfficeItem
-            key={item.id}
-            type={item.type}
-            x={item.x}
-            y={item.y}
-            width={item.width}
-            height={item.height}
+      <div className="virtual-space" ref={spaceRef}>
+        <div className="office-background">
+          {officeItems.map((item) => (
+            <OfficeItem
+              key={item.id}
+              type={item.type}
+              x={item.x}
+              y={item.y}
+              width={item.width}
+              height={item.height}
+            />
+          ))}
+        </div>
+        {userPositions.map((uP) => (
+          <Avatar
+            key={uP.senderId}
+            username={uP.senderId ?? ""}
+            x={uP.data.position.x}
+            y={uP.data.position.y}
           />
         ))}
-      </div>
-      {userPositions.map((user) => (
-        <Avatar
-          key={user.id}
-          username={user.username}
-          x={user.position.x}
-          y={user.position.y}
-        />
-      ))}
-      <Avatar username="You" x={position.x} y={position.y}>
-        <img
-          src={session?.user.user_metadata.avatar_url}
-          alt="avatar"
-          className="rounded-full"
-        />
-      </Avatar>
+        <Avatar username="You" x={position.x} y={position.y}>
+          <img
+            src={session?.user.user_metadata.avatar_url}
+            alt="avatar"
+            className="rounded-full"
+          />
+        </Avatar>
 
-      <div style={{ position: "absolute", top: 0, right: 0 }}>
-        <UserPreferencesModal />
+        <div style={{ position: "absolute", top: 0, right: 0 }}>
+          <UserPreferencesModal />
+        </div>
+        <OnlineUsers position="bottom-right" />
       </div>
-      <OnlineUsers position="bottom-right" />
-    </div>
-     {showChat && <ChatInterface onClose={() => setShowChat(false)} />}
-     <div className="controls-hint">
-       <p>
-         Use arrow keys to move. Press <kbd>Cmd</kbd>+<kbd>SHIFT</kbd>+
-         <kbd>C</kbd> to chat with AI or click{" "}
-         <span
-           className="
+      {showChat && <ChatInterface onClose={() => setShowChat(false)} />}
+      <div className="controls-hint">
+        <p>
+          Use arrow keys to move. Press <kbd>Cmd</kbd>+<kbd>SHIFT</kbd>+
+          <kbd>C</kbd> to chat with AI or click{" "}
+          <span
+            className="
          text-blue-500
          cursor-pointer
          hover:underline
@@ -185,13 +173,13 @@ const VirtualSpace: React.FC = () => {
          duration-200
          ease-in-out
          "
-           onClick={() => setShowChat(true)}
-         >
-           here
-         </span>
-       </p>
-     </div>
-     </div>
+            onClick={() => setShowChat(true)}
+          >
+            here
+          </span>
+        </p>
+      </div>
+    </div>
   );
 };
 

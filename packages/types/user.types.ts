@@ -11,18 +11,12 @@ export interface ICreateUser {
   avatar_url: string;
 }
 
-export interface IUserStatus {
-  id: string;
-  username: string;
+export interface IUserStatus extends IUser {
   status: "online" | "offline";
   lastUpdated: number;
 }
 
 export interface IUserPosition {
-  id: string;
-  username: string;
-  position: {
-    x: number;
-    y: number;
-  };
+  x: number;
+  y: number;
 }

@@ -4,6 +4,6 @@ type ISocketEvent = "position";
 
 export interface ISocketMessage {
   event: ISocketEvent;
-  sender?: string;
-  data?: IUserPosition;
+  senderId: string;
+  data: { position: IUserPosition };
 }

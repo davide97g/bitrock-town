@@ -22,7 +22,7 @@ export function OnlineUsers({
     "bottom-left": "bottom-4 left-4",
   };
 
-  const { users } = useWebSocketContext();
+  const { usersStatus } = useWebSocketContext();
 
   return (
     <div
@@ -34,7 +34,7 @@ export function OnlineUsers({
 
       <ScrollArea className="h-80">
         <div className="p-2">
-          {users.map((user) => (
+          {usersStatus.map((user) => (
             <div
               key={user.id}
               className="flex items-center gap-3 p-2 rounded-md hover:bg-muted"
@@ -43,9 +43,9 @@ export function OnlineUsers({
                 <Avatar>
                   <AvatarImage
                     src={"/placeholder.svg?height=40&width=40"}
-                    alt={user.username}
+                    alt={user.name}
                   />
-                  <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <span
                   className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background ${user.status === "online" ? "bg-green-500" : "bg-gray-300"}`}
@@ -54,7 +54,7 @@ export function OnlineUsers({
               </div>
 
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{user.username}</p>
+                <p className="text-sm font-medium truncate">{user.name}</p>
                 <div className="flex items-center text-xs text-muted-foreground">
                   <Clock className="mr-1 h-3 w-3" />
                   <span>

@@ -5,8 +5,8 @@ import { createContext, ReactNode, useContext, useState } from "react";
 const WebSocketContext = createContext<{
   messages: ISocketMessage[];
   sendMessage: (message: ISocketMessage) => void;
-  users: IUserStatus[];
-  setUsers: (users: IUserStatus[]) => void;
+  usersStatus: IUserStatus[];
+  setUsersStatus: (users: IUserStatus[]) => void;
 } | null>(null);
 
 export const WebSocketProvider = ({
@@ -17,11 +17,11 @@ export const WebSocketProvider = ({
   children: ReactNode;
 }) => {
   const { messages, sendMessage } = useWebSocket(url);
-  const [users, setUsers] = useState<IUserStatus[]>([]);
+  const [usersStatus, setUsersStatus] = useState<IUserStatus[]>([]);
 
   return (
     <WebSocketContext.Provider
-      value={{ messages, users, setUsers, sendMessage }}
+      value={{ messages, usersStatus, setUsersStatus, sendMessage }}
     >
       {children}
     </WebSocketContext.Provider>
@@ -32,7 +32,7 @@ export const useWebSocketContext = () => {
   const context = useContext(WebSocketContext);
   if (!context)
     throw new Error(
-      "useWebSocketContext must be used within a WebSocketProvider"
+      "useWebSocketContext must be used within a WebSocketProvider",
     );
   return context;
 };

@@ -3,7 +3,7 @@ import { type Express, type Request, type Response } from "express";
 import { sql } from "../../config/postgres";
 import { authenticateToken } from "../../middleware/authMiddleware";
 import { extractInfoFromToken } from "../../middleware/extractInfoFromToken";
-import { createUser, getUserById } from "../../services/user.service";
+import { createUser, getUserById, getUsers } from "../../services/user.service";
 
 export const createUserController = (app: Express) => {
   app.post(
@@ -48,4 +48,13 @@ export const createUserController = (app: Express) => {
       }
     },
   );
+
+  app.get("/users", async (_req: Request, res: Response) => {
+    try {
+      const users = await getUsers();
+      return res.status(200).send(users);
+    } catch (error) {
+      return res.status(500).json({ error: "Error performing the request" });
+    }
+  });
 };
