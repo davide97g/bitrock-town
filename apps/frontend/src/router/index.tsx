@@ -1,5 +1,6 @@
 import { AuthenticatedPage } from "@/components/custom/AuthenticatedPage";
 import { Loader } from "@/components/custom/Loader";
+import { WithRealtime } from "@/components/custom/WithRealtime";
 import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
 
@@ -15,7 +16,9 @@ export const router = createBrowserRouter([
     element: (
       <Suspense fallback={<Loader />}>
         <AuthenticatedPage>
-          <VirtualSpace />
+          <WithRealtime>
+            <VirtualSpace />
+          </WithRealtime>
         </AuthenticatedPage>
       </Suspense>
     ),

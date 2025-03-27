@@ -5,13 +5,9 @@ export async function createUser(
   id: string,
   user: ICreateUser,
 ): Promise<IUser> {
-  await sql`INSERT INTO public."USERS" (id, name, email, avatar_url) VALUES (${id}, ${user.name}, ${user.email}, ${user.avatar_url})`;
-  return {
-    id,
-    name: user.name,
-    email: user.email,
-    avatar_url: user.avatar_url,
-  } as IUser;
+  const res =
+    await sql`INSERT INTO public."USERS" (id, name, email, avatar_url) VALUES (${id}, ${user.name}, ${user.email}, ${user.avatar_url})`;
+  return res[0] as IUser;
 }
 
 export async function getUserById(id: string): Promise<IUser | null> {

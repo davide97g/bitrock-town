@@ -133,7 +133,7 @@ const VirtualSpace: React.FC = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [position, sendMessage, user?.id, user?.name]);
 
-  console.log("userPositions", userPositions);
+  
   return (
     
     <div className="app">
