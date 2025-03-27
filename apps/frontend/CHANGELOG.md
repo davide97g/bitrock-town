@@ -1,5 +1,16 @@
 # @bitrock-town/frontend
 
+## 0.4.0
+
+### Minor Changes
+
+- 66f5107: Google Auth
+
+### Patch Changes
+
+- Updated dependencies [66f5107]
+  - @bitrock-town/types@0.3.0
+
 ## 0.3.0
 
 ### Minor Changes
