@@ -1,5 +1,11 @@
 # @bitrock-town/frontend
 
+## 0.3.0
+
+### Minor Changes
+
+- Server not ready wrapper
+
 ## 0.2.0
 
 ### Minor Changes
