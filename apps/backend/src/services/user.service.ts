@@ -5,7 +5,7 @@ export async function createUser(
   id: string,
   user: ICreateUser,
 ): Promise<IUser> {
-  // TODO: add query here
+  await sql`INSERT INTO public."USERS" (id, name, email, avatar_url) VALUES (${id}, ${user.name}, ${user.email}, ${user.avatar_url})`;
   return {
     id,
     name: user.name,
