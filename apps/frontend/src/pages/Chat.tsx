@@ -25,7 +25,7 @@ export type Message = {
 };
 
 export default function ChatInterface({ onClose }: { onClose: () => void }) {
-  const { token } = useAuth();
+  const { session } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -60,8 +60,11 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
 
     try {
       // Send request to backend
-      if (!token) throw new Error("No token available");
-      const response = await sendMessage({ message: input, token });
+      if (!session) throw new Error("No token available");
+      const response = await sendMessage({
+        message: input,
+        token: session.access_token,
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch response");

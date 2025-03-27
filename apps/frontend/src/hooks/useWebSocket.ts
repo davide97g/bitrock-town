@@ -8,6 +8,27 @@ export const useWebSocket = (url: string) => {
   const [users, setUsers] = useState<IUserStatus[]>([]);
 
   useEffect(() => {
+    if (!messages.length) setUsers([]);
+    messages.forEach((message) => {
+      const userIndex = users.findIndex((user) => user.id === message.data?.id);
+      const newUser: IUserStatus = {
+        id: message.data?.id ?? "",
+        username: message.data?.username ?? "",
+        status: "online",
+        lastUpdated: Date.now(),
+      };
+
+      if (userIndex !== -1) {
+        setUsers((prevUsers) => {
+          prevUsers[userIndex] = newUser;
+          return [...prevUsers];
+        });
+      } else setUsers((prevUsers) => [...prevUsers, newUser]);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       setUsers((prevUsers) =>
         prevUsers.map((user) =>

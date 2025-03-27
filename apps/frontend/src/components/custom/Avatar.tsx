@@ -1,12 +1,14 @@
 import type React from "react";
+import { ReactNode } from "react";
 
 interface AvatarProps {
   username: string;
   x: number;
   y: number;
+  children?: ReactNode;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ username, x, y }) => {
+const Avatar: React.FC<AvatarProps> = ({ username, x, y, children }) => {
   return (
     <div
       className="avatar"
@@ -15,8 +17,7 @@ const Avatar: React.FC<AvatarProps> = ({ username, x, y }) => {
         top: `${y}px`,
       }}
     >
-      <div className="avatar-body"></div>
-      <div className="avatar-name">{username}</div>
+      {children ?? username}
     </div>
   );
 };
