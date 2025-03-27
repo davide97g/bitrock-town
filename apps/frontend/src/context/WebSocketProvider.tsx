@@ -29,12 +29,18 @@ export const WebSocketProvider = ({
   const [usersStatus, setUsersStatus] = useState<IUserStatus[]>([]);
 
   useEffect(() => {
-    const userFound = messages.map((m) => {
-      const u = users?.find((u) => u.id === m.senderId);
-      return u;
-    });
-    setUsersStatus(userFound as IUserStatus[]);
-  }, [messages, users]);
+    const uniqueUsers = [...new Set(messages.map((msg) => msg.senderId))];
+    const usersStatus = uniqueUsers.map((userId) => {
+      const user = users?.find((user) => user.id === userId);
+      return {
+        ...user,
+        status: "online",
+        lastUpdated: Date.now(),
+      };
+    }) as IUserStatus[];
+    setUsersStatus(usersStatus);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
 
   useEffect(() => {
     const interval = setInterval(() => {
