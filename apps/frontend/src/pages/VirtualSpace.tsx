@@ -2,7 +2,8 @@ import Avatar from "@/components/custom/Avatar";
 import OfficeItem from "@/components/custom/OfficeItem";
 import { OnlineUsers } from "@/components/custom/OnlineUsers";
 import { UserPreferencesModal } from "@/components/custom/Profile";
-import { useAuth } from "@/context/Auth/useAuth";
+import { useAuth } from "@/context/Auth/AuthProvider";
+
 
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 
@@ -32,24 +33,24 @@ const VirtualSpace: React.FC = () => {
   const userPositions = useMemo(() => {
     return messages
       .filter(
-        (message) => message.event === "position" && message.sender !== "user"
+        (message) => message.event === "position" && message.sender !== user?.name
       )
       .filter((message) => message.data !== undefined)
       .map((message) => message.data!)
       .filter((data) => data.id !== user?.id);
-  }, [messages, user?.id]);
+  }, [messages, user?.id, user?.name]);
 
   useEffect(() => {
-    if (user && user.id && user.username) {
+    if (user && user.id && user.name) {
       const randomX = Math.floor(Math.random() * 800);
       const randomY = Math.floor(Math.random() * 600);
       setPosition({ x: randomX, y: randomY });
       sendMessage({
         event: "position",
-        sender: user?.username,
+        sender: user?.name,
         data: {
           id: user?.id,
-          username: user?.username,
+          username: user?.name,
           position: { x: randomX, y: randomY },
         },
       });
@@ -102,10 +103,10 @@ const VirtualSpace: React.FC = () => {
         setPosition(newPosition);
         sendMessage({
           event: "position",
-          sender: user?.username ?? "",
+          sender: user?.name ?? "",
           data: {
             id: user?.id ?? "",
-            username: user?.username ?? "",
+            username: user?.name ?? "",
             position: newPosition,
           },
         });
@@ -114,7 +115,7 @@ const VirtualSpace: React.FC = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [position, sendMessage, user?.id, user?.username]);
+  }, [position, sendMessage, user?.id, user?.name]);
 
   return (
     <div className="virtual-space" ref={spaceRef}>

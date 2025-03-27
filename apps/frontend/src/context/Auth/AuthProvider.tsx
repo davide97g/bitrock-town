@@ -2,16 +2,32 @@ import { Login } from "@/components/custom/Login";
 import { api } from "@/config/client";
 import { supabase } from "@/config/supabase";
 import { getUserInfo, loginUser } from "@/services/api";
+import { IUser } from "@bitrock-town/types";
 import { Session } from "@supabase/supabase-js";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { toast } from "sonner";
-import { AuthContext } from "./auth.context";
+
+const AuthContext = createContext({
+  user: null as IUser | null,
+  login: (): Promise<void> => Promise.resolve(),
+  logout: () => {},
+  loading: true as boolean,
+  isLogged: false as boolean,
+  session: undefined as Session | undefined,
+});
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [session, setSession] = useState<Session>();
   const [loading, setLoading] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [user, setUser] = useState<any>();
+  const [user, setUser] = useState<IUser | null>(null);
 
   // const user = useMemo(() => extractInfoFromToken(token), [token]);
 
@@ -19,8 +35,6 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange(async (_, session) => {
-      console.log({ session });
-
       setSession(session ?? undefined);
       try {
         if (session && !user)
@@ -87,3 +101,9 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     </AuthContext.Provider>
   );
 }
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within a AuthProvider");
+  return context;
+};

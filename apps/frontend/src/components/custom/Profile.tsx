@@ -13,7 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { useAuth } from "@/context/Auth/useAuth";
+import { useAuth } from "@/context/Auth/AuthProvider";
 import { useTheme } from "@/context/ThemeProvider";
 import { getInitials, getUserColor } from "@/services/utils";
 import { Bell, BellOff, LogOut, Moon, Sun } from "lucide-react";
@@ -27,7 +27,7 @@ export function UserPreferencesModal() {
 
   const { user, logout } = useAuth();
 
-  const userColor = getUserColor(user?.username);
+  const userColor = getUserColor(user?.name);
 
   // Handle dark mode toggle
   const handleDarkModeToggle = () => {
@@ -52,10 +52,10 @@ export function UserPreferencesModal() {
         <button className="flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg transition-colors">
           <Avatar className="h-8 w-8 cursor-pointer">
             <AvatarFallback className={userColor}>
-              {getInitials(user?.username)}
+              {getInitials(user?.name)}
             </AvatarFallback>
           </Avatar>
-          <span className="text-sm font-medium">{user?.username}</span>
+          <span className="text-sm font-medium">{user?.name}</span>
         </button>
       </DialogTrigger>
 
@@ -69,11 +69,11 @@ export function UserPreferencesModal() {
           <div className="flex items-center space-x-4 mb-6">
             <Avatar className="h-16 w-16">
               <AvatarFallback className={`text-lg ${userColor}`}>
-                {getInitials(user?.username)}
+                {getInitials(user?.name)}
               </AvatarFallback>
             </Avatar>
             <div>
-              <h3 className="font-medium text-lg">{user?.username}</h3>
+              <h3 className="font-medium text-lg">{user?.name}</h3>
               <p className="text-sm text-gray-500">
                 Joined as chat participant
               </p>

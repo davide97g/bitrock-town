@@ -1,5 +1,5 @@
 import { supabase } from "@/config/supabase";
-import { ISystemStats } from "@bitrock-town/types";
+import { ISystemStats, IUser } from "@bitrock-town/types";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -37,8 +37,8 @@ export async function getUserInfo({ token }: { token: string }) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-  });
-  return res.json();
+  }).then((res) => res.json());
+  return res as IUser;
 }
 
 // *** SYSTEM

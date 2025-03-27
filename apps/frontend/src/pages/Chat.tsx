@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/context/Auth/useAuth";
+import { useAuth } from "@/context/Auth/AuthProvider";
 import { sendMessage } from "@/services/api";
 import { parseMarkdownMessage } from "@/services/utils";
 import { Send, XIcon } from "lucide-react";

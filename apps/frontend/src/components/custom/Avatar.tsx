@@ -17,7 +17,8 @@ const Avatar: React.FC<AvatarProps> = ({ username, x, y, children }) => {
         top: `${y}px`,
       }}
     >
-      {children ?? username}
+      {children === undefined && username}
+      {children}
     </div>
   );
 };

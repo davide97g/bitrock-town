@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { RouterProvider } from "react-router";
 import { Toaster } from "./components/ui/sonner";
-import { useAuth } from "./context/Auth/useAuth";
+import { useAuth } from "./context/Auth/AuthProvider";
 import { KeyboardProvider } from "./context/KeyboardContext";
 import { WebSocketProvider } from "./context/WebSocketProvider";
 import ChatInterface from "./pages/Chat";

@@ -1,7 +1,8 @@
 export interface IUser {
   id: string;
-  username: string;
-  password: string;
+  name: string;
+  email: string;
+  avatar_url: string;
 }
 
 export interface IUserStatus {

@@ -1,6 +1,6 @@
-import { useAuth } from "@/context/Auth/useAuth";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { useAuth } from "@/context/Auth/AuthProvider";
 import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 
 export function Login() {
   const { isLogged, login } = useAuth();

@@ -1,5 +1,5 @@
 import { api } from "@/config/client";
-import { useAuth } from "@/context/Auth/useAuth";
+import { useAuth } from "@/context/Auth/AuthProvider";
 import { IUser } from "@bitrock-town/types";
 import { useQuery } from "@tanstack/react-query";
 
