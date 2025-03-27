@@ -11,7 +11,7 @@ const { VITE_WS_SERVER_URL } = import.meta.env;
 export default function App() {
   const [showChat, setShowChat] = useState(false);
 
-  const { token } = useAuth();
+  const { session } = useAuth();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -27,7 +27,9 @@ export default function App() {
   }, []);
 
   return (
-    <WebSocketProvider url={`${VITE_WS_SERVER_URL}?token=${token}`}>
+    <WebSocketProvider
+      url={`${VITE_WS_SERVER_URL}?token=${session?.access_token}`}
+    >
       <KeyboardProvider>
         <div className="app">
           <RouterProvider router={router} />

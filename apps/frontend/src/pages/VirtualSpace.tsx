@@ -1,5 +1,3 @@
-"use client";
-
 import Avatar from "@/components/custom/Avatar";
 import OfficeItem from "@/components/custom/OfficeItem";
 import { OnlineUsers } from "@/components/custom/OnlineUsers";
@@ -28,7 +26,7 @@ const officeItems = [
 const VirtualSpace: React.FC = () => {
   const [position, setPosition] = useState({ x: 300, y: 200 });
   const spaceRef = useRef<HTMLDivElement>(null);
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const { messages, sendMessage } = useWebSocketContext();
 
   const userPositions = useMemo(() => {
@@ -140,7 +138,13 @@ const VirtualSpace: React.FC = () => {
           y={user.position.y}
         />
       ))}
-      <Avatar username="You" x={position.x} y={position.y} />
+      <Avatar username="You" x={position.x} y={position.y}>
+        <img
+          src={session?.user.user_metadata.avatar_url}
+          alt="avatar"
+          className="rounded-full"
+        />
+      </Avatar>
 
       <div style={{ position: "absolute", top: 0, right: 0 }}>
         <UserPreferencesModal />
