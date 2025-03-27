@@ -5,6 +5,12 @@ export interface IUser {
   avatar_url: string;
 }
 
+export interface ICreateUser {
+  name: string;
+  email: string;
+  avatar_url: string;
+}
+
 export interface IUserStatus {
   id: string;
   username: string;

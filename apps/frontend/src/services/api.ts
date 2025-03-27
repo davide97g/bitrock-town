@@ -5,23 +5,6 @@ const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 // *** AUTH
 
-export async function registerUser({
-  username,
-  password,
-}: {
-  username: string;
-  password: string;
-}) {
-  const res = await fetch(`${BASE_URL}/auth/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, password }),
-  });
-  return res.json();
-}
-
 export async function loginUser() {
   const res = await supabase.auth.signInWithOAuth({
     provider: "google",

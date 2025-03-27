@@ -1,3 +1,4 @@
+import { useCreateUser } from "@/api/user/useCreateUser";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,14 +12,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/context/Auth/AuthProvider";
 import { UserCircle } from "lucide-react";
 import { useState } from "react";
 
 export default function RegisterPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
   const [showRecap, setShowRecap] = useState(false);
+
+  const { session } = useAuth();
+  const userSupabase = session?.user;
+  const user = userSupabase?.user_metadata;
+
+  const createUser = useCreateUser();
 
   const handleContinue = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,14 +32,21 @@ export default function RegisterPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the data to your backend
-    console.log("Registration submitted:", { name, email, imageUrl });
-    // Reset form and state after submission
-    setName("");
-    setEmail("");
-    setImageUrl("");
-    setShowRecap(false);
-    alert("Registration successful!");
+    createUser
+      .mutateAsync({
+        user: {
+          name: user?.name,
+          email: user?.email,
+          avatar_url: user?.avatar_url,
+        },
+      })
+      .then(() => {
+        // Here you would typically send the data to your backend
+        console.log("Registration submitted:");
+        // Reset form and state after submission
+
+        setShowRecap(false);
+      });
   };
 
   const handleBack = () => {
@@ -56,17 +68,11 @@ export default function RegisterPage() {
         </CardHeader>
 
         {!showRecap ? (
-          <form onSubmit={handleContinue}>
+          <form onSubmit={handleContinue} className="gap-4 flex flex-col">
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="John Doe"
-                  required
-                />
+                <Input id="name" value={user?.name} disabled required />
               </div>
 
               <div className="space-y-2">
@@ -74,21 +80,15 @@ export default function RegisterPage() {
                 <Input
                   id="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="john@example.com"
+                  value={user?.email}
+                  disabled
                   required
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="imageUrl">Profile Image URL</Label>
-                <Input
-                  id="imageUrl"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://example.com/your-image.jpg"
-                />
+                <Input id="imageUrl" value={user?.avatar_url} />
               </div>
             </CardContent>
 
@@ -103,7 +103,7 @@ export default function RegisterPage() {
             <CardContent className="space-y-6">
               <div className="flex flex-col items-center justify-center py-4">
                 <Avatar className="h-24 w-24 mb-4">
-                  <AvatarImage src={imageUrl} alt={name} />
+                  <AvatarImage src={user?.avatar_url} alt={user?.name} />
                   <AvatarFallback className="text-4xl">
                     <UserCircle className="h-20 w-20" />
                   </AvatarFallback>
@@ -117,23 +117,14 @@ export default function RegisterPage() {
                   <div className="text-sm font-medium text-muted-foreground">
                     Name:
                   </div>
-                  <div className="col-span-2 font-medium">{name}</div>
+                  <div className="col-span-2 font-medium">{user?.name}</div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
                   <div className="text-sm font-medium text-muted-foreground">
                     Email:
                   </div>
-                  <div className="col-span-2 font-medium">{email}</div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="text-sm font-medium text-muted-foreground">
-                    Image URL:
-                  </div>
-                  <div className="col-span-2 font-medium break-all text-sm">
-                    {imageUrl || "No image provided"}
-                  </div>
+                  <div className="col-span-2 font-medium">{user?.email}</div>
                 </div>
               </div>
             </CardContent>
