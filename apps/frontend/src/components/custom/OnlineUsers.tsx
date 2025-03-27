@@ -1,49 +1,9 @@
-"use client";
-
 import { Clock } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { formatTime } from "@/services/utils";
-
-// Sample user data - in a real app, this would come from your API
-const users = [
-  {
-    id: 1,
-    name: "Alex Johnson",
-    avatar: "/placeholder.svg?height=40&width=40",
-    lastSeen: new Date(Date.now() - 2 * 60 * 1000).getTime(), // 2 minutes ago
-    online: true,
-  },
-  {
-    id: 2,
-    name: "Sarah Williams",
-    avatar: "/placeholder.svg?height=40&width=40",
-    lastSeen: new Date(Date.now() - 5 * 60 * 1000).getTime(), // 5 minutes ago
-    online: true,
-  },
-  {
-    id: 3,
-    name: "Michael Brown",
-    avatar: "/placeholder.svg?height=40&width=40",
-    lastSeen: new Date(Date.now() - 15 * 60 * 1000).getTime(), // 15 minutes ago
-    online: false,
-  },
-  {
-    id: 4,
-    name: "Emily Davis",
-    avatar: "/placeholder.svg?height=40&width=40",
-    lastSeen: new Date(Date.now() - 30 * 60 * 1000).getTime(), // 30 minutes ago
-    online: false,
-  },
-  {
-    id: 5,
-    name: "David Wilson",
-    avatar: "/placeholder.svg?height=40&width=40",
-    lastSeen: new Date(Date.now() - 1 * 60 * 60 * 1000).getTime(), // 1 hour ago
-    online: false,
-  },
-];
 
 interface OnlineUsersProps {
   className?: string;
@@ -62,6 +22,8 @@ export function OnlineUsers({
     "bottom-left": "bottom-4 left-4",
   };
 
+  const { users } = useWebSocketContext();
+
   return (
     <div
       className={`absolute ${positionClasses[position]} w-64 bg-background border rounded-lg shadow-md z-50 ${className}`}
@@ -79,23 +41,26 @@ export function OnlineUsers({
             >
               <div className="relative">
                 <Avatar>
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                  <AvatarImage
+                    src={"/placeholder.svg?height=40&width=40"}
+                    alt={user.username}
+                  />
+                  <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <span
-                  className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background ${user.online ? "bg-green-500" : "bg-gray-300"}`}
+                  className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background ${user.status === "online" ? "bg-green-500" : "bg-gray-300"}`}
                   aria-hidden="true"
                 />
               </div>
 
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{user.name}</p>
+                <p className="text-sm font-medium truncate">{user.username}</p>
                 <div className="flex items-center text-xs text-muted-foreground">
                   <Clock className="mr-1 h-3 w-3" />
                   <span>
-                    {user.online
+                    {user.status === "online"
                       ? "Online now"
-                      : `Last seen ${formatTime(user.lastSeen)}`}
+                      : `Last seen ${formatTime(user.lastUpdated)}`}
                   </span>
                 </div>
               </div>

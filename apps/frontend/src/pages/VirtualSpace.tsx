@@ -39,7 +39,7 @@ const VirtualSpace: React.FC = () => {
       .filter((message) => message.data !== undefined)
       .map((message) => message.data!)
       .filter((data) => data.id !== user?.id);
-  }, [messages]);
+  }, [messages, user?.id]);
 
   useEffect(() => {
     if (user && user.id && user.username) {
@@ -56,7 +56,7 @@ const VirtualSpace: React.FC = () => {
         },
       });
     }
-  }, []);
+  }, [sendMessage, user]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -116,7 +116,7 @@ const VirtualSpace: React.FC = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [position]);
+  }, [position, sendMessage, user?.id, user?.username]);
 
   return (
     <div className="virtual-space" ref={spaceRef}>

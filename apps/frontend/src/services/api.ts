@@ -1,16 +1,6 @@
-import { ISystemStats, IUserPosition } from "@bitrock-town/types";
+import { ISystemStats } from "@bitrock-town/types";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
-
-export async function getUserPositions({ token }: { token: string }) {
-  return fetch(`${BASE_URL}/users/positions`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  }).then((res) => res.json() as Promise<IUserPosition[]>);
-}
 
 // *** AUTH
 
