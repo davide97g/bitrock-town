@@ -15,10 +15,12 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/Auth/AuthProvider";
 import { UserCircle } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 export default function RegisterPage() {
   const [showRecap, setShowRecap] = useState(false);
 
+  const navigate = useNavigate();
   const { session } = useAuth();
   const userSupabase = session?.user;
   const user = userSupabase?.user_metadata;
@@ -43,9 +45,7 @@ export default function RegisterPage() {
       .then(() => {
         // Here you would typically send the data to your backend
         console.log("Registration submitted:");
-        // Reset form and state after submission
-
-        setShowRecap(false);
+        navigate("/");
       });
   };
 

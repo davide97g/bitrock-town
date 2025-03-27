@@ -9,8 +9,6 @@ export function AuthenticatedPage({
   const { loading, isLogged, user } = useAuth();
   const navigate = useNavigate();
 
-  console.info("AuthenticatedPage", { loading, isLogged, user });
-
   useEffect(() => {
     if (loading) return;
     if (!isLogged) navigate("/login");
