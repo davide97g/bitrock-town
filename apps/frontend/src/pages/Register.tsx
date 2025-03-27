@@ -1,3 +1,4 @@
+import { useGetUser } from "@/api";
 import { useCreateUser } from "@/api/user/useCreateUser";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -16,15 +17,17 @@ import { useAuth } from "@/context/Auth/AuthProvider";
 import { UserCircle } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
   const [showRecap, setShowRecap] = useState(false);
 
   const navigate = useNavigate();
-  const { session } = useAuth();
+  const { session, setUser } = useAuth();
   const userSupabase = session?.user;
   const user = userSupabase?.user_metadata;
 
+  const getUser = useGetUser();
   const createUser = useCreateUser();
 
   const handleContinue = (e: React.FormEvent) => {
@@ -44,8 +47,13 @@ export default function RegisterPage() {
       })
       .then(() => {
         // Here you would typically send the data to your backend
-        console.log("Registration submitted:");
-        navigate("/");
+        toast.success("Registration completed successfully");
+        getUser.refetch().then((res) => {
+          const user = res.data;
+          if (!user) return;
+          setUser(user);
+          navigate("/");
+        });
       });
   };
 

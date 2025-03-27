@@ -16,6 +16,8 @@ import { toast } from "sonner";
 
 const AuthContext = createContext({
   user: null as IUser | null,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setUser: (_: IUser | null) => {},
   login: (): Promise<void> => Promise.resolve(),
   logout: () => {},
   loading: true as boolean,
@@ -82,6 +84,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const value = useMemo(
     () => ({
       user,
+      setUser,
       login,
       logout,
       isLogged: !!session,
