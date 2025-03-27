@@ -2,8 +2,30 @@ import { type Express, type Request, type Response } from "express";
 import { sql } from "../../config/postgres";
 import { authenticateToken } from "../../middleware/authMiddleware";
 import { extractInfoFromToken } from "../../middleware/extractInfoFromToken";
+import { createUser, getUserById } from "../../services/user.service";
 
 export const createUserController = (app: Express) => {
+  app.post(
+    "/user/create",
+    authenticateToken,
+    async (req: Request, res: Response) => {
+      try {
+        const user = await extractInfoFromToken(req);
+        if (!user) return res.status(403).send("Unauthorized");
+
+        const userAlreadyExists = Boolean(await getUserById(user.id));
+        if (userAlreadyExists)
+          return res.status(409).send("User already exists");
+
+        const newUser = createUser(user);
+
+        return res.status(200).send({ user: newUser });
+      } catch (error) {
+        return res.status(500).json({ error: "Error performing the request" });
+      }
+    },
+  );
+
   app.get(
     "/user/me",
     authenticateToken,
