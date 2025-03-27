@@ -5,11 +5,19 @@ const BASE_URL = import.meta.env.VITE_SERVER_URL;
 
 // *** AUTH
 
+const getURL = () => {
+  let url = import.meta?.env?.VITE_REDIRECT_URL ?? "http://localhost:3000/";
+  url = url.startsWith("http") ? url : `https://${url}`;
+  // Make sure to include a trailing `/`.
+  url = url.endsWith("/") ? url : `${url}/`;
+  return url;
+};
+
 export async function loginUser() {
   const res = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: import.meta.env.VITE_REDIRECT_URL,
+      redirectTo: getURL(),
     },
   });
 
