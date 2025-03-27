@@ -1,11 +1,16 @@
 import { useAuth } from "@/context/Auth/AuthProvider";
-import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Button } from "../components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../components/ui/dialog";
 
-export function Login() {
+export default function Login() {
   const { isLogged, login } = useAuth();
 
-  if (isLogged) return null;
+  if (isLogged) return <p>You are already logged in</p>;
 
   return (
     <Dialog
@@ -19,9 +24,9 @@ export function Login() {
     >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Enter your username</DialogTitle>
+          <DialogTitle>Please login with your Google account</DialogTitle>
           <div className="grid gap-4 py-4 w-6 h-6">
-            <Button onClick={login}>Login</Button>
+            <Button onClick={login}>Google Login</Button>
           </div>
         </DialogHeader>
       </DialogContent>

@@ -9,6 +9,7 @@ import { useWebSocketContext } from "@/context/WebSocketProvider";
 
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import ChatInterface from "./Chat";
 
 // Office layout configuration
 const officeItems = [
@@ -29,6 +30,21 @@ const VirtualSpace: React.FC = () => {
   const spaceRef = useRef<HTMLDivElement>(null);
   const { user, session } = useAuth();
   const { messages, sendMessage } = useWebSocketContext();
+
+  const [showChat, setShowChat] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check for Command+SHIFT+C (Mac) or Ctrl+SHIFT+C (Windows)
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === "c") {
+        e.preventDefault();
+        setShowChat((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const userPositions = useMemo(() => {
     return messages
@@ -117,7 +133,10 @@ const VirtualSpace: React.FC = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [position, sendMessage, user?.id, user?.name]);
 
+  console.log("userPositions", userPositions);
   return (
+    
+    <div className="app">
     <div className="virtual-space" ref={spaceRef}>
       <div className="office-background">
         {officeItems.map((item) => (
@@ -152,6 +171,27 @@ const VirtualSpace: React.FC = () => {
       </div>
       <OnlineUsers position="bottom-right" />
     </div>
+     {showChat && <ChatInterface onClose={() => setShowChat(false)} />}
+     <div className="controls-hint">
+       <p>
+         Use arrow keys to move. Press <kbd>Cmd</kbd>+<kbd>SHIFT</kbd>+
+         <kbd>C</kbd> to chat with AI or click{" "}
+         <span
+           className="
+         text-blue-500
+         cursor-pointer
+         hover:underline
+         transition-colors
+         duration-200
+         ease-in-out
+         "
+           onClick={() => setShowChat(true)}
+         >
+           here
+         </span>
+       </p>
+     </div>
+     </div>
   );
 };
 

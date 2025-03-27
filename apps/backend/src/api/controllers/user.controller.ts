@@ -36,7 +36,7 @@ export const createUserController = (app: Express) => {
 
         const users =
           await sql`SELECT * FROM public."USERS" WHERE id = ${user?.id ?? ""}`;
-        if (!users) return res.status(404).send("User not found");
+        if (!users?.[0]) return res.status(404).send("User not found");
 
         return res.status(200).send({ user: users?.[0] });
       } catch (error) {

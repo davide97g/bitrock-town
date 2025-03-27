@@ -1,4 +1,3 @@
-import { Login } from "@/components/custom/Login";
 import { api } from "@/config/client";
 import { supabase } from "@/config/supabase";
 import { getUserInfo, loginUser } from "@/services/api";
@@ -28,8 +27,6 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [session, setSession] = useState<Session>();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<IUser | null>(null);
-
-  // const user = useMemo(() => extractInfoFromToken(token), [token]);
 
   const token = useMemo(() => session?.access_token, [session]);
 
@@ -95,11 +92,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     [loading, logout, session, user]
   );
 
-  return (
-    <AuthContext.Provider value={value}>
-      {token ? children : <Login />}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export const useAuth = () => {
