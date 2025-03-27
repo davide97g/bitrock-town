@@ -1,14 +1,17 @@
 import { ICreateUser, IUser } from "@bitrock-town/types";
 import { sql } from "../config/postgres";
 
-export function createUser(user: ICreateUser): IUser {
-  // TODO: Implement this function
+export async function createUser(
+  id: string,
+  user: ICreateUser,
+): Promise<IUser> {
+  // TODO: add query here
   return {
-    id: "",
-    name: "",
-    email: "",
-    avatar_url: "",
-  };
+    id,
+    name: user.name,
+    email: user.email,
+    avatar_url: user.avatar_url,
+  } as IUser;
 }
 
 export async function getUserById(id: string): Promise<IUser | null> {

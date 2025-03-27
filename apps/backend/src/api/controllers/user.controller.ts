@@ -21,7 +21,7 @@ export const createUserController = (app: Express) => {
         const userRequest = req.body as ICreateUser;
         if (!userRequest) return res.status(400).send("User not provided");
 
-        const newUser = createUser(userRequest);
+        const newUser = await createUser(user.id, userRequest);
 
         return res.status(200).send({ user: newUser });
       } catch (error) {
