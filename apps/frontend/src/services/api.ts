@@ -31,7 +31,7 @@ export async function loginUser() {
 }
 
 export async function getUserInfo({ token }: { token: string }) {
-  const res = await fetch(`${BASE_URL}/auth/me`, {
+  const res = await fetch(`${BASE_URL}/user/me`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

@@ -1,30 +1,18 @@
 import { ISocketMessage } from "@bitrock-town/types";
-import jwt from "jsonwebtoken";
 import { WebSocketServer } from "ws";
-import { JWT_SECRET } from "./auth";
+import { verifyToken } from "../middleware/verifyToken";
 
 // Creates a new WebSocket connection to the specified URL.
 const socket = new WebSocketServer({
   ...(process.env.PORT && { port: parseInt(process.env.PORT) }),
 });
 
-async function verifyToken(token: string) {
-  return new Promise((resolve, reject) => {
-    jwt.verify(token, JWT_SECRET ?? "", (err, user) => {
-      if (err) {
-        reject(err);
-      }
-      resolve(user);
-    });
-  });
-}
-
 socket.on("connection", async (ws, req) => {
   console.log("Client connected");
 
   const token = req.url?.split("token=")[1];
 
-  if (!JWT_SECRET || !token) {
+  if (!token) {
     console.log("Client disconnected due to bad server configuration");
     return ws.close();
   }

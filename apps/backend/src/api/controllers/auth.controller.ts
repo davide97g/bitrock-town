@@ -3,7 +3,6 @@ import { type Express, type Request, type Response } from "express";
 
 import { updateUsersFile, users } from "../../config/database";
 import { sign } from "../../features/auth";
-import { authenticateToken } from "../../middleware/authMiddleware";
 
 export const createAuthController = (app: Express) => {
   // Register route
@@ -44,13 +43,5 @@ export const createAuthController = (app: Express) => {
 
     const token = sign({ user });
     res.json({ token });
-  });
-
-  // *** Protected routes ***
-
-  app.get("/auth/me", authenticateToken, (req: Request, res: Response) => {
-    res.json({
-      user: (req as any).user,
-    });
   });
 };

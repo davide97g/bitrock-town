@@ -7,22 +7,16 @@ export const authenticateToken = (
   res: Response,
   next: NextFunction,
 ) => {
-  next();
   const bearerToken = req.header("Authorization");
-  console.log({ bearerToken });
-
-  if (!bearerToken) return null;
+  if (!bearerToken) return res.status(403).send("Unauthorized");
   try {
     const tokenString = bearerToken.split("Bearer ")[1];
-    if (!tokenString) return null;
+    if (!tokenString) return res.status(403).send("Unauthorized");
     supabase.auth.getUser(tokenString).then((response) => {
-      if (response.data.user) {
-        console.log("prima di next");
-
-        next();
-      } else res.status(403).send("Unauthorized");
+      if (response.data.user) next();
+      else res.status(403).send("Unauthorized");
     });
   } catch (err) {
-    res.sendStatus(403);
+    res.status(403).send("Unauthorized");
   }
 };
