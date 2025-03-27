@@ -18,7 +18,7 @@ export const createUserController = (app: Express) => {
         if (userAlreadyExists)
           return res.status(409).send("User already exists");
 
-        const userRequest = req.body.user as ICreateUser;
+        const userRequest = req.body as ICreateUser;
         if (!userRequest) return res.status(400).send("User not provided");
 
         const newUser = createUser(userRequest);
