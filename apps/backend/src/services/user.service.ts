@@ -1,8 +1,7 @@
-import { IUser } from "@bitrock-town/types";
-import { User } from "@supabase/supabase-js";
+import { ICreateUser, IUser } from "@bitrock-town/types";
 import { sql } from "../config/postgres";
 
-export function createUser(user: User): IUser {
+export function createUser(user: ICreateUser): IUser {
   // TODO: Implement this function
   return {
     id: "",

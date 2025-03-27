@@ -1,3 +1,4 @@
+import { ICreateUser } from "@bitrock-town/types";
 import { type Express, type Request, type Response } from "express";
 import { sql } from "../../config/postgres";
 import { authenticateToken } from "../../middleware/authMiddleware";
@@ -17,7 +18,10 @@ export const createUserController = (app: Express) => {
         if (userAlreadyExists)
           return res.status(409).send("User already exists");
 
-        const newUser = createUser(user);
+        const userRequest = req.body.user as ICreateUser;
+        if (!userRequest) return res.status(400).send("User not provided");
+
+        const newUser = createUser(userRequest);
 
         return res.status(200).send({ user: newUser });
       } catch (error) {
