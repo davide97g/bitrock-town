@@ -4,10 +4,12 @@ import { ISocketMessage, IUserStatus } from "@bitrock-town/types";
 import {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState,
 } from "react";
+import { useAuth } from "./Auth/AuthProvider";
 
 const WebSocketContext = createContext<{
   messages: ISocketMessage[];
@@ -24,23 +26,33 @@ export const WebSocketProvider = ({
   children: ReactNode;
 }) => {
   const [messages, setMessages] = useState<ISocketMessage[]>([]);
-  const { data: users } = useGetUsers();
+  const { user } = useAuth();
+  const { data: users, refetch } = useGetUsers();
 
   const [usersStatus, setUsersStatus] = useState<IUserStatus[]>([]);
 
-  useEffect(() => {
-    const uniqueUsers = [...new Set(messages.map((msg) => msg.senderId))];
-    const usersStatus = uniqueUsers.map((userId) => {
-      const user = users?.find((user) => user.id === userId);
-      return {
-        ...user,
-        status: "online",
-        lastUpdated: Date.now(),
-      };
-    }) as IUserStatus[];
-    setUsersStatus(usersStatus);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages]);
+  const updateUserStatus = useCallback(
+    (userId: string) => {
+      setUsersStatus((prevUsers) => {
+        const userStatus = prevUsers.find((user) => user.id === userId);
+        if (userStatus)
+          return prevUsers.map((user) =>
+            user.id === userId
+              ? { ...user, status: "online", lastUpdated: Date.now() }
+              : user,
+          );
+        const user = users?.find((user) => user.id === userId);
+        if (user)
+          return [
+            ...prevUsers,
+            { ...user, status: "online", lastUpdated: Date.now() },
+          ];
+        else refetch();
+        return prevUsers;
+      });
+    },
+    [refetch, users],
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -61,9 +73,11 @@ export const WebSocketProvider = ({
 
     websocketService.setOnMessageCallback((message: ISocketMessage) => {
       setMessages((prevMessages) => {
+        if (user?.id === message.senderId) return prevMessages;
         const msgIndex = prevMessages.findIndex(
           (msg) => msg.senderId === message.senderId,
         );
+        updateUserStatus(message.senderId);
         if (msgIndex !== -1) {
           prevMessages[msgIndex] = message;
           return [...prevMessages];
@@ -75,7 +89,7 @@ export const WebSocketProvider = ({
     return () => {
       websocketService.setOnMessageCallback(() => {}); // Cleanup callback
     };
-  }, [url]);
+  }, [updateUserStatus, url, user?.id]);
 
   const sendMessage = (message: ISocketMessage) => {
     websocketService.sendMessage(message);

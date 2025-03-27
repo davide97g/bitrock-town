@@ -2,6 +2,7 @@ import { Clock } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useAuth } from "@/context/Auth/AuthProvider";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { formatTime } from "@/services/utils";
 
@@ -22,7 +23,10 @@ export function OnlineUsers({
     "bottom-left": "bottom-4 left-4",
   };
 
+  const { session } = useAuth();
   const { usersStatus } = useWebSocketContext();
+
+  const authUser = session?.user;
 
   return (
     <div
@@ -54,7 +58,9 @@ export function OnlineUsers({
               </div>
 
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{user.name}</p>
+                <p className="text-sm font-medium truncate">
+                  {user.name} {user.id === authUser?.id ? "(you)" : ""}
+                </p>
                 <div className="flex items-center text-xs text-muted-foreground">
                   <Clock className="mr-1 h-3 w-3" />
                   <span>
