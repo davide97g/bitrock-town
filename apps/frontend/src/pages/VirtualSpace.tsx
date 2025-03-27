@@ -6,7 +6,9 @@ import { useAuth } from "@/context/Auth/AuthProvider";
 
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 
+import { Button } from "@/components/ui/button";
 import { ISocketMessage } from "@bitrock-town/types";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, XIcon } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ChatInterface from "./Chat";
@@ -27,6 +29,7 @@ const officeItems = [
 
 const VirtualSpace: React.FC = () => {
   const [position, setPosition] = useState({ x: 300, y: 200 });
+  const [showControlHint, setShowControlHint] = useState(true);
   const spaceRef = useRef<HTMLDivElement>(null);
   const { session } = useAuth();
   const { messages, sendMessage, usersStatus } = useWebSocketContext();
@@ -123,6 +126,48 @@ const VirtualSpace: React.FC = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [position, sendMessage, sendUserPosition]);
 
+  const movePlayer = (direction: "up" | "down" | "left" | "right") => {
+    const step = 10;
+    const newPosition = { ...position };
+
+    switch (direction) {
+      case "up":
+        newPosition.y = Math.max(0, position.y - step);
+        break;
+      case "down":
+        newPosition.y = Math.min(
+          spaceRef.current?.clientHeight || 600,
+          position.y + step,
+        );
+        break;
+      case "left":
+        newPosition.x = Math.max(0, position.x - step);
+        break;
+      case "right":
+        newPosition.x = Math.min(
+          spaceRef.current?.clientWidth || 800,
+          position.x + step,
+        );
+        break;
+    }
+
+    // Check for collisions with office items
+    const avatarSize = 40;
+    const hasCollision = officeItems.some((item) => {
+      return (
+        newPosition.x < item.x + item.width &&
+        newPosition.x + avatarSize > item.x &&
+        newPosition.y < item.y + item.height &&
+        newPosition.y + avatarSize > item.y
+      );
+    });
+
+    if (!hasCollision) {
+      setPosition(newPosition);
+      sendUserPosition(newPosition);
+    }
+  };
+
   return (
     <div className="app">
       <div className="virtual-space" ref={spaceRef}>
@@ -167,13 +212,72 @@ const VirtualSpace: React.FC = () => {
         </div>
         <OnlineUsers position="bottom-right" />
       </div>
+      <div className="fixed bottom-0 left-0 right-0 h-[120px] bg-gray-100 p-4">
+        <div className="mx-auto grid h-full w-full max-w-[200px] grid-cols-3 grid-rows-3 gap-1">
+          {/* Empty top-left */}
+          <div></div>
+
+          {/* Up button */}
+          <Button
+            variant="outline"
+            className="flex items-center justify-center"
+            onClick={() => movePlayer("up")}
+            aria-label="Move up"
+          >
+            <ArrowUp className="h-6 w-6" />
+          </Button>
+
+          {/* Empty top-right */}
+          <div></div>
+
+          {/* Left button */}
+          <Button
+            variant="outline"
+            className="flex items-center justify-center"
+            onClick={() => movePlayer("left")}
+            aria-label="Move left"
+          >
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+
+          {/* Empty center */}
+          <div></div>
+
+          {/* Right button */}
+          <Button
+            variant="outline"
+            className="flex items-center justify-center"
+            onClick={() => movePlayer("right")}
+            aria-label="Move right"
+          >
+            <ArrowRight className="h-6 w-6" />
+          </Button>
+
+          {/* Empty bottom-left */}
+          <div></div>
+
+          {/* Down button */}
+          <Button
+            variant="outline"
+            className="flex items-center justify-center"
+            onClick={() => movePlayer("down")}
+            aria-label="Move down"
+          >
+            <ArrowDown className="h-6 w-6" />
+          </Button>
+
+          {/* Empty bottom-right */}
+          <div></div>
+        </div>
+      </div>
       {showChat && <ChatInterface onClose={() => setShowChat(false)} />}
-      <div className="controls-hint">
-        <p>
-          Use arrow keys to move. Press <kbd>Cmd</kbd>+<kbd>SHIFT</kbd>+
-          <kbd>C</kbd> to chat with AI or click{" "}
-          <span
-            className="
+      {showControlHint && (
+        <div className="controls-hint">
+          <p>
+            Use arrow keys to move. Press <kbd>Cmd</kbd>+<kbd>SHIFT</kbd>+
+            <kbd>C</kbd> to chat with AI or click{" "}
+            <span
+              className="
          text-blue-500
          cursor-pointer
          hover:underline
@@ -181,12 +285,17 @@ const VirtualSpace: React.FC = () => {
          duration-200
          ease-in-out
          "
-            onClick={() => setShowChat(true)}
-          >
-            here
-          </span>
-        </p>
-      </div>
+              onClick={() => setShowChat(true)}
+            >
+              here
+            </span>
+            <XIcon
+              className="h-4 w-4 inline-block ml-1 absolute bottom-1 right-1 cursor-pointer"
+              onClick={() => setShowControlHint(false)}
+            />
+          </p>
+        </div>
+      )}
     </div>
   );
 };
