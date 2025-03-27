@@ -29,7 +29,7 @@ const VirtualSpace: React.FC = () => {
   const [position, setPosition] = useState({ x: 300, y: 200 });
   const spaceRef = useRef<HTMLDivElement>(null);
   const { session } = useAuth();
-  const { messages, sendMessage } = useWebSocketContext();
+  const { messages, sendMessage, usersStatus } = useWebSocketContext();
 
   const [showChat, setShowChat] = useState(false);
 
@@ -144,7 +144,15 @@ const VirtualSpace: React.FC = () => {
             username={uP.senderId ?? ""}
             x={uP.data.position.x}
             y={uP.data.position.y}
-          />
+          >
+            <img
+              src={
+                usersStatus.find((user) => user.id === uP.senderId)?.avatar_url
+              }
+              alt="avatar"
+              className="rounded-full"
+            />
+          </Avatar>
         ))}
         <Avatar username="You" x={position.x} y={position.y}>
           <img
