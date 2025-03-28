@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/Auth/AuthProvider";
 import { UserCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -54,21 +54,24 @@ export default function RegisterPage() {
     setShowRecap(false);
   };
 
-  if (!session && !loading) {
-    console.info("User not logged in", session);
-    navigate("/login");
-    return null;
-  }
-
-  if (user && !loading) {
-    console.info("User already registered", user);
-    navigate("/");
-    return null;
-  }
+  useEffect(() => {
+    console.info("User", user);
+    console.info("Session", session);
+    console.info("Loading", loading);
+    if (loading) return;
+    if (!session) {
+      console.info("User not logged in", session);
+      navigate("/login");
+    }
+    if (user) {
+      console.info("User already registered", user);
+      navigate("/");
+    }
+  }, [loading, navigate, session, user]);
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4 bg-gray-50">
-      {loading ? (
+      {loading || user ? (
         <Loader />
       ) : (
         <Card className="w-full max-w-md">

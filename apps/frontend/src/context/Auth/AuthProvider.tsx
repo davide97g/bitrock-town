@@ -31,12 +31,14 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange(async (_, session) => {
+      setLoading(true);
       setSession(session ?? undefined);
       try {
-        if (session && !user)
+        if (session && !user) {
           await getUserInfo({ token: session.access_token })
             .then((res) => setUser(res))
             .catch(() => setUser(undefined));
+        }
       } catch (e) {
         toast.error("Uh oh! Something went wrong.");
         console.info(e);
@@ -75,7 +77,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       logout: () => loginUser(),
       isLogged: !!session,
       session,
-      loading: loading,
+      loading,
     }),
     [loading, session, user],
   );
