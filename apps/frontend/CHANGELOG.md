@@ -1,5 +1,16 @@
 # @bitrock-town/frontend
 
+## 0.5.0
+
+### Minor Changes
+
+- Real time group chat
+
+### Patch Changes
+
+- Updated dependencies
+  - @bitrock-town/types@0.4.0
+
 ## 0.4.0
 
 ### Minor Changes

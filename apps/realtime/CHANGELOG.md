@@ -1,5 +1,16 @@
 # @bitrock-town/realtime
 
+## 0.4.0
+
+### Minor Changes
+
+- Real time group chat
+
+### Patch Changes
+
+- Updated dependencies
+  - @bitrock-town/types@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes

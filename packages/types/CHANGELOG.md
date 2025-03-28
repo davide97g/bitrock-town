@@ -1,5 +1,11 @@
 # @bitrock-town/types
 
+## 0.4.0
+
+### Minor Changes
+
+- Real time group chat
+
 ## 0.3.0
 
 ### Minor Changes
