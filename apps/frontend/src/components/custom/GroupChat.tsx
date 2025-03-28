@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import {
   Card,
@@ -16,6 +16,7 @@ import { TouchEvent } from "react";
 
 import { useGetChatMessages } from "@/api/chat/useGetChatMessages";
 import { useSendChatMessage } from "@/api/chat/useSendChatMessage";
+import { useGetUsers } from "@/api/user/useGetUsers";
 import { supabase } from "@/config/supabase";
 import { useAuth } from "@/context/Auth/AuthProvider";
 import {
@@ -45,6 +46,8 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
+  const users = useGetUsers();
+
   const sendChatMessage = useSendChatMessage();
   const { data: oldMessages } = useGetChatMessages();
 
@@ -53,6 +56,8 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
   const messages = oldMessages?.concat(newMessages).sort((a, b) => {
     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
   });
+
+  if (replyingTo) console.info(replyingTo);
 
   useEffect(() => {
     console.log("attached to channel");
@@ -236,17 +241,37 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                       >
                         {message.authorId !== user?.id && (
                           <Avatar className="h-8 w-8 mt-1">
+                            <AvatarImage
+                              src={
+                                users.data?.find(
+                                  (u) => u.id === message.authorId
+                                )?.avatar_url
+                              }
+                              alt="Avatar"
+                            />
                             <AvatarFallback
-                              className={getUserColor(message.authorId)}
+                              className={getUserColor(
+                                users.data?.find(
+                                  (u) => u.id === message.authorId
+                                )?.name
+                              )}
                             >
-                              {getInitials(message.authorId)}
+                              {getInitials(
+                                users.data?.find(
+                                  (u) => u.id === message.authorId
+                                )?.name
+                              )}
                             </AvatarFallback>
                           </Avatar>
                         )}
                         <div className="relative">
                           {message.authorId !== user?.id && (
                             <div className="text-xs text-gray-500 mb-1">
-                              {message.authorId}
+                              {
+                                users.data?.find(
+                                  (u) => u.id === message.authorId
+                                )?.name
+                              }
                             </div>
                           )}
 

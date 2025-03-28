@@ -45,10 +45,7 @@ export function OnlineUsers({
             >
               <div className="relative">
                 <Avatar>
-                  <AvatarImage
-                    src={"/placeholder.svg?height=40&width=40"}
-                    alt={user.name}
-                  />
+                  <AvatarImage src={user.avatar_url} alt={user.name} />
                   <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <span
