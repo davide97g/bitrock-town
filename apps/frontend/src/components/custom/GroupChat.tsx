@@ -48,7 +48,16 @@ import { Button } from "../ui/button";
 import { UserPreferencesModal } from "./Profile";
 import notificationSound from "@/assets/notification-sound.mp3";
 
-const sound = new Audio(notificationSound);
+// const sound = new Audio(notificationSound);
+
+const reproduceSound = () => {
+  const audio = document.getElementById("myAudio") as HTMLAudioElement;
+  if (audio) {
+    audio.play().catch((error) => {
+      console.error("Error playing sound:", error);
+    });
+  }
+};
 
 export default function GroupChat({ onClose }: { onClose: () => void }) {
   const { user } = useAuth();
@@ -66,9 +75,15 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
   const [newMessages, setNewMessages] = useState<IChatMessage[]>([]);
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
 
-  const messages = oldMessages?.concat(newMessages).sort((a, b) => {
-    return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-  });
+  const messages = useMemo(
+    () =>
+      oldMessages?.concat(newMessages).sort((a, b) => {
+        return (
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
+      }),
+    [oldMessages, newMessages],
+  );
 
   const isSoundOn = useMemo(
     () =>
@@ -89,10 +104,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
           console.log("Change received!", payload);
           setNewMessages((prev) => [...prev, payload.new as IChatMessage]);
 
-          if (isSoundOn)
-            sound.play().catch((error) => {
-              console.error("Error playing sound:", error);
-            });
+          if (isSoundOn) reproduceSound();
         },
       )
       .subscribe();
@@ -229,6 +241,9 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
             <div className="flex items-center justify-between">
               <CardTitle>Chattonapp</CardTitle>
               <div className="flex items-center space-x-4">
+                <audio id="myAudio">
+                  <source src={notificationSound} type="audio/mpeg" />
+                </audio>
                 <Button onClick={() => setIsSoundEnabled((prev) => !prev)}>
                   {isSoundEnabled ? (
                     <VolumeOffIcon className="h-4 w-4" />
