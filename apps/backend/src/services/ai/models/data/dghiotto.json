@@ -1,0 +1,174 @@
+{
+  "personal_info": {
+    "role": "Front-End Developer",
+    "current_position": true
+  },
+  "work_experience": [
+    {
+      "position": "Front-End Developer",
+      "company": "Bitrock",
+      "start_date": "03/2023",
+      "end_date": "Current",
+      "activities": [
+        "Developing a website based on a Micro Frontend architecture.",
+        "Using Turborepo for monorepo management and Vite module federation for micro-frontends.",
+        "Working with TypeScript and React.",
+        "Using Firebase for authentication and serverless cloud data storage.",
+        "Exploring Astro, GraphQL, Web Workers, and TrPC during training sessions."
+      ],
+      "technologies": [
+        "React",
+        "TypeScript",
+        "Turborepo",
+        "Vite Module Federation",
+        "Firebase",
+        "Astro",
+        "GraphQL",
+        "Web Workers",
+        "TrPC"
+      ]
+    },
+    {
+      "position": "Data Scientist",
+      "company": "Infodati",
+      "start_date": "04/2022",
+      "end_date": "02/2023",
+      "activities": [
+        "Predicted customer scores based on past customer data.",
+        "Applied Machine Learning techniques using Python."
+      ],
+      "technologies": ["Python", "Machine Learning"]
+    },
+    {
+      "position": "R&D Developer",
+      "company": "Namiral",
+      "start_date": "10/2021",
+      "end_date": "03/2022",
+      "activities": [
+        "Developed cross-platform applications with Vue.js 3, Electron, and .NET 6.",
+        "Built a digital signature application using Agile SCRUM."
+      ],
+      "technologies": ["Vue.js 3", "Electron", ".NET 6", "Agile SCRUM"]
+    },
+    {
+      "position": "Data Scientist",
+      "company": "Zucchetti SpA",
+      "start_date": "04/2021",
+      "end_date": "07/2021",
+      "activities": [
+        "Built an online interactive platform for introducing data science topics in the company.",
+        "Developed custom time-series analysis and unsupervised learning algorithms.",
+        "Created an online library of machine-learning algorithms in JavaScript."
+      ],
+      "technologies": [
+        "JavaScript",
+        "Machine Learning",
+        "Time-Series Analysis",
+        "Unsupervised Learning"
+      ]
+    },
+    {
+      "position": "Full Stack Developer & Database Manager",
+      "company": "Reply S.p.A - Cluster & Core Financial Services",
+      "start_date": "11/2019",
+      "end_date": "10/2021",
+      "activities": [
+        "Developed Angular Web Applications integrated with backend Java APIs in a microservices architecture.",
+        "Managed a massive database migration to a SQL Server environment.",
+        "Implemented high-quality code for continuous delivery.",
+        "Created a conceptual model for handling user interactions and data flow efficiently.",
+        "Implemented a decentralized error-handling strategy to increase system reliability.",
+        "Optimized database queries and asynchronous client-side code to improve data retrieval performance."
+      ],
+      "technologies": [
+        "Angular",
+        "Java",
+        "Microservices",
+        "SQL Server",
+        "Database Optimization",
+        "Continuous Delivery"
+      ]
+    }
+  ],
+  "personal_projects": [
+    {
+      "name": "Atoma World Project",
+      "type": "NFT-based game",
+      "start_date": "10/2021",
+      "end_date": "Current",
+      "activities": [
+        "Developed an NFT-based game with a structured architecture.",
+        "Frontend built with Angular and hosted on Firebase with CI/CD via GitHub Actions.",
+        "Backend developed using Node.js Express Server and hosted on Heroku.",
+        "Smart contracts written in C++ and deployed on the WAX Blockchain."
+      ],
+      "technologies": [
+        "Angular",
+        "Firebase",
+        "GitHub Actions",
+        "Node.js Express",
+        "Heroku",
+        "C++",
+        "WAX Blockchain"
+      ]
+    },
+    {
+      "name": "Ultra Gymnasium",
+      "type": "Angular PWA",
+      "start_date": "09/2020",
+      "end_date": "09/2021",
+      "activities": [
+        "Developed a progressive web app in Angular for gym data management.",
+        "Created a digital workout system with statistics tracking and live workout monitoring.",
+        "Frontend hosted on Firebase; backend built with Node.js and deployed on Heroku."
+      ],
+      "technologies": ["Angular", "Firebase", "Node.js", "Heroku"]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Master’s Degree in Data Science",
+      "institution": "Università degli Studi di Padova",
+      "year": "2019-2021"
+    },
+    {
+      "degree": "Bachelor's Degree in Computer Science",
+      "institution": "Università degli Studi di Padova",
+      "year": "2016-2019"
+    }
+  ],
+  "languages": {
+    "italian": "Native",
+    "english": {
+      "listening": "B2",
+      "reading": "B2",
+      "spoken_interaction": "B2",
+      "spoken_production": "B2",
+      "writing": "B2"
+    }
+  },
+  "computer_skills": {
+    "web_technologies": [
+      "Angular",
+      "Vue.js",
+      "TypeScript",
+      "JavaScript",
+      "HTML",
+      "CSS",
+      "SCSS",
+      "Sass"
+    ],
+    "backend_technologies": ["Node.js", "Java", "Python", "Spring", ".NET"],
+    "databases": ["MongoDB", "MySQL", "PostgreSQL", "Oracle"],
+    "cloud_platforms": ["Firebase", "Google Cloud Platform", "Heroku"],
+    "data_science": [
+      "R",
+      "Python",
+      "Pandas",
+      "TensorFlow",
+      "Keras",
+      "Scikit-learn"
+    ],
+    "versioning": ["Git", "GitHub", "Bitbucket"]
+  }
+}

@@ -15,6 +15,6 @@ export async function sendMessage({
   authorId: string;
 }) {
   const res =
-    await sql`INSERT INTO public."MESSAGES" (content, authorId) VALUES (${message}, ${authorId})`;
+    await sql`INSERT INTO public."MESSAGES" (content, "authorId") VALUES (${message}, ${authorId});`;
   return res?.[0] as IChatMessage;
 }

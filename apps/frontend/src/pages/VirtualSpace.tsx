@@ -6,9 +6,7 @@ import { useAuth } from "@/context/Auth/AuthProvider";
 
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 
-import { useSendChatMessage } from "@/api/chat/useSendChatMessage";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useLayout } from "@/context/LayoutProvider";
 import { ISocketMessage } from "@bitrock-town/types";
 import {
@@ -16,7 +14,6 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUp,
-  Send,
   SparklesIcon,
   XIcon,
 } from "lucide-react";
@@ -41,13 +38,11 @@ const officeItems = [
 const VirtualSpace: React.FC = () => {
   const [position, setPosition] = useState({ x: 300, y: 200 });
   const [showControlHint, setShowControlHint] = useState(true);
-  const [input, setInput] = useState("");
+
   const spaceRef = useRef<HTMLDivElement>(null);
   const { session } = useAuth();
   const { messages, sendMessage, usersStatus } = useWebSocketContext();
   const { isMobile } = useLayout();
-
-  const sendChatMessage = useSendChatMessage();
 
   const [showChat, setShowChat] = useState(false);
 
@@ -325,23 +320,6 @@ const VirtualSpace: React.FC = () => {
           </p>
         </div>
       )}
-      <div className="flex gap-2 absolute top-0 left-0 p-4">
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message..."
-          className="flex-1"
-        />
-        <Button
-          type="submit"
-          onClick={() => {
-            sendChatMessage.mutate(input);
-            setInput("");
-          }}
-        >
-          <Send className="h-4 w-4" />
-        </Button>
-      </div>
     </div>
   );
 };

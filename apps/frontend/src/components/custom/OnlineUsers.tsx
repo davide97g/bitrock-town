@@ -1,10 +1,18 @@
-import { Clock } from "lucide-react";
+import { Clock, Send } from "lucide-react";
 
+import { useGetChatMessages } from "@/api/chat/useGetChatMessages";
+import { useSendChatMessage } from "@/api/chat/useSendChatMessage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { supabase } from "@/config/supabase";
 import { useAuth } from "@/context/Auth/AuthProvider";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { formatTime } from "@/services/utils";
+import { IChatMessage } from "@bitrock-town/types";
+import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Separator } from "../ui/separator";
 
 interface OnlineUsersProps {
   className?: string;
@@ -25,6 +33,30 @@ export function OnlineUsers({
 
   const { session } = useAuth();
   const { usersStatus } = useWebSocketContext();
+  const sendChatMessage = useSendChatMessage();
+  const messages = useGetChatMessages();
+
+  const [newMessages, setNewMessages] = useState<IChatMessage[]>([]);
+
+  useEffect(() => {
+    const MESSAGES = supabase
+      .channel("custom-insert-channel")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "MESSAGES" },
+        (payload) => {
+          console.log("Change received!", payload);
+          setNewMessages((prev) => [...prev, payload.new as IChatMessage]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      MESSAGES.unsubscribe();
+    };
+  }, []);
+
+  const [input, setInput] = useState("");
 
   const authUser = session?.user;
 
@@ -52,7 +84,9 @@ export function OnlineUsers({
                   <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <span
-                  className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background ${user.status === "online" ? "bg-green-500" : "bg-gray-300"}`}
+                  className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background ${
+                    user.status === "online" ? "bg-green-500" : "bg-gray-300"
+                  }`}
                   aria-hidden="true"
                 />
               </div>
@@ -72,6 +106,40 @@ export function OnlineUsers({
               </div>
             </div>
           ))}
+
+          <Separator />
+
+          <div className="p-2 flex flex-col gap-2">
+            {messages.data?.map((m) => (
+              <p>{m.content}</p>
+            ))}
+          </div>
+
+          <Separator />
+
+          <div className="p-2 flex flex-col gap-2">
+            {newMessages.map((m) => (
+              <p>{m.content}</p>
+            ))}
+          </div>
+
+          <div className="flex gap-2 absolute bottom-0 left-0 p-4">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type your message..."
+              className="flex-1"
+            />
+            <Button
+              type="submit"
+              onClick={() => {
+                sendChatMessage.mutate(input);
+                setInput("");
+              }}
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </ScrollArea>
     </div>

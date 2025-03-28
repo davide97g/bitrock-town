@@ -1,0 +1,85 @@
+{
+  "personal_info": {
+    "role": "Front End Developer",
+    "company": "Bitrock",
+    "current_position": true
+  },
+  "work_experience": [
+    {
+      "position": "Front End Developer",
+      "company": "Bitrock",
+      "start_date": "May 2022",
+      "end_date": "Current",
+      "activities": [
+        "Completed courses on HTML, CSS, JavaScript with a final project",
+        "Completed Git course",
+        "Completed React course and worked on small projects",
+        "Worked on 'CVFY' internal project to enhance HR recruitment processes using ticketing and candidate tracking",
+        "Worked on 'BAT, Booking Appointment Tool' for Luxottica to manage patient appointments"
+      ],
+      "technologies": [
+        "React",
+        "Sass",
+        "React Router",
+        "Material UI",
+        "React Query",
+        "Microfrontend"
+      ]
+    },
+    {
+      "position": "Intern Software Developer",
+      "company": "CascinaNet S.r.l.",
+      "start_date": "Jan 2021",
+      "end_date": "Apr 2021",
+      "activities": [
+        "Provided customer support via phone and ticket system",
+        "Developed software in VB.net to interface labellers with corporate management system",
+        "Worked on cloud-based management software for 'Bman' companies",
+        "Developed printing solutions for DYMO and Zebra printers using VB.net",
+        "Learned Freshdesk ticket management system",
+        "Designed company logo",
+        "Created web pages using HTML, CSS, JavaScript"
+      ],
+      "technologies": ["VB.net", "Visual Studio", "HTML", "CSS", "JavaScript"]
+    },
+    {
+      "position": "Intern",
+      "company": "E.D.I. Progetti",
+      "start_date": "June 2015",
+      "end_date": "June 2015",
+      "activities": [
+        "Provided administrative and accounting support",
+        "Registered bills, issued DDTs",
+        "Planned work hours, vacations, business shifts, and managed orders"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Majoring in Computer Engineering",
+      "institution": "University of Pisa",
+      "year": "2022"
+    },
+    {
+      "degree": "High School Diploma",
+      "year": "2016"
+    }
+  ],
+  "languages": {
+    "italian": "Native",
+    "english": {
+      "listening": "B1",
+      "reading": "B1",
+      "spoken_interaction": "B1",
+      "spoken_production": "B1",
+      "writing": "B1"
+    }
+  },
+  "computer_skills": {
+    "frameworks": ["React", "React Query", "Microfrontend", "Material UI"],
+    "databases": ["ACCESS", "MySQL Workbench", "Query SQL"],
+    "programming_languages": ["C++", "HTML", "CSS", "JavaScript"],
+    "graphic_design": ["Adobe Illustrator", "Canva", "Photoshop (basic)"],
+    "web_design": ["Flazio", "Wix", "WordPress"]
+  }
+}
