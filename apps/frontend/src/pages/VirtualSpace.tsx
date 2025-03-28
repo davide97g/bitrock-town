@@ -6,6 +6,7 @@ import { useAuth } from "@/context/Auth/AuthProvider";
 
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 
+import GroupChat from "@/components/custom/GroupChat";
 import { Button } from "@/components/ui/button";
 import { useLayout } from "@/context/LayoutProvider";
 import { ISocketMessage } from "@bitrock-town/types";
@@ -14,6 +15,7 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUp,
+  MessageCircleIcon,
   SparklesIcon,
   XIcon,
 } from "lucide-react";
@@ -45,6 +47,7 @@ const VirtualSpace: React.FC = () => {
   const { isMobile } = useLayout();
 
   const [showChat, setShowChat] = useState(false);
+  const [showGroupChat, setShowGroupChat] = useState(false);
 
   useEffect(() => {
     // hide control hint after 2 seconds
@@ -294,6 +297,17 @@ const VirtualSpace: React.FC = () => {
       >
         <SparklesIcon />
       </Button>
+      <Button
+        className="absolute top-2 left-2 cursor-pointer"
+        onClick={() => setShowGroupChat(true)}
+      >
+        <MessageCircleIcon />
+      </Button>
+      {showGroupChat && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <GroupChat onClose={() => setShowGroupChat(false)} />
+        </div>
+      )}
       {showChat && <ChatInterface onClose={() => setShowChat(false)} />}
       {showControlHint && (
         <div className="controls-hint">
