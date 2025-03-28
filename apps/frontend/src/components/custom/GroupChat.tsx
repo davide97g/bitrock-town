@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { TouchEvent } from "react";
 
@@ -35,9 +35,20 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { Separator } from "@radix-ui/react-separator";
-import { Copy, MoreHorizontal, Reply, SendIcon, Trash } from "lucide-react";
+import {
+  Copy,
+  MoreHorizontal,
+  Reply,
+  SendIcon,
+  Trash,
+  Volume2Icon,
+  VolumeOffIcon,
+} from "lucide-react";
 import { Button } from "../ui/button";
 import { UserPreferencesModal } from "./Profile";
+import notificationSound from "@/assets/notification-sound.mp3";
+
+const sound = new Audio(notificationSound);
 
 export default function GroupChat({ onClose }: { onClose: () => void }) {
   const { user } = useAuth();
@@ -53,10 +64,19 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
   const { data: oldMessages } = useGetChatMessages();
 
   const [newMessages, setNewMessages] = useState<IChatMessage[]>([]);
+  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
 
   const messages = oldMessages?.concat(newMessages).sort((a, b) => {
     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
   });
+
+  const isSoundOn = useMemo(
+    () =>
+      isSoundEnabled && messages?.[messages?.length - 1].authorId !== user?.id,
+    [isSoundEnabled, messages, user?.id],
+  );
+
+  console.log({ messages, isSoundOn });
 
   useEffect(() => {
     console.log("attached to channel");
@@ -68,7 +88,12 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
         (payload) => {
           console.log("Change received!", payload);
           setNewMessages((prev) => [...prev, payload.new as IChatMessage]);
-        }
+
+          if (isSoundOn)
+            sound.play().catch((error) => {
+              console.error("Error playing sound:", error);
+            });
+        },
       )
       .subscribe();
 
@@ -76,7 +101,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
       console.log("detached from channel");
       channel.unsubscribe();
     };
-  }, []);
+  }, [isSoundOn]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -84,7 +109,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     if (scrollAreaRef.current) {
       const scrollContainer = scrollAreaRef.current.querySelector(
-        "[data-radix-scroll-area-viewport]"
+        "[data-radix-scroll-area-viewport]",
       );
       if (scrollContainer) {
         scrollContainer.scrollTop = scrollContainer.scrollHeight;
@@ -101,7 +126,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
         // Scroll to bottom after sending message
         if (scrollAreaRef.current) {
           const scrollContainer = scrollAreaRef.current.querySelector(
-            "[data-radix-scroll-area-viewport]"
+            "[data-radix-scroll-area-viewport]",
           );
           if (scrollContainer) {
             scrollContainer.scrollTop = scrollContainer.scrollHeight;
@@ -204,6 +229,13 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
             <div className="flex items-center justify-between">
               <CardTitle>Chattonapp</CardTitle>
               <div className="flex items-center space-x-4">
+                <Button onClick={() => setIsSoundEnabled((prev) => !prev)}>
+                  {isSoundEnabled ? (
+                    <VolumeOffIcon className="h-4 w-4" />
+                  ) : (
+                    <Volume2Icon className="h-4 w-4" />
+                  )}
+                </Button>
                 <div className="flex items-center space-x-2">
                   <UserPreferencesModal />
                 </div>
@@ -243,7 +275,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                             <AvatarImage
                               src={
                                 users.data?.find(
-                                  (u) => u.id === message.authorId
+                                  (u) => u.id === message.authorId,
                                 )?.avatar_url
                               }
                               alt="Avatar"
@@ -251,14 +283,14 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                             <AvatarFallback
                               className={getUserColor(
                                 users.data?.find(
-                                  (u) => u.id === message.authorId
-                                )?.name
+                                  (u) => u.id === message.authorId,
+                                )?.name,
                               )}
                             >
                               {getInitials(
                                 users.data?.find(
-                                  (u) => u.id === message.authorId
-                                )?.name
+                                  (u) => u.id === message.authorId,
+                                )?.name,
                               )}
                             </AvatarFallback>
                           </Avatar>
@@ -268,7 +300,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                             <div className="text-xs text-gray-500 mb-1">
                               {
                                 users.data?.find(
-                                  (u) => u.id === message.authorId
+                                  (u) => u.id === message.authorId,
                                 )?.name
                               }
                             </div>
@@ -283,14 +315,14 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                                   (u) =>
                                     u.id ===
                                     findMessageById(message.replyToId!)
-                                      ?.authorId
+                                      ?.authorId,
                                 )?.name || "deleted message"}
                               </div>
                               <div className="truncate">
                                 {findMessageById(message.replyToId)
                                   ? truncateText(
                                       findMessageById(message.replyToId)!
-                                        .content
+                                        .content,
                                     )
                                   : "This message was deleted"}
                               </div>
@@ -428,7 +460,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                   <span className="font-medium">
                     {
                       users.data?.find(
-                        (u) => u.id === findMessageById(replyingTo)?.authorId
+                        (u) => u.id === findMessageById(replyingTo)?.authorId,
                       )?.name
                     }
                   </span>
