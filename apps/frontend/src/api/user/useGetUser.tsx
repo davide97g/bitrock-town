@@ -1,14 +1,11 @@
 import { api } from "@/config/client";
-import { useAuth } from "@/context/Auth/AuthProvider";
 import { IUser } from "@bitrock-town/types";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetUser = () => {
-  const { user } = useAuth();
-
+export const useGetUser = (userId: string) => {
   return useQuery({
-    queryKey: ["user", user?.id],
+    queryKey: ["user", userId],
     queryFn: () => api.get("/user").then((res) => res.data as IUser),
-    enabled: !!user?.id,
+    enabled: !!userId,
   });
 };

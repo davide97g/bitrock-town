@@ -12,7 +12,10 @@ export function AuthenticatedPage({
   useEffect(() => {
     if (loading) return;
     if (!isLogged) navigate("/login");
-    else if (isLogged && !user) navigate("/register");
+    else if (isLogged && !user) {
+      console.error("User is logged in but no user data found");
+      navigate("/register");
+    }
   }, [isLogged, loading, navigate, user]);
 
   return (

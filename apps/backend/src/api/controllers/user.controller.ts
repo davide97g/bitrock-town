@@ -6,48 +6,41 @@ import { extractInfoFromToken } from "../../middleware/extractInfoFromToken";
 import { createUser, getUserById, getUsers } from "../../services/user.service";
 
 export const createUserController = (app: Express) => {
-  app.post(
-    "/user/create",
-    authenticateToken,
-    async (req: Request, res: Response) => {
-      try {
-        const user = await extractInfoFromToken(req);
-        if (!user) return res.status(403).send("Unauthorized");
+  app.get("/user", authenticateToken, async (req: Request, res: Response) => {
+    try {
+      const user = await extractInfoFromToken(req);
+      if (!user) return res.status(403).send("Unauthorized");
 
-        const userAlreadyExists = Boolean(await getUserById(user.id));
-        if (userAlreadyExists)
-          return res.status(409).send("User already exists");
+      const users =
+        await sql`SELECT * FROM public."USERS" WHERE id = ${user?.id ?? ""}`;
 
-        const userRequest = req.body as ICreateUser;
-        if (!userRequest) return res.status(400).send("User not provided");
+      const userFromDb = users?.[0];
+      if (!userFromDb) return res.status(404).send("User not found");
 
-        const newUser = await createUser(user.id, userRequest);
+      return res.status(200).send(userFromDb);
+    } catch (error) {
+      return res.status(500).json({ error: "Error performing the request" });
+    }
+  });
 
-        return res.status(200).send({ user: newUser });
-      } catch (error) {
-        return res.status(500).json({ error: "Error performing the request" });
-      }
-    },
-  );
+  app.post("/user", authenticateToken, async (req: Request, res: Response) => {
+    try {
+      const user = await extractInfoFromToken(req);
+      if (!user) return res.status(403).send("Unauthorized");
 
-  app.get(
-    "/user/me",
-    authenticateToken,
-    async (req: Request, res: Response) => {
-      try {
-        const user = await extractInfoFromToken(req);
-        if (!user) return res.status(403).send("Unauthorized");
+      const userAlreadyExists = Boolean(await getUserById(user.id));
+      if (userAlreadyExists) return res.status(409).send("User already exists");
 
-        const users =
-          await sql`SELECT * FROM public."USERS" WHERE id = ${user?.id ?? ""}`;
-        if (!users?.[0]) return res.status(404).send("User not found");
+      const userRequest = req.body as ICreateUser;
+      if (!userRequest) return res.status(400).send("User not provided");
 
-        return res.status(200).send({ user: users?.[0] });
-      } catch (error) {
-        return res.status(500).json({ error: "Error performing the request" });
-      }
-    },
-  );
+      const newUser = await createUser(user.id, userRequest);
+
+      return res.status(200).send({ user: newUser });
+    } catch (error) {
+      return res.status(500).json({ error: "Error performing the request" });
+    }
+  });
 
   app.get("/users", async (_req: Request, res: Response) => {
     try {

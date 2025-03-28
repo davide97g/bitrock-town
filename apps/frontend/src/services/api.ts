@@ -30,7 +30,7 @@ export async function logoutUser() {
 }
 
 export async function getUserInfo({ token }: { token: string }) {
-  const res = await fetch(`${BASE_URL}/user/me`, {
+  const res = await fetch(`${BASE_URL}/user`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

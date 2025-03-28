@@ -1,12 +1,11 @@
 import { api } from "@/config/client";
 import { supabase } from "@/config/supabase";
-import { getUserInfo, loginUser, logoutUser } from "@/services/api";
+import { getUserInfo, loginUser } from "@/services/api";
 import { IUser } from "@bitrock-town/types";
 import { Session } from "@supabase/supabase-js";
 import {
   createContext,
   ReactNode,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -15,10 +14,8 @@ import {
 import { toast } from "sonner";
 
 const AuthContext = createContext({
-  user: null as IUser | null,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setUser: (_: IUser | null) => {},
-  login: (): Promise<void> => Promise.resolve(),
+  user: undefined as IUser | undefined,
+  login: () => {},
   logout: () => {},
   loading: true as boolean,
   isLogged: false as boolean,
@@ -28,7 +25,7 @@ const AuthContext = createContext({
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [session, setSession] = useState<Session>();
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<IUser | null>(null);
+  const [user, setUser] = useState<IUser>();
 
   const token = useMemo(() => session?.access_token, [session]);
 
@@ -38,27 +35,17 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       try {
         if (session && !user)
           await getUserInfo({ token: session.access_token }).then((res) =>
-            setUser(res)
+            setUser(res),
           );
       } catch (e) {
-        console.error(e);
+        toast.error("Uh oh! Something went wrong.");
+        throw e;
       } finally {
         setLoading(false);
       }
     });
     return () => data.subscription.unsubscribe();
   }, [user]);
-
-  const login = async () => {
-    return loginUser().then((res) => {
-      if (!res) throw new Error("No token found");
-      console.log("login", res);
-    });
-  };
-
-  const logout = useCallback(() => {
-    logoutUser();
-  }, []);
 
   useEffect(() => {
     api.interceptors.request.use((config) => {
@@ -73,7 +60,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       async (error) => {
         toast.error("Uh oh! Something went wrong.");
         throw error;
-      }
+      },
     );
 
     return () => {
@@ -84,19 +71,19 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const value = useMemo(
     () => ({
       user,
-      setUser,
-      login,
-      logout,
+      login: () => loginUser(),
+      logout: () => loginUser(),
       isLogged: !!session,
       session,
-      loading,
+      loading: loading,
     }),
-    [loading, logout, session, user]
+    [loading, session, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error("useAuth must be used within a AuthProvider");
