@@ -28,8 +28,6 @@ export default function RegisterPage() {
 
   const createUser = useCreateUser();
 
-  console.info(session, user);
-
   const handleContinue = (e: React.FormEvent) => {
     e.preventDefault();
     setShowRecap(true);

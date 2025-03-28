@@ -34,12 +34,12 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       setSession(session ?? undefined);
       try {
         if (session && !user)
-          await getUserInfo({ token: session.access_token }).then((res) =>
-            setUser(res),
-          );
+          await getUserInfo({ token: session.access_token })
+            .then((res) => setUser(res))
+            .catch(() => setUser(undefined));
       } catch (e) {
         toast.error("Uh oh! Something went wrong.");
-        throw e;
+        console.info(e);
       } finally {
         setLoading(false);
       }
