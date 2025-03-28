@@ -2,6 +2,7 @@ import {
   createContext,
   ReactNode,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useState,
@@ -61,3 +62,5 @@ export function LayoutProvider({
     <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>
   );
 }
+
+export const useLayout = () => useContext(LayoutContext);

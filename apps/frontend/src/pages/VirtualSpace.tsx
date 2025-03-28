@@ -7,6 +7,7 @@ import { useAuth } from "@/context/Auth/AuthProvider";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 
 import { Button } from "@/components/ui/button";
+import { useLayout } from "@/context/LayoutProvider";
 import { ISocketMessage } from "@bitrock-town/types";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, XIcon } from "lucide-react";
 import type React from "react";
@@ -33,8 +34,16 @@ const VirtualSpace: React.FC = () => {
   const spaceRef = useRef<HTMLDivElement>(null);
   const { session } = useAuth();
   const { messages, sendMessage, usersStatus } = useWebSocketContext();
+  const { isMobile } = useLayout();
 
   const [showChat, setShowChat] = useState(false);
+
+  useEffect(() => {
+    // hide control hint after 2 seconds
+    setTimeout(() => {
+      setShowControlHint(false);
+    }, 2000);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -53,8 +62,7 @@ const VirtualSpace: React.FC = () => {
     return messages
       .filter(
         (message) =>
-          message.event === "position" &&
-          message.senderId !== session?.user?.id,
+          message.event === "position" && message.senderId !== session?.user?.id
       )
       .filter((message) => message.data !== undefined);
   }, [messages, session?.user?.id]);
@@ -71,7 +79,7 @@ const VirtualSpace: React.FC = () => {
       };
       sendMessage(newMessage);
     },
-    [sendMessage, session?.user.id],
+    [sendMessage, session?.user.id]
   );
 
   useEffect(() => {
@@ -89,7 +97,7 @@ const VirtualSpace: React.FC = () => {
         case "ArrowDown":
           newPosition.y = Math.min(
             spaceRef.current?.clientHeight || 600,
-            position.y + step,
+            position.y + step
           );
           break;
         case "ArrowLeft":
@@ -98,7 +106,7 @@ const VirtualSpace: React.FC = () => {
         case "ArrowRight":
           newPosition.x = Math.min(
             spaceRef.current?.clientWidth || 800,
-            position.x + step,
+            position.x + step
           );
           break;
         default:
@@ -137,7 +145,7 @@ const VirtualSpace: React.FC = () => {
       case "down":
         newPosition.y = Math.min(
           spaceRef.current?.clientHeight || 600,
-          position.y + step,
+          position.y + step
         );
         break;
       case "left":
@@ -146,7 +154,7 @@ const VirtualSpace: React.FC = () => {
       case "right":
         newPosition.x = Math.min(
           spaceRef.current?.clientWidth || 800,
-          position.x + step,
+          position.x + step
         );
         break;
     }
@@ -210,10 +218,10 @@ const VirtualSpace: React.FC = () => {
         <div style={{ position: "absolute", top: 0, right: 0 }}>
           <UserPreferencesModal />
         </div>
-        <OnlineUsers position="bottom-right" />
+        {!isMobile && <OnlineUsers position="bottom-right" />}
       </div>
       {!showChat && (
-        <div className="fixed bottom-0 left-0 right-0 h-[120px] bg-gray-100 p-4">
+        <div className="fixed bottom-0 left-0 right-0 h-[120px] p-4">
           <div className="mx-auto grid h-full w-full max-w-[200px] grid-cols-3 grid-rows-3 gap-1">
             {/* Empty top-left */}
             <div></div>
