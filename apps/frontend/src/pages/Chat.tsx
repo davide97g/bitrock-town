@@ -1,6 +1,5 @@
 import type React from "react";
 
-import ThinkingLoader from "@/components/custom/ThinkingLoader";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,11 +11,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/Auth/AuthProvider";
 import { sendMessage } from "@/services/api";
-import { parseMarkdownMessage } from "@/services/utils";
+
+import { ChatMessage } from "@/components/custom/ChatMessage";
 import { Send, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 export type Message = {
   id: string;
@@ -89,8 +87,8 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
           prev.map((msg) =>
             msg.id === assistantMessageId
               ? { ...msg, content: accumulatedContent }
-              : msg
-          )
+              : msg,
+          ),
         );
       }
     } catch (error) {
@@ -103,8 +101,8 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
                 ...msg,
                 content: "Sorry, there was an error processing your request.",
               }
-            : msg
-        )
+            : msg,
+        ),
       );
     } finally {
       setIsLoading(false);
@@ -115,7 +113,7 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
     <Card className="min-h-screen min-w-screen shadow-lg">
       <CardHeader className="border-b">
         <div className="flex items-center justify-between">
-          <CardTitle>Chat with AI</CardTitle>
+          <CardTitle>Bitrock AI</CardTitle>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <Button variant="destructive" onClick={onClose}>
@@ -127,57 +125,16 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
       </CardHeader>
       <CardContent className="flex-grow-1 max-h-[75vh] overflow-y-auto p-4">
         <div className="space-y-4">
-          {messages.map((message) => {
-            console.info(parseMarkdownMessage(message.content));
-            const parsedMessages = parseMarkdownMessage(message.content);
-            return (
-              <div
-                key={message.id}
-                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                    message.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
-                  }`}
-                >
-                  {message.role === "assistant" &&
-                    !isLoading &&
-                    parsedMessages.map((part, index) =>
-                      part.type === "code" ? (
-                        <div style={{ position: "relative" }} key={index}>
-                          <span
-                            style={{
-                              position: "absolute",
-                              top: 1,
-                              left: 5,
-                              color: "white",
-                            }}
-                            className="text-xs"
-                          >
-                            {part.language}
-                          </span>
-                          <SyntaxHighlighter
-                            key={index}
-                            language={part.language ?? "plaintext"}
-                            style={oneDark}
-                          >
-                            {part.content}
-                          </SyntaxHighlighter>
-                        </div>
-                      ) : (
-                        <p key={index}>{part.content}</p>
-                      )
-                    )}
-                  {message.role === "assistant" && isLoading && (
-                    <ThinkingLoader />
-                  )}
-                  {message.role === "user" && <p>{message.content}</p>}
-                </div>
-              </div>
-            );
-          })}
+          {messages.map((message, index) => (
+            <ChatMessage
+              key={message.id}
+              message={message}
+              loading={
+                messages.filter((m) => m.role === "assistant").length - 1 ===
+                  index && isLoading
+              }
+            />
+          ))}
           <div ref={messagesEndRef} />
         </div>
       </CardContent>

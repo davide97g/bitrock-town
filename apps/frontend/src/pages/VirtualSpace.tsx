@@ -212,64 +212,66 @@ const VirtualSpace: React.FC = () => {
         </div>
         <OnlineUsers position="bottom-right" />
       </div>
-      <div className="fixed bottom-0 left-0 right-0 h-[120px] bg-gray-100 p-4">
-        <div className="mx-auto grid h-full w-full max-w-[200px] grid-cols-3 grid-rows-3 gap-1">
-          {/* Empty top-left */}
-          <div></div>
+      {!showChat && (
+        <div className="fixed bottom-0 left-0 right-0 h-[120px] bg-gray-100 p-4">
+          <div className="mx-auto grid h-full w-full max-w-[200px] grid-cols-3 grid-rows-3 gap-1">
+            {/* Empty top-left */}
+            <div></div>
 
-          {/* Up button */}
-          <Button
-            variant="outline"
-            className="flex items-center justify-center"
-            onClick={() => movePlayer("up")}
-            aria-label="Move up"
-          >
-            <ArrowUp className="h-6 w-6" />
-          </Button>
+            {/* Up button */}
+            <Button
+              variant="outline"
+              className="flex items-center justify-center"
+              onClick={() => movePlayer("up")}
+              aria-label="Move up"
+            >
+              <ArrowUp className="h-6 w-6" />
+            </Button>
 
-          {/* Empty top-right */}
-          <div></div>
+            {/* Empty top-right */}
+            <div></div>
 
-          {/* Left button */}
-          <Button
-            variant="outline"
-            className="flex items-center justify-center"
-            onClick={() => movePlayer("left")}
-            aria-label="Move left"
-          >
-            <ArrowLeft className="h-6 w-6" />
-          </Button>
+            {/* Left button */}
+            <Button
+              variant="outline"
+              className="flex items-center justify-center"
+              onClick={() => movePlayer("left")}
+              aria-label="Move left"
+            >
+              <ArrowLeft className="h-6 w-6" />
+            </Button>
 
-          {/* Empty center */}
-          <div></div>
+            {/* Empty center */}
+            <div></div>
 
-          {/* Right button */}
-          <Button
-            variant="outline"
-            className="flex items-center justify-center"
-            onClick={() => movePlayer("right")}
-            aria-label="Move right"
-          >
-            <ArrowRight className="h-6 w-6" />
-          </Button>
+            {/* Right button */}
+            <Button
+              variant="outline"
+              className="flex items-center justify-center"
+              onClick={() => movePlayer("right")}
+              aria-label="Move right"
+            >
+              <ArrowRight className="h-6 w-6" />
+            </Button>
 
-          {/* Empty bottom-left */}
-          <div></div>
+            {/* Empty bottom-left */}
+            <div></div>
 
-          {/* Down button */}
-          <Button
-            variant="outline"
-            className="flex items-center justify-center"
-            onClick={() => movePlayer("down")}
-            aria-label="Move down"
-          >
-            <ArrowDown className="h-6 w-6" />
-          </Button>
+            {/* Down button */}
+            <Button
+              variant="outline"
+              className="flex items-center justify-center"
+              onClick={() => movePlayer("down")}
+              aria-label="Move down"
+            >
+              <ArrowDown className="h-6 w-6" />
+            </Button>
 
-          {/* Empty bottom-right */}
-          <div></div>
+            {/* Empty bottom-right */}
+            <div></div>
+          </div>
         </div>
-      </div>
+      )}
       {showChat && <ChatInterface onClose={() => setShowChat(false)} />}
       {showControlHint && (
         <div className="controls-hint">
