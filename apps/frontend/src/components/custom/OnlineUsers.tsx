@@ -39,8 +39,8 @@ export function OnlineUsers({
   const [newMessages, setNewMessages] = useState<IChatMessage[]>([]);
 
   useEffect(() => {
-    const MESSAGES = supabase
-      .channel("custom-insert-channel")
+    const channel = supabase
+      .channel("new-message-channel")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "MESSAGES" },
@@ -52,7 +52,7 @@ export function OnlineUsers({
       .subscribe();
 
     return () => {
-      MESSAGES.unsubscribe();
+      channel.unsubscribe();
     };
   }, []);
 
