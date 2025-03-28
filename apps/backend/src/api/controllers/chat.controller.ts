@@ -1,6 +1,6 @@
 import { type Express, type Request, type Response } from "express";
-import { sendMessage } from "../../features/chat";
 import { authenticateToken } from "../../middleware/authMiddleware";
+import { sendMessage } from "../../services/chat/chat.service";
 
 export const createChatController = (app: Express) => {
   // Send message

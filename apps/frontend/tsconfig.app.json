@@ -27,5 +27,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "../backend/src/features/system.ts"]
+  "include": ["src", "../backend/src/services/system.ts"]
 }
