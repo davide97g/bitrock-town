@@ -55,11 +55,12 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
   });
 
   useEffect(() => {
+    console.log("attached to channel");
     const channel = supabase
       .channel("realtime:public:MESSAGES")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "MESSAGES" },
+        { event: "INSERT", schema: "public", table: "MESSAGES" },
         (payload) => {
           console.log("Change received!", payload);
           setNewMessages((prev) => [...prev, payload.new as IChatMessage]);
@@ -68,6 +69,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
       .subscribe();
 
     return () => {
+      console.log("detached from channel");
       channel.unsubscribe();
     };
   }, []);
