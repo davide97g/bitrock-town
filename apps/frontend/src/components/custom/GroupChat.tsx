@@ -25,6 +25,7 @@ import {
   getInitials,
   getUserColor,
   isEmojiOnly,
+  truncateText,
 } from "@/services/utils";
 import { IChatMessage } from "@bitrock-town/types";
 import {
@@ -43,7 +44,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
   const [input, setInput] = useState("");
 
   // Reply state
-  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyingTo, setReplyingTo] = useState<string>();
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   const users = useGetUsers();
@@ -56,8 +57,6 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
   const messages = oldMessages?.concat(newMessages).sort((a, b) => {
     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
   });
-
-  if (replyingTo) console.info(replyingTo);
 
   useEffect(() => {
     console.log("attached to channel");
@@ -97,7 +96,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
   const handleSendMessage = () => {
     if (input.trim() === "") return;
     sendChatMessage
-      .mutateAsync(input)
+      .mutateAsync({ message: input, replyToId: replyingTo })
       .then(() => {
         // Scroll to bottom after sending message
         if (scrollAreaRef.current) {
@@ -111,7 +110,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
       })
       .finally(() => {
         setInput("");
-        setReplyingTo(null);
+        setReplyingTo(undefined);
       });
   };
 
@@ -173,9 +172,9 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
   //   };
 
   // Find a message by ID
-  //   const findMessageById = (id: string): IMessage | undefined => {
-  //     return messages.find((msg) => msg.id === id);
-  //   };
+  const findMessageById = (id: string) => {
+    return messages?.find((msg) => msg.id === id);
+  };
 
   // Handle touch start for swipe detection
   const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
@@ -276,22 +275,27 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                           )}
 
                           {/* Reply indicator */}
-                          {/* {message.replyTo && (
+                          {message.replyToId && (
                             <div className="bg-gray-100 rounded p-2 mb-1 text-xs text-gray-600 border-l-2 border-gray-300">
                               <div className="font-medium">
                                 Replying to{" "}
-                                {findMessageById(message.replyTo)?.sender ||
-                                  "deleted message"}
+                                {users.data?.find(
+                                  (u) =>
+                                    u.id ===
+                                    findMessageById(message.replyToId!)
+                                      ?.authorId
+                                )?.name || "deleted message"}
                               </div>
                               <div className="truncate">
-                                {findMessageById(message.replyTo)
+                                {findMessageById(message.replyToId)
                                   ? truncateText(
-                                      findMessageById(message.replyTo)!.content
+                                      findMessageById(message.replyToId)!
+                                        .content
                                     )
                                   : "This message was deleted"}
                               </div>
                             </div>
-                          )} */}
+                          )}
 
                           <div className="flex items-end space-x-1">
                             <div
@@ -415,14 +419,18 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
           </CardContent>
 
           {/* Reply indicator */}
-          {/* {replyingTo && (
+          {replyingTo && (
             <div className="px-4 py-2 bg-gray-50 border-t border-b flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <Reply className="h-4 w-4 text-gray-500" />
                 <div className="text-sm">
                   <span className="text-gray-500">Replying to </span>
                   <span className="font-medium">
-                    {findMessageById(replyingTo)?.sender}
+                    {
+                      users.data?.find(
+                        (u) => u.id === findMessageById(replyingTo)?.authorId
+                      )?.name
+                    }
                   </span>
                   <span className="text-gray-500">: </span>
                   <span className="text-gray-600">
@@ -433,14 +441,14 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
               <button
-                onClick={() => setReplyingTo(null)}
+                onClick={() => setReplyingTo(undefined)}
                 className="text-gray-500 hover:text-gray-700"
                 aria-label="Cancel reply"
               >
                 &times;
               </button>
             </div>
-          )} */}
+          )}
           <CardFooter className="border-t p-3">
             <div className="flex w-full space-x-2 flex-col">
               <div className="flex w-full space-x-2">

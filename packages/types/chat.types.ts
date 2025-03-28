@@ -3,4 +3,5 @@ export interface IChatMessage {
   authorId: string; // user id
   content: string;
   created_at: number;
+  replyToId?: string; // uuid
 }

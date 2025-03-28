@@ -10,11 +10,14 @@ export async function getMessages() {
 export async function sendMessage({
   message,
   authorId,
+  replyToId,
 }: {
   message: string;
   authorId: string;
+  replyToId?: string;
 }) {
-  const res =
-    await sql`INSERT INTO public."MESSAGES" (content, "authorId") VALUES (${message}, ${authorId});`;
+  const res = replyToId
+    ? await sql`INSERT INTO public."MESSAGES" (content, "authorId", "replyToId") VALUES (${message}, ${authorId}, ${replyToId});`
+    : await sql`INSERT INTO public."MESSAGES" (content, "authorId") VALUES (${message}, ${authorId});`;
   return res?.[0] as IChatMessage;
 }

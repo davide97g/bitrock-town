@@ -26,7 +26,10 @@ export const createChatController = (app: Express) => {
     authenticateToken,
     async (req: Request, res: Response) => {
       try {
-        const { message } = req.body as { message: string };
+        const { message, replyToId } = req.body as {
+          message: string;
+          replyToId?: string;
+        };
 
         if (!message) {
           return res.status(400).send({ error: "Message is required" });
@@ -37,7 +40,11 @@ export const createChatController = (app: Express) => {
           return res.status(401).send({ error: "Unauthorized" });
         }
 
-        const response = await sendMessage({ message, authorId: user.id });
+        const response = await sendMessage({
+          message,
+          authorId: user.id,
+          replyToId,
+        });
         return res.send(response);
       } catch (error) {
         console.info(error);
