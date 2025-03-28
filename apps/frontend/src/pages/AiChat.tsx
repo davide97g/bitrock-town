@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/Auth/AuthProvider";
-import { sendMessage } from "@/services/api";
 
+import { useSendMessage } from "@/api/ai/useSendMessage";
 import { ChatMessage } from "@/components/custom/ChatMessage";
 import { Send, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -28,6 +28,8 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const sendAiMessage = useSendMessage();
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -59,38 +61,20 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
     try {
       // Send request to backend
       if (!session) throw new Error("No token available");
-      const response = await sendMessage({
-        message: input,
-        token: session.access_token,
-      });
+      const response = await sendAiMessage.mutateAsync(input);
 
-      if (!response.ok) {
+      if (!response) {
         throw new Error("Failed to fetch response");
       }
 
-      // Handle streaming response
-      const reader = response.body?.getReader();
-      if (!reader) throw new Error("No reader available");
-
-      let accumulatedContent = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        // Convert the chunk to text
-        const chunk = new TextDecoder().decode(value);
-        accumulatedContent += chunk;
-
-        // Update the assistant message with the accumulated content
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === assistantMessageId
-              ? { ...msg, content: accumulatedContent }
-              : msg
-          )
-        );
-      }
+      // Update the assistant message with the response
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === assistantMessageId
+            ? { ...msg, content: response.data }
+            : msg
+        )
+      );
     } catch (error) {
       console.error("Error:", error);
       // Update the assistant message with an error

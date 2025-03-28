@@ -1,4 +1,4 @@
-import { Message } from "@/pages/Chat";
+import { Message } from "@/pages/AiChat";
 import { type MessagePart, parseMarkdownMessage } from "@/services/formatter";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -85,7 +85,9 @@ export function ChatMessage({
   return (
     <div
       key={message.id}
-      className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+      className={`flex ${
+        message.role === "user" ? "justify-end" : "justify-start"
+      }`}
     >
       <div
         className={`max-w-[80%] rounded-lg px-4 py-2 ${

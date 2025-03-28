@@ -51,23 +51,3 @@ export async function getSystemDetails() {
   }).then((res) => res.json());
   return res as ISystemStats;
 }
-
-// *** CHAT
-
-export async function sendMessage({
-  token,
-  message,
-}: {
-  token: string;
-  message: string;
-}) {
-  const res = await fetch(`${BASE_URL}/message`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ message }),
-  });
-  return res;
-}
