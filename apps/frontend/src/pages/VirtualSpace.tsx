@@ -9,7 +9,14 @@ import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { Button } from "@/components/ui/button";
 import { useLayout } from "@/context/LayoutProvider";
 import { ISocketMessage } from "@bitrock-town/types";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, XIcon } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUp,
+  SparklesIcon,
+  XIcon,
+} from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ChatInterface from "./Chat";
@@ -280,6 +287,12 @@ const VirtualSpace: React.FC = () => {
           </div>
         </div>
       )}
+      <Button
+        className="absolute bottom-2 left-2 cursor-pointer"
+        onClick={() => setShowChat(true)}
+      >
+        <SparklesIcon />
+      </Button>
       {showChat && <ChatInterface onClose={() => setShowChat(false)} />}
       {showControlHint && (
         <div className="controls-hint">

@@ -87,8 +87,8 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
           prev.map((msg) =>
             msg.id === assistantMessageId
               ? { ...msg, content: accumulatedContent }
-              : msg,
-          ),
+              : msg
+          )
         );
       }
     } catch (error) {
@@ -101,8 +101,8 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
                 ...msg,
                 content: "Sorry, there was an error processing your request.",
               }
-            : msg,
-        ),
+            : msg
+        )
       );
     } finally {
       setIsLoading(false);
@@ -113,7 +113,10 @@ export default function ChatInterface({ onClose }: { onClose: () => void }) {
     <Card className="min-h-screen min-w-screen shadow-lg">
       <CardHeader className="border-b">
         <div className="flex items-center justify-between">
-          <CardTitle>Bitrock AI</CardTitle>
+          <CardTitle className="flex items-center">
+            <img className="h-12 w-12" src="logo.png" />
+            Bitrock AI
+          </CardTitle>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <Button variant="destructive" onClick={onClose}>
