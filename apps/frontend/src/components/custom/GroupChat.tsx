@@ -85,14 +85,6 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
     [oldMessages, newMessages],
   );
 
-  const isSoundOn = useMemo(
-    () =>
-      isSoundEnabled && messages?.[messages?.length - 1].authorId !== user?.id,
-    [isSoundEnabled, messages, user?.id],
-  );
-
-  console.log({ messages, isSoundOn });
-
   useEffect(() => {
     console.log("attached to channel");
     const channel = supabase
@@ -104,7 +96,8 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
           console.log("Change received!", payload);
           setNewMessages((prev) => [...prev, payload.new as IChatMessage]);
 
-          if (isSoundOn) reproduceSound();
+          if (isSoundEnabled && payload.new.authorId !== user?.id)
+            reproduceSound();
         },
       )
       .subscribe();
@@ -113,7 +106,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
       console.log("detached from channel");
       channel.unsubscribe();
     };
-  }, [isSoundOn]);
+  }, [isSoundEnabled, user?.id]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -246,9 +239,9 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                 </audio>
                 <Button onClick={() => setIsSoundEnabled((prev) => !prev)}>
                   {isSoundEnabled ? (
-                    <VolumeOffIcon className="h-4 w-4" />
-                  ) : (
                     <Volume2Icon className="h-4 w-4" />
+                  ) : (
+                    <VolumeOffIcon className="h-4 w-4" />
                   )}
                 </Button>
                 <div className="flex items-center space-x-2">
