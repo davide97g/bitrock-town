@@ -1,15 +1,13 @@
 import express, { type Express, type Request, type Response } from "express";
-import { v4 as uuidv4 } from "uuid";
-import { supabase } from "../config/supabase";
 import { audioMiddleware } from "../middleware/audioMiddleware";
 import { authenticateToken } from "../middleware/authMiddleware";
 import { extractInfoFromToken } from "../middleware/extractInfoFromToken";
 import {
   deleteMessage,
   getMessages,
-  sendAudio,
   sendMessage,
 } from "../repository/chat.repository";
+import { createAudioMessage } from "../services/chat.service";
 
 export const createChatController = (app: Express) => {
   app.use(express.json());
@@ -106,33 +104,15 @@ export const createChatController = (app: Express) => {
         if (buffer.length > maxSize) {
           return res.status(400).json({ error: "File size exceeds 5MB" });
         }
-        // Generate a unique file name
-        const filePath = `chat-audio/${uuidv4()}`;
 
-        // Upload file to Supabase Storage
-        const { error } = await supabase.storage
-          .from("chat-audio") // Storage bucket name
-          .upload(filePath, buffer, {
-            contentType: mimetype || "audio/webm",
-            upsert: true,
-          });
-
-        if (error) throw error;
-
-        // Get the public URL of the uploaded file
-        const { data: publicURLData } = supabase.storage
-          .from("chat-audio")
-          .getPublicUrl(filePath);
-        const publicURL = publicURLData.publicUrl;
-
-        // Send audio message to chat
-        await sendAudio({
-          audioFileUrl: publicURL,
+        await createAudioMessage({
+          mimetype: mimetype || "audio/webm",
+          buffer,
           authorId: user.id,
           replyToId: req.body.replyToId,
         });
 
-        res.json({ message: "Audio uploaded successfully!", url: publicURL });
+        res.json({ message: "Audio uploaded successfully!" });
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: (error as any).message });
