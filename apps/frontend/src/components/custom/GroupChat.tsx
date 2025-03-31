@@ -41,6 +41,7 @@ import {
   Trash,
   Volume2Icon,
   VolumeOffIcon,
+  XIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
@@ -52,7 +53,6 @@ import {
 } from "../ui/dropdown-menu";
 import { AudioPlayer } from "./Audio/AudioPlayer";
 import { AudioRecorder } from "./Audio/AudioRecorder";
-import { UserPreferencesModal } from "./Profile";
 
 // const sound = new Audio(notificationSound);
 
@@ -232,210 +232,207 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
 
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-        <Card className="w-full max-w-3xl gap-0">
-          <CardHeader className="border-b">
-            <div className="flex items-center justify-between">
-              <CardTitle>Bitrock Group Chat</CardTitle>
-              <div className="flex items-center space-x-4">
-                <audio id="myAudio">
-                  <source src={notificationSound} type="audio/mpeg" />
-                </audio>
-                <Button onClick={() => setIsSoundEnabled((prev) => !prev)}>
-                  {isSoundEnabled ? (
-                    <Volume2Icon className="h-4 w-4" />
-                  ) : (
-                    <VolumeOffIcon className="h-4 w-4" />
-                  )}
-                </Button>
-                <div className="flex items-center space-x-2">
-                  <UserPreferencesModal />
-                </div>
-                <Button onClick={onClose}>Close</Button>
-              </div>
+      <Card className="w-screen gap-0 h-full rounded-none">
+        <CardHeader className="border-b">
+          <div className="flex items-center justify-between">
+            <CardTitle>Bitrock Group Chat</CardTitle>
+            <div className="flex items-center space-x-4">
+              <audio id="myAudio">
+                <source src={notificationSound} type="audio/mpeg" />
+              </audio>
+              <Button
+                onClick={() => setIsSoundEnabled((prev) => !prev)}
+                variant={isSoundEnabled ? "secondary" : "ghost"}
+              >
+                {isSoundEnabled ? (
+                  <Volume2Icon className="h-4 w-4" />
+                ) : (
+                  <VolumeOffIcon className="h-4 w-4 text-gray-400" />
+                )}
+              </Button>
+              <Button variant="secondary" onClick={onClose}>
+                <XIcon />
+              </Button>
             </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            <ScrollArea className="h-[60vh]" ref={scrollAreaRef}>
-              <div className="p-4 space-y-4">
-                {messages?.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${
-                      message.authorId === user?.id
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                    style={{
-                      ...(message.authorId === "System" && {
-                        justifyContent: "center",
-                      }),
-                    }}
-                  >
-                    {message.authorId === "System" ? (
-                      <div className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                        {message.content}
-                      </div>
-                    ) : (
-                      <div
-                        className="flex items-start max-w-[80%] space-x-2 group"
-                        onTouchStart={handleTouchStart}
-                        onTouchEnd={(e) => handleTouchEnd(e, message.id)}
-                      >
+          </div>
+        </CardHeader>
+        <CardContent className="p-0 overflow-y-auto">
+          <ScrollArea
+            style={{
+              height: "calc(100%)",
+            }}
+            ref={scrollAreaRef}
+          >
+            <div className="p-4 space-y-4">
+              {messages?.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex ${
+                    message.authorId === user?.id
+                      ? "justify-end"
+                      : "justify-start"
+                  }`}
+                  style={{
+                    ...(message.authorId === "System" && {
+                      justifyContent: "center",
+                    }),
+                  }}
+                >
+                  {message.authorId === "System" ? (
+                    <div className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                      {message.content}
+                    </div>
+                  ) : (
+                    <div
+                      className="flex items-start max-w-[80%] space-x-2 group"
+                      onTouchStart={handleTouchStart}
+                      onTouchEnd={(e) => handleTouchEnd(e, message.id)}
+                    >
+                      {message.authorId !== user?.id && (
+                        <Avatar className="h-8 w-8 mt-1">
+                          <AvatarImage
+                            src={
+                              users.data?.find((u) => u.id === message.authorId)
+                                ?.avatar_url
+                            }
+                            alt="Avatar"
+                          />
+                          <AvatarFallback
+                            className={getUserColor(
+                              users.data?.find((u) => u.id === message.authorId)
+                                ?.name
+                            )}
+                          >
+                            {getInitials(
+                              users.data?.find((u) => u.id === message.authorId)
+                                ?.name
+                            )}
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                      <div className="relative">
                         {message.authorId !== user?.id && (
-                          <Avatar className="h-8 w-8 mt-1">
-                            <AvatarImage
-                              src={
-                                users.data?.find(
-                                  (u) => u.id === message.authorId
-                                )?.avatar_url
-                              }
-                              alt="Avatar"
-                            />
-                            <AvatarFallback
-                              className={getUserColor(
-                                users.data?.find(
-                                  (u) => u.id === message.authorId
-                                )?.name
-                              )}
-                            >
-                              {getInitials(
-                                users.data?.find(
-                                  (u) => u.id === message.authorId
-                                )?.name
-                              )}
-                            </AvatarFallback>
-                          </Avatar>
+                          <div className="text-xs text-gray-500 mb-1">
+                            {
+                              users.data?.find((u) => u.id === message.authorId)
+                                ?.name
+                            }
+                          </div>
                         )}
-                        <div className="relative">
-                          {message.authorId !== user?.id && (
-                            <div className="text-xs text-gray-500 mb-1">
-                              {
-                                users.data?.find(
-                                  (u) => u.id === message.authorId
-                                )?.name
-                              }
-                            </div>
-                          )}
 
-                          {/* Reply indicator */}
-                          {message.replyToId && (
-                            <div className="bg-gray-100 rounded p-2 mb-1 text-xs text-gray-600 border-l-2 border-gray-300">
-                              <div className="font-medium">
-                                Replying to{" "}
-                                {users.data?.find(
-                                  (u) =>
-                                    u.id ===
-                                    findMessageById(message.replyToId!)
-                                      ?.authorId
-                                )?.name || "deleted message"}
-                              </div>
-                              <div className="truncate">
-                                {findMessageById(message.replyToId) &&
-                                findMessageById(message.replyToId)?.type !==
-                                  "audio"
-                                  ? truncateText(
-                                      findMessageById(message.replyToId)!
-                                        .content
-                                    )
-                                  : "This message was deleted"}
-                                {findMessageById(message.replyToId)?.type ===
-                                  "audio" && "audio"}
-                              </div>
+                        {/* Reply indicator */}
+                        {message.replyToId && (
+                          <div className="bg-gray-100 rounded p-2 mb-1 text-xs text-gray-600 border-l-2 border-gray-300">
+                            <div className="font-medium">
+                              Replying to{" "}
+                              {users.data?.find(
+                                (u) =>
+                                  u.id ===
+                                  findMessageById(message.replyToId!)?.authorId
+                              )?.name || "deleted message"}
                             </div>
-                          )}
+                            <div className="truncate">
+                              {findMessageById(message.replyToId) &&
+                              findMessageById(message.replyToId)?.type ===
+                                "audio"
+                                ? "audio"
+                                : truncateText(
+                                    findMessageById(message.replyToId)!.content
+                                  )}
+                              {!findMessageById(message.replyToId) &&
+                                " (deleted)"}
+                            </div>
+                          </div>
+                        )}
 
-                          <div className="flex items-end space-x-1 relative">
-                            <div
-                              className={`p-3 rounded-lg relative ${
-                                message.authorId === user?.id
-                                  ? "bg-primary text-primary-foreground"
-                                  : "bg-gray-200 text-gray-800"
-                              }`}
+                        <div className="flex items-end space-x-1 relative">
+                          <div
+                            className={`p-3 rounded-lg relative ${
+                              message.authorId === user?.id
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-gray-200 text-gray-800"
+                            }`}
+                          >
+                            {renderMessageContent(
+                              message.content,
+                              message.type
+                            )}
+                          </div>
+                          <span className="text-xs text-gray-500">
+                            {formatTime(message.created_at)}
+                          </span>
+                          {/* Message actions on hover */}
+                          <div
+                            className={`absolute ${
+                              message.authorId === user?.id
+                                ? "left-0 -translate-x-full"
+                                : "right-0 translate-x-full"
+                            } top-0 hidden group-hover:flex items-center space-x-1 p-1`}
+                          >
+                            <button
+                              onClick={() => handleReply(message.id)}
+                              className="p-1 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                              aria-label="Reply to message"
                             >
-                              {renderMessageContent(
-                                message.content,
-                                message.type
-                              )}
-                            </div>
-                            <span className="text-xs text-gray-500">
-                              {formatTime(message.created_at)}
-                            </span>
-                            {/* Message actions on hover */}
-                            <div
-                              className={`absolute ${
-                                message.authorId === user?.id
-                                  ? "left-0 -translate-x-full"
-                                  : "right-0 translate-x-full"
-                              } top-0 hidden group-hover:flex items-center space-x-1 p-1`}
-                            >
-                              <button
-                                onClick={() => handleReply(message.id)}
-                                className="p-1 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-                                aria-label="Reply to message"
-                              >
-                                <Reply
-                                  className="h-4 w-4 text-gray-600"
-                                  style={{
-                                    ...(message.authorId === user?.id && {
-                                      transform: "scale(-1, 1)",
-                                    }),
-                                  }}
-                                />
-                              </button>
-                              <div
+                              <Reply
+                                className="h-4 w-4 text-gray-600"
                                 style={{
-                                  position: "relative",
+                                  ...(message.authorId === user?.id && {
+                                    transform: "scale(-1, 1)",
+                                  }),
                                 }}
-                              >
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <button className="p-1 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-                                      <MoreHorizontal className="h-4 w-4 text-gray-600" />
-                                    </button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent
-                                    side="left"
-                                    align="center"
+                              />
+                            </button>
+                            <div
+                              style={{
+                                position: "relative",
+                              }}
+                            >
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <button className="p-1 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+                                    <MoreHorizontal className="h-4 w-4 text-gray-600" />
+                                  </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent side="left" align="center">
+                                  <DropdownMenuItem
+                                    onClick={() => handleReply(message.id)}
                                   >
-                                    <DropdownMenuItem
-                                      onClick={() => handleReply(message.id)}
-                                    >
-                                      <Reply className="h-4 w-4 mr-2" />
-                                      <span>Reply</span>
-                                    </DropdownMenuItem>
+                                    <Reply className="h-4 w-4 mr-2" />
+                                    <span>Reply</span>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      handleCopyMessage(message.content)
+                                    }
+                                  >
+                                    <Copy className="h-4 w-4 mr-2" />
+                                    <span>Copy</span>
+                                  </DropdownMenuItem>
+                                  {message.authorId === user?.id && (
                                     <DropdownMenuItem
                                       onClick={() =>
-                                        handleCopyMessage(message.content)
+                                        handleDeleteMessage(message.id)
                                       }
+                                      className="text-red-500 focus:text-red-500"
                                     >
-                                      <Copy className="h-4 w-4 mr-2" />
-                                      <span>Copy</span>
+                                      <Trash className="h-4 w-4 mr-2" />
+                                      <span>Delete</span>
                                     </DropdownMenuItem>
-                                    {message.authorId === user?.id && (
-                                      <DropdownMenuItem
-                                        onClick={() =>
-                                          handleDeleteMessage(message.id)
-                                        }
-                                        className="text-red-500 focus:text-red-500"
-                                      >
-                                        <Trash className="h-4 w-4 mr-2" />
-                                        <span>Delete</span>
-                                      </DropdownMenuItem>
-                                    )}
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </div>
+                                  )}
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </div>
                           </div>
                         </div>
                       </div>
-                    )}
-                  </div>
-                ))}
+                    </div>
+                  )}
+                </div>
+              ))}
 
-                {/* Typing indicators */}
-                {/* {typingIndicators.length > 0 && (
+              {/* Typing indicators */}
+              {/* {typingIndicators.length > 0 && (
                   <div className="flex items-start space-x-2 animate-fade-in">
                     {typingIndicators.length === 1 ? (
                       <>
@@ -471,109 +468,110 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                     )}
                   </div>
                 )} */}
-              </div>
-            </ScrollArea>
-          </CardContent>
-
-          {/* Reply indicator */}
-          {replyingTo && (
-            <div className="px-4 py-2 bg-gray-50 border-t border-b flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Reply className="h-4 w-4 text-gray-500" />
-                <div className="text-sm">
-                  <span className="text-gray-500">Replying to </span>
-                  <span className="font-medium">
-                    {
-                      users.data?.find(
-                        (u) => u.id === findMessageById(replyingTo)?.authorId
-                      )?.name
-                    }
-                  </span>
-                  <span className="text-gray-500">: </span>
-                  <span className="text-gray-600">
-                    {findMessageById(replyingTo)
-                      ? truncateText(findMessageById(replyingTo)!.content, 50)
-                      : "This message was deleted"}
-                  </span>
-                </div>
-              </div>
-              <button
-                onClick={() => setReplyingTo(undefined)}
-                className="text-gray-500 hover:text-gray-700"
-                aria-label="Cancel reply"
-              >
-                &times;
-              </button>
             </div>
-          )}
-          <CardFooter className="border-t p-3">
-            <div className="flex w-full space-x-2 flex-col">
-              <div className="flex w-full space-x-2">
-                {!isRecordingAudio && (
-                  <>
-                    <Input
-                      value={input}
-                      ref={inputRef}
-                      onChange={(e) => setInput(e.target.value)}
-                      placeholder="Type your message..."
-                      className="flex-grow"
-                      onKeyDown={(e) => {
-                        // if (user?.id) onUserTyping(user?.id);
-                        if (e.key === "Enter") {
-                          handleSendMessage();
-                        }
-                      }}
-                    />
-                    <Button onClick={handleSendMessage}>
-                      <SendIcon />
-                    </Button>
-                  </>
-                )}
-                <AudioRecorder
-                  onAudioReady={(audioBlob) => {
-                    const formData = new FormData();
-                    formData.append("file", audioBlob, "recording.webm");
-                    setIsRecordingAudio(false);
-                    sendChatAudio
-                      .mutateAsync({
-                        audio: formData,
-                        replyToId: replyingTo,
-                      })
-                      .then(() => {
-                        setInput("");
-                        setReplyingTo(undefined);
-                      })
-                      .catch((error) => {
-                        console.error("Error sending audio:", error);
-                        toast.error("Error sending audio");
-                      });
-                  }}
-                  onCancel={() => setIsRecordingAudio(false)}
-                />
-              </div>
+          </ScrollArea>
+        </CardContent>
 
-              <div className="w-full">
-                <Separator className="my-2" />
-                <div className="text-xs text-gray-500 mb-2">Quick Emoji</div>
-                <div className="w-full overflow-x-auto">
-                  <div className="flex space-x-2 pb-2">
-                    {commonEmojis.map((emoji, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleEmojiClick(emoji)}
-                        className="text-2xl hover:bg-gray-100 p-2 rounded-full transition-colors"
-                        aria-label={`Emoji ${emoji}`}
-                      >
-                        {emoji}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+        {/* Reply indicator */}
+        {replyingTo && (
+          <div className="px-4 py-2 bg-gray-50 border-t border-b flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Reply className="h-4 w-4 text-gray-500" />
+              <div className="text-sm">
+                <span className="text-gray-500">Replying to </span>
+                <span className="font-medium">
+                  {
+                    users.data?.find(
+                      (u) => u.id === findMessageById(replyingTo)?.authorId
+                    )?.name
+                  }
+                </span>
+                <span className="text-gray-500">: </span>
+                <span className="text-gray-600">
+                  {findMessageById(replyingTo) &&
+                  findMessageById(replyingTo)?.type === "audio"
+                    ? "audio"
+                    : truncateText(findMessageById(replyingTo)!.content, 50)}
+                  {!findMessageById(replyingTo) && "This message was deleted"}
+                </span>
               </div>
             </div>
-          </CardFooter>
-        </Card>
-      </div>
+            <button
+              onClick={() => setReplyingTo(undefined)}
+              className="text-gray-500 hover:text-gray-700"
+              aria-label="Cancel reply"
+            >
+              &times;
+            </button>
+          </div>
+        )}
+        <CardFooter className="border-t p-3">
+          <div className="flex w-full space-x-2 flex-col">
+            <div className="flex w-full space-x-2">
+              {!isRecordingAudio && (
+                <>
+                  <Input
+                    value={input}
+                    ref={inputRef}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Type your message..."
+                    className="flex-grow"
+                    onKeyDown={(e) => {
+                      // if (user?.id) onUserTyping(user?.id);
+                      if (e.key === "Enter") {
+                        handleSendMessage();
+                      }
+                    }}
+                  />
+                  <Button onClick={handleSendMessage}>
+                    <SendIcon />
+                  </Button>
+                </>
+              )}
+              <AudioRecorder
+                onAudioReady={(audioBlob) => {
+                  const formData = new FormData();
+                  formData.append("file", audioBlob, "recording.webm");
+                  setIsRecordingAudio(false);
+                  sendChatAudio
+                    .mutateAsync({
+                      audio: formData,
+                      replyToId: replyingTo,
+                    })
+                    .then(() => {
+                      setInput("");
+                      setReplyingTo(undefined);
+                    })
+                    .catch((error) => {
+                      console.error("Error sending audio:", error);
+                      toast.error("Error sending audio");
+                    });
+                }}
+                onCancel={() => setIsRecordingAudio(false)}
+              />
+            </div>
+
+            <div className="w-full">
+              <Separator className="my-2" />
+              <div className="text-xs text-gray-500 mb-2">Quick Emoji</div>
+              <div className="w-full overflow-x-auto">
+                <div className="flex space-x-2 pb-2">
+                  {commonEmojis.map((emoji, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleEmojiClick(emoji)}
+                      className="text-2xl hover:bg-gray-100 p-2 rounded-full transition-colors"
+                      aria-label={`Emoji ${emoji}`}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardFooter>
+      </Card>
 
       {/* CSS for typing animation */}
       <style>{`
