@@ -1,7 +1,11 @@
 import { type Express, type Request, type Response } from "express";
 import { authenticateToken } from "../../middleware/authMiddleware";
 import { extractInfoFromToken } from "../../middleware/extractInfoFromToken";
-import { getMessages, sendMessage } from "../../services/chat.service";
+import {
+  deleteMessage,
+  getMessages,
+  sendMessage,
+} from "../../services/chat.service";
 
 export const createChatController = (app: Express) => {
   // Get chat messages
@@ -45,6 +49,33 @@ export const createChatController = (app: Express) => {
           authorId: user.id,
           replyToId,
         });
+        return res.send(response);
+      } catch (error) {
+        console.info(error);
+        return res
+          .status(500)
+          .send({ error: "There was an error processing the request" });
+      }
+    }
+  );
+
+  // Delete message
+  app.delete(
+    "/chat/message/:messageId",
+    authenticateToken,
+    async (req: Request, res: Response) => {
+      try {
+        const { messageId } = req.params;
+        if (!messageId) {
+          return res.status(400).send({ error: "Message ID is required" });
+        }
+
+        const user = await extractInfoFromToken(req);
+        if (!user) {
+          return res.status(401).send({ error: "Unauthorized" });
+        }
+
+        const response = await deleteMessage(messageId, user.id);
         return res.send(response);
       } catch (error) {
         console.info(error);

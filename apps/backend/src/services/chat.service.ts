@@ -21,3 +21,17 @@ export async function sendMessage({
     : await sql`INSERT INTO public."MESSAGES" (content, "authorId") VALUES (${message}, ${authorId});`;
   return res?.[0] as IChatMessage;
 }
+
+export async function deleteMessage(messageId: string, userId: string) {
+  const message =
+    await sql`SELECT * FROM public."MESSAGES" WHERE id = ${messageId};`;
+  if (!message) {
+    throw new Error("Message not found");
+  }
+  if (message[0].authorId !== userId) {
+    throw new Error("You are not the author of this message");
+  }
+  // TODO: remove the message id from the replies
+  const res = await sql`DELETE FROM public."MESSAGES" WHERE id = ${messageId};`;
+  return res?.[0] as IChatMessage;
+}
