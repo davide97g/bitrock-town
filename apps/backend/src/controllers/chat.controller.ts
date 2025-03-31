@@ -1,15 +1,15 @@
 import express, { type Express, type Request, type Response } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { supabase } from "../../config/supabase";
-import { audioMiddleware } from "../../middleware/audioMiddleware";
-import { authenticateToken } from "../../middleware/authMiddleware";
-import { extractInfoFromToken } from "../../middleware/extractInfoFromToken";
+import { supabase } from "../config/supabase";
+import { audioMiddleware } from "../middleware/audioMiddleware";
+import { authenticateToken } from "../middleware/authMiddleware";
+import { extractInfoFromToken } from "../middleware/extractInfoFromToken";
 import {
   deleteMessage,
   getMessages,
   sendAudio,
   sendMessage,
-} from "../../services/chat.service";
+} from "../repository/chat.repository";
 
 export const createChatController = (app: Express) => {
   app.use(express.json());
@@ -28,7 +28,7 @@ export const createChatController = (app: Express) => {
           .status(500)
           .send({ error: "There was an error processing the request" });
       }
-    }
+    },
   );
 
   // Send message to chat
@@ -63,7 +63,7 @@ export const createChatController = (app: Express) => {
           .status(500)
           .send({ error: "There was an error processing the request" });
       }
-    }
+    },
   );
 
   // Send audio message to chat
@@ -98,7 +98,7 @@ export const createChatController = (app: Express) => {
             "Valid formats are",
             validAudioTypes,
             "using default",
-            "audio/webm"
+            "audio/webm",
           );
         }
         // Check if the file size is less than 5MB
@@ -137,7 +137,7 @@ export const createChatController = (app: Express) => {
         console.error(error);
         res.status(500).json({ error: (error as any).message });
       }
-    }
+    },
   );
 
   // Delete message
@@ -164,6 +164,6 @@ export const createChatController = (app: Express) => {
           .status(500)
           .send({ error: "There was an error processing the request" });
       }
-    }
+    },
   );
 };

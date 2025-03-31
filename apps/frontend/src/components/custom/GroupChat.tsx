@@ -29,7 +29,7 @@ import {
   isEmojiOnly,
   truncateText,
 } from "@/services/utils";
-import { IChatMessage } from "@bitrock-town/types";
+import { IChatMessage } from "@bitrock/types";
 
 import { useSendChatAudio } from "@/api/chat/useSendChatAudio";
 import { Separator } from "@radix-ui/react-separator";
@@ -91,7 +91,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
           new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
         );
       }),
-    [oldMessages, newMessages]
+    [oldMessages, newMessages],
   );
 
   useEffect(() => {
@@ -107,7 +107,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
 
           if (isSoundEnabled && payload.new.authorId !== user?.id)
             reproduceSound();
-        }
+        },
       )
       .subscribe();
 
@@ -123,7 +123,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     if (scrollAreaRef.current) {
       const scrollContainer = scrollAreaRef.current.querySelector(
-        "[data-radix-scroll-area-viewport]"
+        "[data-radix-scroll-area-viewport]",
       );
       if (scrollContainer) {
         scrollContainer.scrollTop = scrollContainer.scrollHeight;
@@ -140,7 +140,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
         // Scroll to bottom after sending message
         if (scrollAreaRef.current) {
           const scrollContainer = scrollAreaRef.current.querySelector(
-            "[data-radix-scroll-area-viewport]"
+            "[data-radix-scroll-area-viewport]",
           );
           if (scrollContainer) {
             scrollContainer.scrollTop = scrollContainer.scrollHeight;
@@ -196,7 +196,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
   // Handle delete message (only for user's own messages)
   const handleDeleteMessage = (messageId: string) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this message?"
+      "Are you sure you want to delete this message?",
     );
     if (confirmDelete) {
       deleteChatMessage
@@ -300,12 +300,12 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                           <AvatarFallback
                             className={getUserColor(
                               users.data?.find((u) => u.id === message.authorId)
-                                ?.name
+                                ?.name,
                             )}
                           >
                             {getInitials(
                               users.data?.find((u) => u.id === message.authorId)
-                                ?.name
+                                ?.name,
                             )}
                           </AvatarFallback>
                         </Avatar>
@@ -328,7 +328,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                               {users.data?.find(
                                 (u) =>
                                   u.id ===
-                                  findMessageById(message.replyToId!)?.authorId
+                                  findMessageById(message.replyToId!)?.authorId,
                               )?.name || "deleted message"}
                             </div>
                             <div className="truncate">
@@ -337,7 +337,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                                 "audio"
                                 ? "audio"
                                 : truncateText(
-                                    findMessageById(message.replyToId)!.content
+                                    findMessageById(message.replyToId)!.content,
                                   )}
                               {!findMessageById(message.replyToId) &&
                                 " (deleted)"}
@@ -355,7 +355,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                           >
                             {renderMessageContent(
                               message.content,
-                              message.type
+                              message.type,
                             )}
                           </div>
                           <span className="text-xs text-gray-500">
@@ -482,7 +482,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                 <span className="font-medium">
                   {
                     users.data?.find(
-                      (u) => u.id === findMessageById(replyingTo)?.authorId
+                      (u) => u.id === findMessageById(replyingTo)?.authorId,
                     )?.name
                   }
                 </span>

@@ -1,4 +1,4 @@
-import { ICreateUser, IUser } from "@bitrock-town/types";
+import { ICreateUser, IUser } from "@bitrock/types";
 import { sql } from "../config/postgres";
 
 export async function createUser(

@@ -1,9 +1,13 @@
-import { ICreateUser } from "@bitrock-town/types";
+import { ICreateUser } from "@bitrock/types";
 import { type Express, type Request, type Response } from "express";
-import { sql } from "../../config/postgres";
-import { authenticateToken } from "../../middleware/authMiddleware";
-import { extractInfoFromToken } from "../../middleware/extractInfoFromToken";
-import { createUser, getUserById, getUsers } from "../../services/user.service";
+import { sql } from "../config/postgres";
+import { authenticateToken } from "../middleware/authMiddleware";
+import { extractInfoFromToken } from "../middleware/extractInfoFromToken";
+import {
+  createUser,
+  getUserById,
+  getUsers,
+} from "../repository/user.repository";
 
 export const createUserController = (app: Express) => {
   app.get("/user", authenticateToken, async (req: Request, res: Response) => {

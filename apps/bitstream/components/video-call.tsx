@@ -6,6 +6,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/firebase";
 import { currentUser } from "@/lib/mock-data";
+import { createOffer, setupPeerConnection } from "@/services/videocall.service";
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 
 interface VideoCallProps {
@@ -16,6 +17,55 @@ interface VideoCallProps {
 export default function VideoCall({ roomId, onEndCall }: VideoCallProps) {
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
+
+  const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [peerVideoStream, setPeerVideoStream] = useState<MediaStream | null>(
+    null,
+  );
+
+  const [peerConnection, setPeerConnection] =
+    useState<RTCPeerConnection | null>(null);
+
+  useEffect(() => {
+    if (!peerConnection) return;
+
+    console.info(peerConnection);
+    console.info("Peer connection established");
+  }, [peerConnection, onEndCall]);
+
+  useEffect(() => {
+    const getMediaStream = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: !isVideoOff,
+          audio: !isMuted,
+        });
+        if (!isVideoOff) setVideoStream(stream);
+        setIsLoading(false);
+        return stream;
+      } catch (error) {
+        console.error("Error accessing media devices.", error);
+      }
+    };
+
+    setPeerConnection(setupPeerConnection({}));
+
+    createOffer().then(() => {
+      getMediaStream().then((localStream) =>
+        localStream?.getTracks().forEach((track) => {
+          return peerConnection?.addTrack(track, localStream);
+        }),
+      );
+    });
+
+    return () => {
+      if (videoStream) {
+        videoStream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!roomId) return;
@@ -54,7 +104,19 @@ export default function VideoCall({ roomId, onEndCall }: VideoCallProps) {
         <div className="text-white text-center">
           <div className="mb-4">
             <Icons.video className="h-16 w-16 mx-auto mb-2 opacity-50" />
-            <p>Mock Video Call Interface</p>
+            <div className=" w-32 h-24 bg-slate-600 rounded-lg flex items-center justify-center">
+              {peerVideoStream && (
+                <video
+                  ref={(video) => {
+                    if (video && peerVideoStream) {
+                      video.srcObject = peerVideoStream;
+                      video.play();
+                    }
+                  }}
+                  className=" bottom-4 right-4 w-32 h-24 bg-slate-400 rounded-lg flex items-center justify-center"
+                />
+              )}
+            </div>
             <p className="text-sm text-slate-400">
               Connected with {currentUser.name}
             </p>
@@ -95,9 +157,28 @@ export default function VideoCall({ roomId, onEndCall }: VideoCallProps) {
         </div>
 
         {/* Self view */}
-        <div className="absolute bottom-4 right-4 w-32 h-24 bg-slate-600 rounded-lg flex items-center justify-center">
-          <p className="text-xs text-white">You</p>
-        </div>
+        {isLoading ? (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Icons.spinner className="h-8 w-8 animate-spin text-white" />
+          </div>
+        ) : null}
+        {videoStream && !isLoading && (
+          <div className="absolute bottom-4 right-4 w-32 h-24 bg-slate-600 rounded-lg flex items-center justify-center">
+            {!isVideoOff && (
+              <video
+                ref={(video) => {
+                  if (video && videoStream) {
+                    video.srcObject = videoStream;
+                    video.play();
+                  }
+                }}
+                muted
+                className="absolute bottom-4 right-4 w-32 h-24 bg-slate-600 rounded-lg flex items-center justify-center"
+              />
+            )}
+            <p className="text-xs text-white">You</p>
+          </div>
+        )}
       </div>
     </div>
   );

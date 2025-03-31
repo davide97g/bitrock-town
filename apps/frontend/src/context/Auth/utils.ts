@@ -1,4 +1,4 @@
-import { IUser } from "@bitrock-town/types";
+import { IUser } from "@bitrock/types";
 import { jwtDecode } from "jwt-decode";
 
 export function extractInfoFromToken(token?: string | null) {

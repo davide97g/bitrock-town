@@ -1,4 +1,4 @@
-import { ISocketMessage } from "@bitrock-town/types";
+import { ISocketMessage } from "@bitrock/types";
 
 class WebSocketService {
   private socket: WebSocket | null = null;

@@ -1,6 +1,6 @@
 import { type Express, type Request, type Response } from "express";
-import { authenticateToken } from "../../middleware/authMiddleware";
-import { sendMessage } from "../../services/ai/chat.service";
+import { authenticateToken } from "../middleware/authMiddleware";
+import { sendMessage } from "../services/ai/chat.service";
 
 export const createAIController = (app: Express) => {
   // Send message
@@ -22,6 +22,6 @@ export const createAIController = (app: Express) => {
           .status(500)
           .send({ error: "There was an error processing the request" });
       }
-    }
+    },
   );
 };

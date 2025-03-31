@@ -5,9 +5,9 @@ import "./config";
 import swaggerJsdoc from "swagger-jsdoc";
 import * as swaggerUi from "swagger-ui-express";
 import { version } from "../package.json";
-import { addPublicRoutes } from "./api/public";
 
 import bodyParser from "body-parser";
+import { addPublicRoutes } from "./controllers";
 
 const app = express();
 
@@ -20,6 +20,8 @@ const allowedOrigins = [
   "https://www.test.bitrock.town",
   "https://bitrock.town",
   "https://www.bitrock.town",
+  "https://hours.bitrock.town",
+  "https://stream.bitrock.town",
 ];
 
 const options = {

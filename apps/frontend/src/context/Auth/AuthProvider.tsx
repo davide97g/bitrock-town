@@ -1,7 +1,7 @@
 import { api } from "@/config/client";
 import { supabase } from "@/config/supabase";
 import { getUserInfo, loginUser } from "@/services/api";
-import { IUser } from "@bitrock-town/types";
+import { IUser } from "@bitrock/types";
 import { Session } from "@supabase/supabase-js";
 import {
   createContext,

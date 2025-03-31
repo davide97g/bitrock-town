@@ -9,7 +9,7 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @bitrock-town/types@0.4.0
+  - @bitrock/types@0.4.0
 
 ## 0.4.0
 
@@ -20,7 +20,7 @@
 ### Patch Changes
 
 - Updated dependencies [66f5107]
-  - @bitrock-town/types@0.3.0
+  - @bitrock/types@0.3.0
 
 ## 0.3.0
 
@@ -43,4 +43,4 @@
 ### Patch Changes
 
 - Updated dependencies [e9edece]
-  - @bitrock-town/types@0.2.0
+  - @bitrock/types@0.2.0

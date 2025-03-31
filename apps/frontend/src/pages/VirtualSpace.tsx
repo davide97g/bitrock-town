@@ -9,7 +9,7 @@ import { useWebSocketContext } from "@/context/WebSocketProvider";
 import GroupChat from "@/components/custom/GroupChat";
 import { Button } from "@/components/ui/button";
 import { useLayout } from "@/context/LayoutProvider";
-import { ISocketMessage } from "@bitrock-town/types";
+import { ISocketMessage } from "@bitrock/types";
 import {
   ArrowDown,
   ArrowLeft,
@@ -73,7 +73,8 @@ const VirtualSpace: React.FC = () => {
     return messages
       .filter(
         (message) =>
-          message.event === "position" && message.senderId !== session?.user?.id
+          message.event === "position" &&
+          message.senderId !== session?.user?.id,
       )
       .filter((message) => message.data !== undefined);
   }, [messages, session?.user?.id]);
@@ -90,7 +91,7 @@ const VirtualSpace: React.FC = () => {
       };
       sendMessage(newMessage);
     },
-    [sendMessage, session?.user.id]
+    [sendMessage, session?.user.id],
   );
 
   useEffect(() => {
@@ -108,7 +109,7 @@ const VirtualSpace: React.FC = () => {
         case "ArrowDown":
           newPosition.y = Math.min(
             spaceRef.current?.clientHeight || 600,
-            position.y + step
+            position.y + step,
           );
           break;
         case "ArrowLeft":
@@ -117,7 +118,7 @@ const VirtualSpace: React.FC = () => {
         case "ArrowRight":
           newPosition.x = Math.min(
             spaceRef.current?.clientWidth || 800,
-            position.x + step
+            position.x + step,
           );
           break;
         default:
@@ -156,7 +157,7 @@ const VirtualSpace: React.FC = () => {
       case "down":
         newPosition.y = Math.min(
           spaceRef.current?.clientHeight || 600,
-          position.y + step
+          position.y + step,
         );
         break;
       case "left":
@@ -165,7 +166,7 @@ const VirtualSpace: React.FC = () => {
       case "right":
         newPosition.x = Math.min(
           spaceRef.current?.clientWidth || 800,
-          position.x + step
+          position.x + step,
         );
         break;
     }

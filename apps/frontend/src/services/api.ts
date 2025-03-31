@@ -1,5 +1,5 @@
 import { supabase } from "@/config/supabase";
-import { ISystemStats, IUser } from "@bitrock-town/types";
+import { ISystemStats, IUser } from "@bitrock/types";
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL;
 

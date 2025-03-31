@@ -1,5 +1,5 @@
 import { api } from "@/config/client";
-import { ICreateUser } from "@bitrock-town/types";
+import { ICreateUser } from "@bitrock/types";
 import { useMutation } from "@tanstack/react-query";
 
 export function useCreateUser() {

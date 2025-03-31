@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { getSystemDetails } from "@/services/api";
-import { ISystemStats } from "@bitrock-town/types";
+import { ISystemStats } from "@bitrock/types";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";

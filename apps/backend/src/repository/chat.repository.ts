@@ -1,4 +1,4 @@
-import { IChatMessage } from "@bitrock-town/types";
+import { IChatMessage } from "@bitrock/types";
 import { sql } from "../config/postgres";
 
 export async function getMessages() {

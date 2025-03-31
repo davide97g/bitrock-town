@@ -1,6 +1,6 @@
 import { useGetUsers } from "@/api/user/useGetUsers";
 import { websocketService } from "@/services/webSocket.service";
-import { ISocketMessage, IUserStatus } from "@bitrock-town/types";
+import { ISocketMessage, IUserStatus } from "@bitrock/types";
 import {
   createContext,
   ReactNode,

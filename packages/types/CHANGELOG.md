@@ -1,4 +1,4 @@
-# @bitrock-town/types
+# @bitrock/types
 
 ## 0.4.0
 

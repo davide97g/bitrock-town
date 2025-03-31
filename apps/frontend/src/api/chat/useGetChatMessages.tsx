@@ -1,5 +1,5 @@
 import { api } from "@/config/client";
-import { IChatMessage } from "@bitrock-town/types";
+import { IChatMessage } from "@bitrock/types";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetChatMessages = () => {

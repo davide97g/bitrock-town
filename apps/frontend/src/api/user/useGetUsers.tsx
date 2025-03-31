@@ -1,5 +1,5 @@
 import { api } from "@/config/client";
-import { IUser } from "@bitrock-town/types";
+import { IUser } from "@bitrock/types";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetUsers = () => {
