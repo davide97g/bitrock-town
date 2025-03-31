@@ -1,8 +1,6 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,22 +8,42 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useForm } from "react-hook-form"
-import { getProjects } from "@/lib/mock-data"
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { getProjects } from "@/lib/mock-data";
+import { motion } from "framer-motion";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 
 interface AddHoursDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  editData?: any
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editData?: any;
 }
 
-export default function AddHoursDialog({ open, onOpenChange, editData }: AddHoursDialogProps) {
-  const projects = getProjects()
+export default function AddHoursDialog({
+  open,
+  onOpenChange,
+  editData,
+}: AddHoursDialogProps) {
+  const projects = getProjects();
 
   const form = useForm({
     defaultValues: {
@@ -34,7 +52,7 @@ export default function AddHoursDialog({ open, onOpenChange, editData }: AddHour
       hours: "",
       description: "",
     },
-  })
+  });
 
   // Update form when editing an entry
   useEffect(() => {
@@ -44,22 +62,25 @@ export default function AddHoursDialog({ open, onOpenChange, editData }: AddHour
         project: editData.project,
         hours: editData.hours.toString(),
         description: editData.description,
-      })
+      });
     }
-  }, [editData, form])
+  }, [editData, form]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = (data: any) => {
-    console.log(data)
+    console.log(data);
     // Here you would normally save the data
-    onOpenChange(false)
-    form.reset()
-  }
+    onOpenChange(false);
+    form.reset();
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{editData ? "Modifica Ore" : "Aggiungi Ore"}</DialogTitle>
+          <DialogTitle>
+            {editData ? "Modifica Ore" : "Aggiungi Ore"}
+          </DialogTitle>
           <DialogDescription>
             {editData
               ? "Modifica le ore lavorate per questo giorno."
@@ -89,7 +110,11 @@ export default function AddHoursDialog({ open, onOpenChange, editData }: AddHour
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Progetto</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Seleziona un progetto" />
@@ -129,7 +154,10 @@ export default function AddHoursDialog({ open, onOpenChange, editData }: AddHour
                 <FormItem>
                   <FormLabel>Descrizione</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Descrivi brevemente l'attività svolta" {...field} />
+                    <Textarea
+                      placeholder="Descrivi brevemente l'attività svolta"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -137,10 +165,17 @@ export default function AddHoursDialog({ open, onOpenChange, editData }: AddHour
             />
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
                 Annulla
               </Button>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Button type="submit">{editData ? "Aggiorna" : "Salva"}</Button>
               </motion.div>
             </DialogFooter>
@@ -148,6 +183,5 @@ export default function AddHoursDialog({ open, onOpenChange, editData }: AddHour
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-
