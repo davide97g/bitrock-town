@@ -1,5 +1,16 @@
 # @bitrock-town/backend
 
+## 0.5.0
+
+### Minor Changes
+
+- 7270c54: Refactor structure
+
+### Patch Changes
+
+- Updated dependencies [7270c54]
+  - @bitrock/types@0.5.0
+
 ## 0.4.0
 
 ### Minor Changes

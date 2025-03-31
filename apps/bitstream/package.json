@@ -1,7 +1,7 @@
 {
   "name": "@bitrock/bitstream",
   "description": "Bitstream is a web application that provides a platform for users to create, manage, and share their digital assets.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev --port 3003",

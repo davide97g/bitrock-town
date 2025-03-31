@@ -1,5 +1,11 @@
 # @bitrock/types
 
+## 0.5.0
+
+### Minor Changes
+
+- 7270c54: Refactor structure
+
 ## 0.4.0
 
 ### Minor Changes
