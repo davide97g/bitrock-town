@@ -31,6 +31,7 @@ import {
 } from "@/services/utils";
 import { IChatMessage } from "@bitrock-town/types";
 
+import { useSendChatAudio } from "@/api/chat/useSendChatAudio";
 import { Separator } from "@radix-ui/react-separator";
 import {
   Copy,
@@ -41,6 +42,7 @@ import {
   Volume2Icon,
   VolumeOffIcon,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -48,6 +50,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { AudioPlayer } from "./Audio/AudioPlayer";
+import { AudioRecorder } from "./Audio/AudioRecorder";
 import { UserPreferencesModal } from "./Profile";
 
 // const sound = new Audio(notificationSound);
@@ -74,9 +78,11 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
   const sendChatMessage = useSendChatMessage();
   const { data: oldMessages, refetch: refetchMessages } = useGetChatMessages();
   const deleteChatMessage = useDeleteChatMessage();
+  const sendChatAudio = useSendChatAudio();
 
   const [newMessages, setNewMessages] = useState<IChatMessage[]>([]);
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+  const [isRecordingAudio, setIsRecordingAudio] = useState(false);
 
   const messages = useMemo(
     () =>
@@ -147,12 +153,12 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
       });
   };
 
-  const renderMessageContent = (content: string) => {
-    const isOnlyEmojis = isEmojiOnly(content);
+  const renderMessageContent = (content: string, type: string) => {
+    if (type === "audio") return <AudioPlayer audioUrl={content} />;
 
-    if (isOnlyEmojis) {
+    const isOnlyEmojis = isEmojiOnly(content);
+    if (isOnlyEmojis)
       return <div className="text-3xl md:text-4xl">{content}</div>;
-    }
 
     return <div>{content}</div>;
   };
@@ -325,12 +331,16 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                                 )?.name || "deleted message"}
                               </div>
                               <div className="truncate">
-                                {findMessageById(message.replyToId)
+                                {findMessageById(message.replyToId) &&
+                                findMessageById(message.replyToId)?.type !==
+                                  "audio"
                                   ? truncateText(
                                       findMessageById(message.replyToId)!
                                         .content
                                     )
                                   : "This message was deleted"}
+                                {findMessageById(message.replyToId)?.type ===
+                                  "audio" && "audio"}
                               </div>
                             </div>
                           )}
@@ -343,7 +353,10 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                                   : "bg-gray-200 text-gray-800"
                               }`}
                             >
-                              {renderMessageContent(message.content)}
+                              {renderMessageContent(
+                                message.content,
+                                message.type
+                              )}
                             </div>
                             <span className="text-xs text-gray-500">
                               {formatTime(message.created_at)}
@@ -496,23 +509,49 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
           <CardFooter className="border-t p-3">
             <div className="flex w-full space-x-2 flex-col">
               <div className="flex w-full space-x-2">
-                <Input
-                  value={input}
-                  ref={inputRef}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Type your message..."
-                  className="flex-grow"
-                  onKeyDown={(e) => {
-                    // if (user?.id) onUserTyping(user?.id);
-                    if (e.key === "Enter") {
-                      handleSendMessage();
-                    }
+                {!isRecordingAudio && (
+                  <>
+                    <Input
+                      value={input}
+                      ref={inputRef}
+                      onChange={(e) => setInput(e.target.value)}
+                      placeholder="Type your message..."
+                      className="flex-grow"
+                      onKeyDown={(e) => {
+                        // if (user?.id) onUserTyping(user?.id);
+                        if (e.key === "Enter") {
+                          handleSendMessage();
+                        }
+                      }}
+                    />
+                    <Button onClick={handleSendMessage}>
+                      <SendIcon />
+                    </Button>
+                  </>
+                )}
+                <AudioRecorder
+                  onAudioReady={(audioBlob) => {
+                    const formData = new FormData();
+                    formData.append("file", audioBlob, "recording.webm");
+                    setIsRecordingAudio(false);
+                    sendChatAudio
+                      .mutateAsync({
+                        audio: formData,
+                        replyToId: replyingTo,
+                      })
+                      .then(() => {
+                        setInput("");
+                        setReplyingTo(undefined);
+                      })
+                      .catch((error) => {
+                        console.error("Error sending audio:", error);
+                        toast.error("Error sending audio");
+                      });
                   }}
+                  onCancel={() => setIsRecordingAudio(false)}
                 />
-                <Button onClick={handleSendMessage}>
-                  <SendIcon />
-                </Button>
               </div>
+
               <div className="w-full">
                 <Separator className="my-2" />
                 <div className="text-xs text-gray-500 mb-2">Quick Emoji</div>

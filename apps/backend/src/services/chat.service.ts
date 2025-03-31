@@ -17,8 +17,23 @@ export async function sendMessage({
   replyToId?: string;
 }) {
   const res = replyToId
-    ? await sql`INSERT INTO public."MESSAGES" (content, "authorId", "replyToId") VALUES (${message}, ${authorId}, ${replyToId});`
-    : await sql`INSERT INTO public."MESSAGES" (content, "authorId") VALUES (${message}, ${authorId});`;
+    ? await sql`INSERT INTO public."MESSAGES" (content, "authorId", "replyToId",type) VALUES (${message}, ${authorId}, ${replyToId},'text');`
+    : await sql`INSERT INTO public."MESSAGES" (content, "authorId",type) VALUES (${message}, ${authorId},'text');`;
+  return res?.[0] as IChatMessage;
+}
+
+export async function sendAudio({
+  audioFileUrl,
+  authorId,
+  replyToId,
+}: {
+  audioFileUrl: string;
+  authorId: string;
+  replyToId?: string;
+}) {
+  const res = replyToId
+    ? await sql`INSERT INTO public."MESSAGES" (content, "authorId", "replyToId", type) VALUES (${audioFileUrl}, ${authorId}, ${replyToId}, 'audio');`
+    : await sql`INSERT INTO public."MESSAGES" (content, "authorId", type) VALUES (${audioFileUrl}, ${authorId}, 'audio');`;
   return res?.[0] as IChatMessage;
 }
 

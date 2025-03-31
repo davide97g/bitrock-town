@@ -1,13 +1,20 @@
-import { type Express, type Request, type Response } from "express";
+import express, { type Express, type Request, type Response } from "express";
+import { v4 as uuidv4 } from "uuid";
+import { supabase } from "../../config/supabase";
+import { audioMiddleware } from "../../middleware/audioMiddleware";
 import { authenticateToken } from "../../middleware/authMiddleware";
 import { extractInfoFromToken } from "../../middleware/extractInfoFromToken";
 import {
   deleteMessage,
   getMessages,
+  sendAudio,
   sendMessage,
 } from "../../services/chat.service";
 
 export const createChatController = (app: Express) => {
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(audioMiddleware);
   // Get chat messages
   app.get(
     "/chat/messages",
@@ -55,6 +62,80 @@ export const createChatController = (app: Express) => {
         return res
           .status(500)
           .send({ error: "There was an error processing the request" });
+      }
+    }
+  );
+
+  // Send audio message to chat
+  app.post(
+    "/chat/message/audio",
+    authenticateToken,
+    async (req: Request, res: Response) => {
+      try {
+        const user = await extractInfoFromToken(req);
+        if (!user) {
+          return res.status(401).send({ error: "Unauthorized" });
+        }
+
+        if (!(req as any).body.file) {
+          return res.status(400).json({ error: "No file uploaded" });
+        }
+
+        const { mimetype, buffer } = (req as any).body.file;
+        if (!buffer) {
+          console.error("Invalid file data", {
+            mimetype,
+            buffer,
+          });
+          return res.status(400).json({ error: "Invalid file data" });
+        }
+        // Check if the file is a valid audio format
+        const validAudioTypes = ["audio/webm", "audio/wav", "audio/mp3"];
+        if (!validAudioTypes.includes(mimetype)) {
+          console.warn(
+            "Invalid audio format",
+            mimetype,
+            "Valid formats are",
+            validAudioTypes,
+            "using default",
+            "audio/webm"
+          );
+        }
+        // Check if the file size is less than 5MB
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (buffer.length > maxSize) {
+          return res.status(400).json({ error: "File size exceeds 5MB" });
+        }
+        // Generate a unique file name
+        const filePath = `chat-audio/${uuidv4()}`;
+
+        // Upload file to Supabase Storage
+        const { error } = await supabase.storage
+          .from("chat-audio") // Storage bucket name
+          .upload(filePath, buffer, {
+            contentType: mimetype || "audio/webm",
+            upsert: true,
+          });
+
+        if (error) throw error;
+
+        // Get the public URL of the uploaded file
+        const { data: publicURLData } = supabase.storage
+          .from("chat-audio")
+          .getPublicUrl(filePath);
+        const publicURL = publicURLData.publicUrl;
+
+        // Send audio message to chat
+        await sendAudio({
+          audioFileUrl: publicURL,
+          authorId: user.id,
+          replyToId: req.body.replyToId,
+        });
+
+        res.json({ message: "Audio uploaded successfully!", url: publicURL });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: (error as any).message });
       }
     }
   );

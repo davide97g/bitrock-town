@@ -3,5 +3,6 @@ export interface IChatMessage {
   authorId: string; // user id
   content: string;
   created_at: number;
+  type: "text" | "audio";
   replyToId?: string; // uuid
 }
