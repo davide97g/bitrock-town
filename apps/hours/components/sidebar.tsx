@@ -1,14 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { motion } from "framer-motion"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/mode-toggle"
-import { BarChart3, Calendar, Clock, LogOut, Menu, Settings, User, Users, Briefcase } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ModeToggle } from "@/components/mode-toggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +10,25 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { getUserData } from "@/lib/mock-data"
+} from "@/components/ui/dropdown-menu";
+import { getUserData } from "@/lib/mock-data";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import {
+  BarChart3,
+  Briefcase,
+  Calendar,
+  Clock,
+  LogOut,
+  Menu,
+  Settings,
+  User,
+  Users,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const navItems = [
   {
@@ -45,17 +56,20 @@ const navItems = [
     href: "/utenti",
     icon: Users,
   },
-]
+];
 
 export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false)
-  const pathname = usePathname()
-  const userData = getUserData()
+  const [collapsed, setCollapsed] = useState(false);
+  const pathname = usePathname();
+  const userData = getUserData();
 
   return (
     <div className="relative">
       <motion.div
-        className={cn("h-screen bg-background border-r flex flex-col", collapsed ? "w-16" : "w-64")}
+        className={cn(
+          "h-screen bg-background border-r flex flex-col",
+          collapsed ? "w-16" : "w-64",
+        )}
         animate={{ width: collapsed ? 64 : 256 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
       >
@@ -65,12 +79,17 @@ export default function Sidebar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="font-bold text-xl"
+              className="font-bold text-xl flex items-center space-x-4"
             >
+              <Image src="/logo.png" alt="Logo" width={32} height={32} />
               Bitrock Hours
             </motion.div>
           )}
-          <Button variant="ghost" size="icon" onClick={() => setCollapsed(!collapsed)}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setCollapsed(!collapsed)}
+          >
             <Menu className="h-5 w-5" />
           </Button>
         </div>
@@ -81,8 +100,13 @@ export default function Sidebar() {
               <li key={item.href}>
                 <Link href={item.href}>
                   <Button
-                    variant={pathname.startsWith(item.href) ? "secondary" : "ghost"}
-                    className={cn("w-full justify-start", collapsed ? "px-2" : "px-4")}
+                    variant={
+                      pathname.startsWith(item.href) ? "secondary" : "ghost"
+                    }
+                    className={cn(
+                      "w-full justify-start",
+                      collapsed ? "px-2" : "px-4",
+                    )}
                   >
                     <item.icon className="h-5 w-5 mr-2" />
                     {!collapsed && <span>{item.title}</span>}
@@ -136,6 +160,5 @@ export default function Sidebar() {
         </div>
       </motion.div>
     </div>
-  )
+  );
 }
-
