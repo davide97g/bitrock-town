@@ -43,14 +43,13 @@ export async function getAudioMessage(id: string) {
     const filePath = `chat-audio/${id}`;
     const { data, error } = await supabase.storage
       .from("chat-audio")
-      .download(filePath);
+      .createSignedUrl(filePath, 60 * 60); // URL valid for 1 hour
 
     if (error) {
       throw error;
     }
 
-    const buffer = Buffer.from(await data.arrayBuffer());
-    return buffer;
+    return data.signedUrl;
   } catch (error) {
     throw error;
   }

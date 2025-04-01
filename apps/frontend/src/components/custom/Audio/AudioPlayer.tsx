@@ -11,10 +11,20 @@ interface AudioPlayerProps {
   small?: boolean;
 }
 
+function calculateAudioDuration(contentLength: number, bitrateKbps: number) {
+  const bits = contentLength * 8; // Converti i byte in bit
+  const bitrate = bitrateKbps * 1000; // Converti kbps in bps
+  return bits / bitrate; // Durata in secondi
+}
+
+const bitrateKbps = 128;
+
 export function AudioPlayer({ audioId, small = false }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+
+  const [isVisible, setIsVisible] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -24,24 +34,29 @@ export function AudioPlayer({ audioId, small = false }: AudioPlayerProps) {
 
   useEffect(() => {
     if (!audioMessage.data) return;
-    console.log(audioMessage.data);
-    const audioUrl = URL.createObjectURL(
-      new Blob([audioMessage.data.buffer], { type: "audio/mpeg" }),
-    );
-    const audio = new Audio(audioUrl);
-    audio.addEventListener("loadedmetadata", () => {
-      setDuration(audio.duration);
-      setCurrentTime(0);
-    });
+    fetch(audioMessage.data, {
+      method: "HEAD",
+    })
+      .then((response) => {
+        response.headers.get("Content-Length");
+        const contentLength = parseInt(
+          response.headers.get("Content-Length") || "0",
+          10,
+        );
+        // Calcola la durata dell'audio in secondi
+        const duration = calculateAudioDuration(contentLength, bitrateKbps);
+        setDuration(duration);
+      })
+      .catch((error) => {
+        console.error("Error fetching audio:", error);
+      });
   }, [audioMessage.data]);
 
   // Initialize audio element
   useEffect(() => {
-    if (!audioMessage.data) return;
+    if (!audioMessage.data && isVisible) return;
 
-    const audioUrl = URL.createObjectURL(
-      new Blob([audioMessage.data.buffer], { type: "audio/mpeg" }),
-    );
+    const audioUrl = audioMessage.data;
     const audio = new Audio(audioUrl);
     audioRef.current = audio;
 
@@ -62,7 +77,7 @@ export function AudioPlayer({ audioId, small = false }: AudioPlayerProps) {
       audio.removeEventListener("timeupdate", () => {});
       audio.removeEventListener("ended", () => {});
     };
-  }, [audioMessage.data]);
+  }, [audioMessage.data, isVisible]);
 
   // Toggle play/pause
   const togglePlayPause = () => {
@@ -94,6 +109,26 @@ export function AudioPlayer({ audioId, small = false }: AudioPlayerProps) {
       .toString()
       .padStart(2, "0")}`;
   };
+
+  // TODO: make it work
+
+  // write an useeffect that sets the isVisible to true when the audio component is visible on screen
+  useEffect(() => {
+    const handleScroll = () => {
+      const rect = audioRef.current?.getBoundingClientRect();
+      if (rect) {
+        const isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
+        setIsVisible(isVisible);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Check visibility on mount
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <div className={`flex items-center ${small ? "space-x-2" : "space-x-3"}`}>
