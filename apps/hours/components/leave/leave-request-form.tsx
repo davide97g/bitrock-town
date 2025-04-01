@@ -1,36 +1,17 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { getUserSummary } from "@/lib/mock-data";
-import { motion } from "framer-motion";
-import { useForm } from "react-hook-form";
+import { motion } from "framer-motion"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useForm } from "react-hook-form"
+import { getUserSummary } from "@/lib/mock-data"
 
 export default function LeaveRequestForm() {
-  const summary = getUserSummary();
+  const summary = getUserSummary()
 
   const form = useForm({
     defaultValues: {
@@ -39,13 +20,13 @@ export default function LeaveRequestForm() {
       endDate: "",
       reason: "",
     },
-  });
+  })
 
-  const onSubmit = (data: unknown) => {
-    console.log(data);
+  const onSubmit = (data: any) => {
+    console.log(data)
     // Here you would normally save the data
-    form.reset();
-  };
+    form.reset()
+  }
 
   return (
     <motion.div
@@ -56,9 +37,7 @@ export default function LeaveRequestForm() {
       <Card>
         <CardHeader>
           <CardTitle>Nuova Richiesta</CardTitle>
-          <CardDescription>
-            Hai {summary.vacationDaysLeft} giorni di ferie disponibili
-          </CardDescription>
+          <CardDescription>Hai {summary.vacationDaysLeft} giorni di ferie disponibili</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -69,10 +48,7 @@ export default function LeaveRequestForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Tipo di Richiesta</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Seleziona tipo" />
@@ -126,21 +102,14 @@ export default function LeaveRequestForm() {
                   <FormItem>
                     <FormLabel>Motivazione</FormLabel>
                     <FormControl>
-                      <Textarea
-                        placeholder="Descrivi brevemente il motivo della richiesta"
-                        {...field}
-                      />
+                      <Textarea placeholder="Descrivi brevemente il motivo della richiesta" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <motion.div
-                className="pt-2"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <motion.div className="pt-2" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button type="submit" className="w-full">
                   Invia Richiesta
                 </Button>
@@ -150,5 +119,6 @@ export default function LeaveRequestForm() {
         </CardContent>
       </Card>
     </motion.div>
-  );
+  )
 }
+

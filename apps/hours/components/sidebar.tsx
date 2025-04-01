@@ -1,8 +1,14 @@
-"use client";
+"use client"
 
-import { ModeToggle } from "@/components/mode-toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { useState } from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { motion } from "framer-motion"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { ModeToggle } from "@/components/mode-toggle"
+import { BarChart3, Calendar, Clock, LogOut, Menu, Settings, User, Users, Briefcase } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,22 +16,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { getUserData } from "@/lib/mock-data";
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import {
-  BarChart3,
-  Calendar,
-  Clock,
-  LogOut,
-  Menu,
-  Settings,
-  User,
-} from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+} from "@/components/ui/dropdown-menu"
+import { getUserData } from "@/lib/mock-data"
 
 const navItems = [
   {
@@ -39,24 +31,31 @@ const navItems = [
     icon: Clock,
   },
   {
-    title: "Ferie & Permessi",
+    title: "Ferie e Permessi",
     href: "/ferie-permessi",
     icon: Calendar,
   },
-];
+  {
+    title: "Progetti",
+    href: "/progetti",
+    icon: Briefcase,
+  },
+  {
+    title: "Utenti",
+    href: "/utenti",
+    icon: Users,
+  },
+]
 
 export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
-  const pathname = usePathname();
-  const userData = getUserData();
+  const [collapsed, setCollapsed] = useState(false)
+  const pathname = usePathname()
+  const userData = getUserData()
 
   return (
     <div className="relative">
       <motion.div
-        className={cn(
-          "h-screen bg-background border-r flex flex-col",
-          collapsed ? "w-16" : "w-64",
-        )}
+        className={cn("h-screen bg-background border-r flex flex-col", collapsed ? "w-16" : "w-64")}
         animate={{ width: collapsed ? 64 : 256 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
       >
@@ -71,11 +70,7 @@ export default function Sidebar() {
               Bitrock Hours
             </motion.div>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setCollapsed(!collapsed)}
-          >
+          <Button variant="ghost" size="icon" onClick={() => setCollapsed(!collapsed)}>
             <Menu className="h-5 w-5" />
           </Button>
         </div>
@@ -86,13 +81,8 @@ export default function Sidebar() {
               <li key={item.href}>
                 <Link href={item.href}>
                   <Button
-                    variant={
-                      pathname.startsWith(item.href) ? "secondary" : "ghost"
-                    }
-                    className={cn(
-                      "w-full justify-start",
-                      collapsed ? "px-2" : "px-4",
-                    )}
+                    variant={pathname.startsWith(item.href) ? "secondary" : "ghost"}
+                    className={cn("w-full justify-start", collapsed ? "px-2" : "px-4")}
                   >
                     <item.icon className="h-5 w-5 mr-2" />
                     {!collapsed && <span>{item.title}</span>}
@@ -146,5 +136,6 @@ export default function Sidebar() {
         </div>
       </motion.div>
     </div>
-  );
+  )
 }
+

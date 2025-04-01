@@ -4,6 +4,8 @@ import DashboardSummary from "@/components/dashboard/dashboard-summary"
 import HoursChart from "@/components/dashboard/hours-chart"
 import RecentRequests from "@/components/dashboard/recent-requests"
 import NotificationsCard from "@/components/dashboard/notifications-card"
+import CalendarView from "@/components/dashboard/calendar-view"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export const metadata: Metadata = {
   title: "Dashboard | Bitrock Hours",
@@ -16,13 +18,24 @@ export default function DashboardPage() {
       <DashboardHeader />
       <DashboardSummary />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <HoursChart />
-        <div className="space-y-6">
-          <NotificationsCard />
-          <RecentRequests />
-        </div>
-      </div>
+      <Tabs defaultValue="chart" className="w-full">
+        <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsTrigger value="chart">Grafico</TabsTrigger>
+          <TabsTrigger value="calendar">Calendario</TabsTrigger>
+        </TabsList>
+        <TabsContent value="chart">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <HoursChart />
+            <div className="space-y-6">
+              <NotificationsCard />
+              <RecentRequests />
+            </div>
+          </div>
+        </TabsContent>
+        <TabsContent value="calendar">
+          <CalendarView />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
