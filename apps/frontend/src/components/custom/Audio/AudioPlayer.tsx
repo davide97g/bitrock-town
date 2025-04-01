@@ -1,35 +1,47 @@
 "use client";
 
+import { useGetAudioMessage } from "@/api/chat/useGetAudioMessage";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Pause, Play } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface AudioPlayerProps {
-  audioUrl: string;
+  audioId: string;
   small?: boolean;
 }
 
-export function AudioPlayer({ audioUrl, small = false }: AudioPlayerProps) {
+export function AudioPlayer({ audioId, small = false }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const audioMessage = useGetAudioMessage({
+    id: audioId,
+  });
+
   useEffect(() => {
-    fetch(audioUrl)
-      .then((res) => res.arrayBuffer())
-      .then((buffer) => {
-        new AudioContext().decodeAudioData(buffer, (audio) => {
-          setDuration(audio.duration);
-          setCurrentTime(0);
-        });
-      });
-  }, [audioUrl]);
+    if (!audioMessage.data) return;
+    console.log(audioMessage.data);
+    const audioUrl = URL.createObjectURL(
+      new Blob([audioMessage.data.buffer], { type: "audio/mpeg" }),
+    );
+    const audio = new Audio(audioUrl);
+    audio.addEventListener("loadedmetadata", () => {
+      setDuration(audio.duration);
+      setCurrentTime(0);
+    });
+  }, [audioMessage.data]);
 
   // Initialize audio element
   useEffect(() => {
+    if (!audioMessage.data) return;
+
+    const audioUrl = URL.createObjectURL(
+      new Blob([audioMessage.data.buffer], { type: "audio/mpeg" }),
+    );
     const audio = new Audio(audioUrl);
     audioRef.current = audio;
 
@@ -50,7 +62,7 @@ export function AudioPlayer({ audioUrl, small = false }: AudioPlayerProps) {
       audio.removeEventListener("timeupdate", () => {});
       audio.removeEventListener("ended", () => {});
     };
-  }, [audioUrl]);
+  }, [audioMessage.data]);
 
   // Toggle play/pause
   const togglePlayPause = () => {

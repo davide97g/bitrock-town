@@ -7,7 +7,7 @@ import {
   getMessages,
   sendMessage,
 } from "../repository/chat.repository";
-import { createAudioMessage } from "../services/chat.service";
+import { createAudioMessage, getAudioMessage } from "../services/chat.service";
 
 export const createChatController = (app: Express) => {
   app.use(express.json());
@@ -116,6 +116,27 @@ export const createChatController = (app: Express) => {
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: (error as any).message });
+      }
+    },
+  );
+
+  // Get audio chat messages
+  app.get(
+    "/chat/message/audio/:id",
+    authenticateToken,
+    async (req: Request, res: Response) => {
+      try {
+        const { id } = req.params;
+        if (!id) {
+          return res.status(400).send({ error: "Message ID is required" });
+        }
+
+        const response = await getAudioMessage(id);
+        return res.send(response);
+      } catch (error) {
+        return res
+          .status(500)
+          .send({ error: "There was an error processing the request" });
       }
     },
   );

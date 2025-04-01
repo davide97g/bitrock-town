@@ -153,8 +153,8 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
       });
   };
 
-  const renderMessageContent = (content: string, type: string) => {
-    if (type === "audio") return <AudioPlayer audioUrl={content} />;
+  const renderMessageContent = (id: string, content: string, type: string) => {
+    if (type === "audio") return <AudioPlayer audioId={id} />;
 
     const isOnlyEmojis = isEmojiOnly(content);
     if (isOnlyEmojis)
@@ -354,6 +354,7 @@ export default function GroupChat({ onClose }: { onClose: () => void }) {
                             }`}
                           >
                             {renderMessageContent(
+                              message.id,
                               message.content,
                               message.type,
                             )}

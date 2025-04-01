@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuid } from "uuid";
 import { supabase } from "../config/supabase";
 import { sendAudio } from "../repository/chat.repository";
 
@@ -13,8 +13,9 @@ export async function createAudioMessage({
   authorId: string;
   replyToId?: string;
 }) {
+  const messageId = uuid();
   // Generate a unique file name
-  const filePath = `chat-audio/${uuidv4()}`;
+  const filePath = `chat-audio/${messageId}`;
 
   // Upload file to Supabase Storage
   const { error } = await supabase.storage
@@ -26,17 +27,31 @@ export async function createAudioMessage({
 
   if (error) throw error;
 
-  // TODO: change this from public url to private url
-  // Get the public URL of the uploaded file
-  const { data: publicURLData } = supabase.storage
-    .from("chat-audio")
-    .getPublicUrl(filePath);
-  const publicURL = publicURLData.publicUrl;
+  console.log("File uploaded successfully");
 
-  // Send audio message to chat
+  console.info("Audio message created", messageId);
+  // Create a new message record in the database
   await sendAudio({
-    audioFileUrl: publicURL,
+    messageId,
     authorId,
     replyToId,
   });
+}
+
+export async function getAudioMessage(id: string) {
+  try {
+    const filePath = `chat-audio/${id}`;
+    const { data, error } = await supabase.storage
+      .from("chat-audio")
+      .download(filePath);
+
+    if (error) {
+      throw error;
+    }
+
+    const buffer = Buffer.from(await data.arrayBuffer());
+    return buffer;
+  } catch (error) {
+    throw error;
+  }
 }

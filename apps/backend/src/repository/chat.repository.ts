@@ -23,17 +23,17 @@ export async function sendMessage({
 }
 
 export async function sendAudio({
-  audioFileUrl,
+  messageId,
   authorId,
   replyToId,
 }: {
-  audioFileUrl: string;
+  messageId: string;
   authorId: string;
   replyToId?: string;
 }) {
   const res = replyToId
-    ? await sql`INSERT INTO public."MESSAGES" (content, "authorId", "replyToId", type) VALUES (${audioFileUrl}, ${authorId}, ${replyToId}, 'audio');`
-    : await sql`INSERT INTO public."MESSAGES" (content, "authorId", type) VALUES (${audioFileUrl}, ${authorId}, 'audio');`;
+    ? await sql`INSERT INTO public."MESSAGES" (id, "authorId", "replyToId", type) VALUES (${messageId}, ${authorId}, ${replyToId}, 'audio');`
+    : await sql`INSERT INTO public."MESSAGES" (id, "authorId", type) VALUES (${messageId}, ${authorId}, 'audio');`;
   return res?.[0] as IChatMessage;
 }
 
