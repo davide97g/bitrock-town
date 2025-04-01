@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -10,23 +9,42 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useForm } from "react-hook-form"
-import { getAllUsers } from "@/lib/mock-data"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { getAllUsers } from "@/lib/mock-data";
+import { motion } from "framer-motion";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 
 interface AddProjectDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  editData?: any
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editData?: any;
 }
 
-export default function AddProjectDialog({ open, onOpenChange, editData }: AddProjectDialogProps) {
-  const users = getAllUsers()
+export default function AddProjectDialog({
+  open,
+  onOpenChange,
+  editData,
+}: AddProjectDialogProps) {
+  const users = getAllUsers();
 
   const form = useForm({
     defaultValues: {
@@ -38,7 +56,7 @@ export default function AddProjectDialog({ open, onOpenChange, editData }: AddPr
       endDate: "",
       team: [] as string[],
     },
-  })
+  });
 
   // Update form when editing a project
   useEffect(() => {
@@ -50,25 +68,31 @@ export default function AddProjectDialog({ open, onOpenChange, editData }: AddPr
         status: editData.status,
         startDate: editData.startDate,
         endDate: editData.endDate || "",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         team: editData.team.map((member: any) => member.id),
-      })
+      });
     }
-  }, [editData, form])
+  }, [editData, form]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = (data: any) => {
-    console.log(data)
+    console.log(data);
     // Here you would normally save the data
-    onOpenChange(false)
-    form.reset()
-  }
+    onOpenChange(false);
+    form.reset();
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>{editData ? "Modifica Progetto" : "Nuovo Progetto"}</DialogTitle>
+          <DialogTitle>
+            {editData ? "Modifica Progetto" : "Nuovo Progetto"}
+          </DialogTitle>
           <DialogDescription>
-            {editData ? "Modifica i dettagli del progetto." : "Inserisci i dettagli per creare un nuovo progetto."}
+            {editData
+              ? "Modifica i dettagli del progetto."
+              : "Inserisci i dettagli per creare un nuovo progetto."}
           </DialogDescription>
         </DialogHeader>
 
@@ -111,7 +135,10 @@ export default function AddProjectDialog({ open, onOpenChange, editData }: AddPr
                 <FormItem>
                   <FormLabel>Descrizione</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Descrizione del progetto" {...field} />
+                    <Textarea
+                      placeholder="Descrizione del progetto"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -125,7 +152,11 @@ export default function AddProjectDialog({ open, onOpenChange, editData }: AddPr
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Stato</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      value={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Seleziona stato" />
@@ -188,14 +219,24 @@ export default function AddProjectDialog({ open, onOpenChange, editData }: AddPr
                         name="team"
                         render={({ field }) => {
                           return (
-                            <FormItem key={user.id} className="flex flex-row items-start space-x-3 space-y-0">
+                            <FormItem
+                              key={user.id}
+                              className="flex flex-row items-start space-x-3 space-y-0"
+                            >
                               <FormControl>
                                 <Checkbox
                                   checked={field.value?.includes(user.id)}
                                   onCheckedChange={(checked) => {
                                     return checked
-                                      ? field.onChange([...field.value, user.id])
-                                      : field.onChange(field.value?.filter((value) => value !== user.id))
+                                      ? field.onChange([
+                                          ...field.value,
+                                          user.id,
+                                        ])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== user.id,
+                                          ),
+                                        );
                                   }}
                                 />
                               </FormControl>
@@ -203,7 +244,7 @@ export default function AddProjectDialog({ open, onOpenChange, editData }: AddPr
                                 {user.name} {user.surname} ({user.role})
                               </FormLabel>
                             </FormItem>
-                          )
+                          );
                         }}
                       />
                     ))}
@@ -214,17 +255,25 @@ export default function AddProjectDialog({ open, onOpenChange, editData }: AddPr
             />
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
                 Annulla
               </Button>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button type="submit">{editData ? "Aggiorna" : "Crea Progetto"}</Button>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button type="submit">
+                  {editData ? "Aggiorna" : "Crea Progetto"}
+                </Button>
               </motion.div>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-

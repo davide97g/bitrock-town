@@ -1,43 +1,57 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Card, CardContent } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Edit, Trash2 } from "lucide-react"
-import { getTimeEntries, getProjects } from "@/lib/mock-data"
-import AddHoursDialog from "./add-hours-dialog"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { getProjects, getTimeEntries } from "@/lib/mock-data";
+import { motion } from "framer-motion";
+import { Edit, Trash2 } from "lucide-react";
+import { useState } from "react";
+import AddHoursDialog from "./add-hours-dialog";
 
 export default function TimeTrackingTable() {
-  const [month, setMonth] = useState("current")
-  const [project, setProject] = useState("all")
-  const [editEntry, setEditEntry] = useState<any>(null)
+  const [month, setMonth] = useState("current");
+  const [project, setProject] = useState("all");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [editEntry, setEditEntry] = useState<any>(null);
 
-  const timeEntries = getTimeEntries()
-  const projects = getProjects()
+  const timeEntries = getTimeEntries();
+  const projects = getProjects();
 
   // Filter entries based on selected month and project
   const filteredEntries = timeEntries.filter((entry) => {
-    const monthMatch = month === "all" || month === "current"
-    const projectMatch = project === "all" || entry.project === project
-    return monthMatch && projectMatch
-  })
+    const monthMatch = month === "all" || month === "current";
+    const projectMatch = project === "all" || entry.project === project;
+    return monthMatch && projectMatch;
+  });
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "approved":
-        return <Badge className="bg-green-500">Approvato</Badge>
+        return <Badge className="bg-green-500">Approvato</Badge>;
       case "pending":
-        return <Badge variant="outline">In attesa</Badge>
+        return <Badge variant="outline">In attesa</Badge>;
       case "rejected":
-        return <Badge variant="destructive">Rifiutato</Badge>
+        return <Badge variant="destructive">Rifiutato</Badge>;
       default:
-        return <Badge variant="secondary">{status}</Badge>
+        return <Badge variant="secondary">{status}</Badge>;
     }
-  }
+  };
 
   return (
     <motion.div
@@ -92,7 +106,10 @@ export default function TimeTrackingTable() {
               <TableBody>
                 {filteredEntries.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
+                    <TableCell
+                      colSpan={6}
+                      className="text-center py-6 text-muted-foreground"
+                    >
                       Nessuna registrazione trovata
                     </TableCell>
                   </TableRow>
@@ -100,13 +117,22 @@ export default function TimeTrackingTable() {
                   filteredEntries.map((entry, index) => (
                     <TableRow key={index}>
                       <TableCell>{entry.date}</TableCell>
-                      <TableCell>{projects.find((p) => p.id === entry.project)?.name || entry.project}</TableCell>
+                      <TableCell>
+                        {projects.find((p) => p.id === entry.project)?.name ||
+                          entry.project}
+                      </TableCell>
                       <TableCell>{entry.hours}</TableCell>
-                      <TableCell className="max-w-[200px] truncate">{entry.description}</TableCell>
+                      <TableCell className="max-w-[200px] truncate">
+                        {entry.description}
+                      </TableCell>
                       <TableCell>{getStatusBadge(entry.status)}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end space-x-2">
-                          <Button variant="ghost" size="icon" onClick={() => setEditEntry(entry)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditEntry(entry)}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button variant="ghost" size="icon">
@@ -124,9 +150,12 @@ export default function TimeTrackingTable() {
       </Card>
 
       {editEntry && (
-        <AddHoursDialog open={!!editEntry} onOpenChange={(open) => !open && setEditEntry(null)} editData={editEntry} />
+        <AddHoursDialog
+          open={!!editEntry}
+          onOpenChange={(open) => !open && setEditEntry(null)}
+          editData={editEntry}
+        />
       )}
     </motion.div>
-  )
+  );
 }
-

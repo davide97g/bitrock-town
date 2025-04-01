@@ -1,24 +1,5 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { useRouter } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Edit, MoreHorizontal, Trash2, Users } from "lucide-react"
-import { getProjectsDetailed } from "@/lib/mock-data"
-import AddProjectDialog from "./add-project-dialog"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,37 +9,65 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { getProjectsDetailed } from "@/lib/mock-data";
+import { motion } from "framer-motion";
+import { Edit, MoreHorizontal, Trash2, Users } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import AddProjectDialog from "./add-project-dialog";
 
 export default function ProjectsTable() {
-  const router = useRouter()
-  const [editProject, setEditProject] = useState<any>(null)
-  const [deleteProject, setDeleteProject] = useState<any>(null)
+  const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [editProject, setEditProject] = useState<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [deleteProject, setDeleteProject] = useState<any>(null);
 
-  const projects = getProjectsDetailed()
+  const projects = getProjectsDetailed();
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-green-500">Attivo</Badge>
+        return <Badge className="bg-green-500">Attivo</Badge>;
       case "completed":
-        return <Badge variant="outline">Completato</Badge>
+        return <Badge variant="outline">Completato</Badge>;
       case "on-hold":
-        return <Badge variant="secondary">In Pausa</Badge>
+        return <Badge variant="secondary">In Pausa</Badge>;
       case "planned":
         return (
           <Badge variant="outline" className="border-amber-500 text-amber-500">
             Pianificato
           </Badge>
-        )
+        );
       default:
-        return <Badge variant="secondary">{status}</Badge>
+        return <Badge variant="secondary">{status}</Badge>;
     }
-  }
+  };
 
   const handleViewProject = (id: string) => {
-    router.push(`/progetti/${id}`)
-  }
+    router.push(`/progetti/${id}`);
+  };
 
   return (
     <motion.div
@@ -84,7 +93,10 @@ export default function ProjectsTable() {
               <TableBody>
                 {projects.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
+                    <TableCell
+                      colSpan={7}
+                      className="text-center py-6 text-muted-foreground"
+                    >
                       Nessun progetto trovato
                     </TableCell>
                   </TableRow>
@@ -95,14 +107,24 @@ export default function ProjectsTable() {
                       className="cursor-pointer hover:bg-muted/50"
                       onClick={() => handleViewProject(project.id)}
                     >
-                      <TableCell className="font-medium">{project.name}</TableCell>
+                      <TableCell className="font-medium">
+                        {project.name}
+                      </TableCell>
                       <TableCell>{project.client}</TableCell>
                       <TableCell>{getStatusBadge(project.status)}</TableCell>
                       <TableCell>
                         <div className="flex -space-x-2">
                           {project.team.slice(0, 3).map((member, index) => (
-                            <Avatar key={index} className="h-8 w-8 border-2 border-background">
-                              <AvatarImage src={member.avatar || "/placeholder.svg?height=32&width=32"} />
+                            <Avatar
+                              key={index}
+                              className="h-8 w-8 border-2 border-background"
+                            >
+                              <AvatarImage
+                                src={
+                                  member.avatar ||
+                                  "/placeholder.svg?height=32&width=32"
+                                }
+                              />
                               <AvatarFallback>
                                 {member.name.charAt(0)}
                                 {member.surname.charAt(0)}
@@ -120,7 +142,10 @@ export default function ProjectsTable() {
                       <TableCell>{project.endDate || "-"}</TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                          <DropdownMenuTrigger
+                            asChild
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <Button variant="ghost" size="icon">
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
@@ -130,8 +155,8 @@ export default function ProjectsTable() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               onClick={(e) => {
-                                e.stopPropagation()
-                                handleViewProject(project.id)
+                                e.stopPropagation();
+                                handleViewProject(project.id);
                               }}
                             >
                               <Users className="mr-2 h-4 w-4" />
@@ -139,8 +164,8 @@ export default function ProjectsTable() {
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={(e) => {
-                                e.stopPropagation()
-                                setEditProject(project)
+                                e.stopPropagation();
+                                setEditProject(project);
                               }}
                             >
                               <Edit className="mr-2 h-4 w-4" />
@@ -149,8 +174,8 @@ export default function ProjectsTable() {
                             <DropdownMenuItem
                               className="text-destructive focus:text-destructive"
                               onClick={(e) => {
-                                e.stopPropagation()
-                                setDeleteProject(project)
+                                e.stopPropagation();
+                                setDeleteProject(project);
                               }}
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
@@ -178,21 +203,28 @@ export default function ProjectsTable() {
       )}
 
       {/* Dialog di conferma eliminazione */}
-      <AlertDialog open={!!deleteProject} onOpenChange={(open) => !open && setDeleteProject(null)}>
+      <AlertDialog
+        open={!!deleteProject}
+        onOpenChange={(open) => !open && setDeleteProject(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Sei sicuro di voler eliminare questo progetto?</AlertDialogTitle>
+            <AlertDialogTitle>
+              Sei sicuro di voler eliminare questo progetto?
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Questa azione non può essere annullata. Il progetto verrà eliminato permanentemente dal sistema.
+              Questa azione non può essere annullata. Il progetto verrà
+              eliminato permanentemente dal sistema.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Annulla</AlertDialogCancel>
-            <AlertDialogAction className="bg-destructive text-destructive-foreground">Elimina</AlertDialogAction>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground">
+              Elimina
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </motion.div>
-  )
+  );
 }
-

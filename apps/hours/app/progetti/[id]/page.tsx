@@ -1,16 +1,21 @@
-import type { Metadata } from "next"
-import ProjectDetail from "@/components/projects/project-detail"
+import ProjectDetail from "@/components/projects/project-detail";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Dettaglio Progetto | Bitrock Hours",
   description: "Visualizza i dettagli del progetto",
-}
+};
 
-export default function ProjectDetailPage({ params }: { params: { id: string } }) {
+export default async function ProjectDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
   return (
     <div className="space-y-6">
-      <ProjectDetail id={params.id} />
+      <ProjectDetail id={id} />
     </div>
-  )
+  );
 }
-

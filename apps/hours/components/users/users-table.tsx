@@ -1,24 +1,5 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { useRouter } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Edit, MoreHorizontal, Trash2, User } from "lucide-react"
-import { getAllUsers } from "@/lib/mock-data"
-import AddUserDialog from "./add-user-dialog"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,37 +9,65 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { getAllUsers } from "@/lib/mock-data";
+import { motion } from "framer-motion";
+import { Edit, MoreHorizontal, Trash2, User } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import AddUserDialog from "./add-user-dialog";
 
 export default function UsersTable() {
-  const router = useRouter()
-  const [editUser, setEditUser] = useState<any>(null)
-  const [deleteUser, setDeleteUser] = useState<any>(null)
+  const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [editUser, setEditUser] = useState<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [deleteUser, setDeleteUser] = useState<any>(null);
 
-  const users = getAllUsers()
+  const users = getAllUsers();
 
   const getRoleBadge = (role: string) => {
     switch (role) {
       case "admin":
-        return <Badge className="bg-purple-500">Amministratore</Badge>
+        return <Badge className="bg-purple-500">Amministratore</Badge>;
       case "manager":
-        return <Badge className="bg-blue-500">Manager</Badge>
+        return <Badge className="bg-blue-500">Manager</Badge>;
       case "developer":
-        return <Badge variant="outline">Sviluppatore</Badge>
+        return <Badge variant="outline">Sviluppatore</Badge>;
       case "designer":
         return (
           <Badge variant="outline" className="border-pink-500 text-pink-500">
             Designer
           </Badge>
-        )
+        );
       default:
-        return <Badge variant="secondary">{role}</Badge>
+        return <Badge variant="secondary">{role}</Badge>;
     }
-  }
+  };
 
   const handleViewUser = (id: string) => {
-    router.push(`/utenti/${id}`)
-  }
+    router.push(`/utenti/${id}`);
+  };
 
   return (
     <motion.div
@@ -83,7 +92,10 @@ export default function UsersTable() {
               <TableBody>
                 {users.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
+                    <TableCell
+                      colSpan={6}
+                      className="text-center py-6 text-muted-foreground"
+                    >
                       Nessun utente trovato
                     </TableCell>
                   </TableRow>
@@ -97,7 +109,12 @@ export default function UsersTable() {
                       <TableCell>
                         <div className="flex items-center space-x-3">
                           <Avatar className="h-8 w-8">
-                            <AvatarImage src={user.avatar || "/placeholder.svg?height=32&width=32"} />
+                            <AvatarImage
+                              src={
+                                user.avatar ||
+                                "/placeholder.svg?height=32&width=32"
+                              }
+                            />
                             <AvatarFallback>
                               {user.name.charAt(0)}
                               {user.surname.charAt(0)}
@@ -114,14 +131,19 @@ export default function UsersTable() {
                       <TableCell>
                         <Badge
                           variant={user.active ? "outline" : "secondary"}
-                          className={user.active ? "border-green-500 text-green-500" : ""}
+                          className={
+                            user.active ? "border-green-500 text-green-500" : ""
+                          }
                         >
                           {user.active ? "Attivo" : "Inattivo"}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                          <DropdownMenuTrigger
+                            asChild
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <Button variant="ghost" size="icon">
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
@@ -131,8 +153,8 @@ export default function UsersTable() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               onClick={(e) => {
-                                e.stopPropagation()
-                                handleViewUser(user.id)
+                                e.stopPropagation();
+                                handleViewUser(user.id);
                               }}
                             >
                               <User className="mr-2 h-4 w-4" />
@@ -140,8 +162,8 @@ export default function UsersTable() {
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={(e) => {
-                                e.stopPropagation()
-                                setEditUser(user)
+                                e.stopPropagation();
+                                setEditUser(user);
                               }}
                             >
                               <Edit className="mr-2 h-4 w-4" />
@@ -150,8 +172,8 @@ export default function UsersTable() {
                             <DropdownMenuItem
                               className="text-destructive focus:text-destructive"
                               onClick={(e) => {
-                                e.stopPropagation()
-                                setDeleteUser(user)
+                                e.stopPropagation();
+                                setDeleteUser(user);
                               }}
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
@@ -171,25 +193,36 @@ export default function UsersTable() {
 
       {/* Dialog per modificare un utente */}
       {editUser && (
-        <AddUserDialog open={!!editUser} onOpenChange={(open) => !open && setEditUser(null)} editData={editUser} />
+        <AddUserDialog
+          open={!!editUser}
+          onOpenChange={(open) => !open && setEditUser(null)}
+          editData={editUser}
+        />
       )}
 
       {/* Dialog di conferma eliminazione */}
-      <AlertDialog open={!!deleteUser} onOpenChange={(open) => !open && setDeleteUser(null)}>
+      <AlertDialog
+        open={!!deleteUser}
+        onOpenChange={(open) => !open && setDeleteUser(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Sei sicuro di voler eliminare questo utente?</AlertDialogTitle>
+            <AlertDialogTitle>
+              Sei sicuro di voler eliminare questo utente?
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Questa azione non può essere annullata. L'utente verrà eliminato permanentemente dal sistema.
+              Questa azione non può essere annullata. L&apos;utente verrà
+              eliminato permanentemente dal sistema.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Annulla</AlertDialogCancel>
-            <AlertDialogAction className="bg-destructive text-destructive-foreground">Elimina</AlertDialogAction>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground">
+              Elimina
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </motion.div>
-  )
+  );
 }
-

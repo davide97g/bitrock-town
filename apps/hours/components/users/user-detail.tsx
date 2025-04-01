@@ -1,61 +1,89 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ArrowLeft, Briefcase, Calendar, Clock, Edit, Mail, Phone } from "lucide-react"
-import { getUserById, getTimeEntriesByUser, getLeaveRequestsByUser, getProjectsByUser } from "@/lib/mock-data"
-import AddUserDialog from "./add-user-dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  getLeaveRequestsByUser,
+  getProjectsByUser,
+  getTimeEntriesByUser,
+  getUserById,
+} from "@/lib/mock-data";
+import { motion } from "framer-motion";
+import {
+  ArrowLeft,
+  Briefcase,
+  Calendar,
+  Clock,
+  Edit,
+  Mail,
+  Phone,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import AddUserDialog from "./add-user-dialog";
 
 export default function UserDetail({ id }: { id: string }) {
-  const router = useRouter()
-  const [showEditDialog, setShowEditDialog] = useState(false)
+  const router = useRouter();
+  const [showEditDialog, setShowEditDialog] = useState(false);
 
-  const user = getUserById(id)
-  const timeEntries = getTimeEntriesByUser(id)
-  const leaveRequests = getLeaveRequestsByUser(id)
-  const projects = getProjectsByUser(id)
+  const user = getUserById(id);
+  const timeEntries = getTimeEntriesByUser(id);
+  const leaveRequests = getLeaveRequestsByUser(id);
+  const projects = getProjectsByUser(id);
 
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center h-[50vh]">
         <h2 className="text-2xl font-bold">Utente non trovato</h2>
-        <p className="text-muted-foreground mb-4">L'utente richiesto non esiste o è stato rimosso.</p>
+        <p className="text-muted-foreground mb-4">
+          L&apos;utente richiesto non esiste o è stato rimosso.
+        </p>
         <Button onClick={() => router.push("/utenti")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Torna agli Utenti
         </Button>
       </div>
-    )
+    );
   }
 
   const getRoleBadge = (role: string) => {
     switch (role) {
       case "admin":
-        return <Badge className="bg-purple-500">Amministratore</Badge>
+        return <Badge className="bg-purple-500">Amministratore</Badge>;
       case "manager":
-        return <Badge className="bg-blue-500">Manager</Badge>
+        return <Badge className="bg-blue-500">Manager</Badge>;
       case "developer":
-        return <Badge variant="outline">Sviluppatore</Badge>
+        return <Badge variant="outline">Sviluppatore</Badge>;
       case "designer":
         return (
           <Badge variant="outline" className="border-pink-500 text-pink-500">
             Designer
           </Badge>
-        )
+        );
       default:
-        return <Badge variant="secondary">{role}</Badge>
+        return <Badge variant="secondary">{role}</Badge>;
     }
-  }
+  };
 
   // Calcola il totale delle ore lavorate
-  const totalHours = timeEntries.reduce((sum, entry) => sum + entry.hours, 0)
+  const totalHours = timeEntries.reduce((sum, entry) => sum + entry.hours, 0);
 
   return (
     <motion.div
@@ -66,11 +94,17 @@ export default function UserDetail({ id }: { id: string }) {
     >
       <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
         <div className="flex items-center space-x-4">
-          <Button variant="outline" size="icon" onClick={() => router.push("/utenti")}>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => router.push("/utenti")}
+          >
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <Avatar className="h-16 w-16">
-            <AvatarImage src={user.avatar || "/placeholder.svg?height=64&width=64"} />
+            <AvatarImage
+              src={user.avatar || "/placeholder.svg?height=64&width=64"}
+            />
             <AvatarFallback>
               {user.name.charAt(0)}
               {user.surname.charAt(0)}
@@ -100,8 +134,10 @@ export default function UserDetail({ id }: { id: string }) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Informazioni Contatto</CardTitle>
-            <CardDescription>Dettagli dell'utente</CardDescription>
+            <CardTitle className="text-sm font-medium">
+              Informazioni Contatto
+            </CardTitle>
+            <CardDescription>Dettagli dell&apos;utente</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -114,12 +150,15 @@ export default function UserDetail({ id }: { id: string }) {
               <div className="space-y-1">
                 <p className="text-sm font-medium">Telefono:</p>
                 <p className="text-sm text-muted-foreground flex items-center">
-                  <Phone className="mr-1 h-3 w-3" /> {user.phone || "Non disponibile"}
+                  <Phone className="mr-1 h-3 w-3" />{" "}
+                  {user.phone || "Non disponibile"}
                 </p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium">Ruolo:</p>
-                <p className="text-sm text-muted-foreground capitalize">{user.role}</p>
+                <p className="text-sm text-muted-foreground capitalize">
+                  {user.role}
+                </p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium">Ore Totali:</p>
@@ -139,14 +178,20 @@ export default function UserDetail({ id }: { id: string }) {
 
         <Card className="md:col-span-2">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Progetti Assegnati</CardTitle>
-            <CardDescription>Progetti a cui l'utente sta lavorando</CardDescription>
+            <CardTitle className="text-sm font-medium">
+              Progetti Assegnati
+            </CardTitle>
+            <CardDescription>
+              Progetti a cui l&apos;utente sta lavorando
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {projects.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10">
                 <Briefcase className="h-10 w-10 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">Nessun progetto assegnato</p>
+                <p className="text-muted-foreground">
+                  Nessun progetto assegnato
+                </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -168,7 +213,11 @@ export default function UserDetail({ id }: { id: string }) {
                                 ? "secondary"
                                 : "outline"
                         }
-                        className={project.status === "planned" ? "border-amber-500 text-amber-500" : ""}
+                        className={
+                          project.status === "planned"
+                            ? "border-amber-500 text-amber-500"
+                            : ""
+                        }
                       >
                         {project.status === "active"
                           ? "Attivo"
@@ -179,9 +228,12 @@ export default function UserDetail({ id }: { id: string }) {
                               : "Pianificato"}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">{project.client}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {project.client}
+                    </p>
                     <div className="text-xs text-muted-foreground">
-                      <Calendar className="inline-block mr-1 h-3 w-3" /> {project.startDate}{" "}
+                      <Calendar className="inline-block mr-1 h-3 w-3" />{" "}
+                      {project.startDate}{" "}
                       {project.endDate ? `- ${project.endDate}` : ""}
                     </div>
                   </div>
@@ -201,7 +253,7 @@ export default function UserDetail({ id }: { id: string }) {
           <Card>
             <CardHeader>
               <CardTitle>Ore Registrate</CardTitle>
-              <CardDescription>Ore lavorate dall'utente</CardDescription>
+              <CardDescription>Ore lavorate dall&apos;utente</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -217,7 +269,10 @@ export default function UserDetail({ id }: { id: string }) {
                 <TableBody>
                   {timeEntries.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
+                      <TableCell
+                        colSpan={5}
+                        className="text-center py-6 text-muted-foreground"
+                      >
                         Nessuna registrazione trovata
                       </TableCell>
                     </TableRow>
@@ -257,7 +312,9 @@ export default function UserDetail({ id }: { id: string }) {
           <Card>
             <CardHeader>
               <CardTitle>Ferie e Permessi</CardTitle>
-              <CardDescription>Richieste di ferie e permessi dell'utente</CardDescription>
+              <CardDescription>
+                Richieste di ferie e permessi dell&apos;utente
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -273,7 +330,10 @@ export default function UserDetail({ id }: { id: string }) {
                 <TableBody>
                   {leaveRequests.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
+                      <TableCell
+                        colSpan={5}
+                        className="text-center py-6 text-muted-foreground"
+                      >
                         Nessuna richiesta trovata
                       </TableCell>
                     </TableRow>
@@ -320,8 +380,11 @@ export default function UserDetail({ id }: { id: string }) {
       </Tabs>
 
       {/* Dialog per modificare l'utente */}
-      <AddUserDialog open={showEditDialog} onOpenChange={setShowEditDialog} editData={user} />
+      <AddUserDialog
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        editData={user}
+      />
     </motion.div>
-  )
+  );
 }
-

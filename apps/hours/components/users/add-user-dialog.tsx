@@ -1,10 +1,8 @@
-"use client"
+"use client";
 
-import { FormDescription } from "@/components/ui/form"
+import { FormDescription } from "@/components/ui/form";
 
-import { useEffect } from "react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,20 +10,40 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { useForm } from "react-hook-form"
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { motion } from "framer-motion";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 
 interface AddUserDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  editData?: any
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editData?: any;
 }
 
-export default function AddUserDialog({ open, onOpenChange, editData }: AddUserDialogProps) {
+export default function AddUserDialog({
+  open,
+  onOpenChange,
+  editData,
+}: AddUserDialogProps) {
   const form = useForm({
     defaultValues: {
       name: "",
@@ -34,7 +52,7 @@ export default function AddUserDialog({ open, onOpenChange, editData }: AddUserD
       role: "developer",
       active: true,
     },
-  })
+  });
 
   // Update form when editing a user
   useEffect(() => {
@@ -45,24 +63,29 @@ export default function AddUserDialog({ open, onOpenChange, editData }: AddUserD
         email: editData.email,
         role: editData.role,
         active: editData.active,
-      })
+      });
     }
-  }, [editData, form])
+  }, [editData, form]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = (data: any) => {
-    console.log(data)
+    console.log(data);
     // Here you would normally save the data
-    onOpenChange(false)
-    form.reset()
-  }
+    onOpenChange(false);
+    form.reset();
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{editData ? "Modifica Utente" : "Nuovo Utente"}</DialogTitle>
+          <DialogTitle>
+            {editData ? "Modifica Utente" : "Nuovo Utente"}
+          </DialogTitle>
           <DialogDescription>
-            {editData ? "Modifica i dettagli dell'utente." : "Inserisci i dettagli per creare un nuovo utente."}
+            {editData
+              ? "Modifica i dettagli dell'utente."
+              : "Inserisci i dettagli per creare un nuovo utente."}
           </DialogDescription>
         </DialogHeader>
 
@@ -105,7 +128,11 @@ export default function AddUserDialog({ open, onOpenChange, editData }: AddUserD
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="email@bitrock.it" {...field} />
+                    <Input
+                      type="email"
+                      placeholder="email@bitrock.it"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -119,7 +146,11 @@ export default function AddUserDialog({ open, onOpenChange, editData }: AddUserD
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Ruolo</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      value={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Seleziona ruolo" />
@@ -144,10 +175,15 @@ export default function AddUserDialog({ open, onOpenChange, editData }: AddUserD
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                     <div className="space-y-0.5">
                       <FormLabel>Stato Utente</FormLabel>
-                      <FormDescription>{field.value ? "Utente attivo" : "Utente inattivo"}</FormDescription>
+                      <FormDescription>
+                        {field.value ? "Utente attivo" : "Utente inattivo"}
+                      </FormDescription>
                     </div>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -155,17 +191,25 @@ export default function AddUserDialog({ open, onOpenChange, editData }: AddUserD
             </div>
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
                 Annulla
               </Button>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button type="submit">{editData ? "Aggiorna" : "Crea Utente"}</Button>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button type="submit">
+                  {editData ? "Aggiorna" : "Crea Utente"}
+                </Button>
               </motion.div>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-
