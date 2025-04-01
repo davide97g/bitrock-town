@@ -5,4 +5,4 @@ import "./features/socket";
 
 const port = process.env.PORT ?? 3001;
 
-console.info(`Starting Bitrock Town Server v${version} on port ${port}`);
+console.info(`Starting Bitrock Realtime Server v${version} on port ${port}`);

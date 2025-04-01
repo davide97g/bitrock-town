@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import VideoCall from "@/components/video-call";
+import VideoCallTest from "@/components/VideoChatTest";
 import { db } from "@/lib/firebase";
 import { currentUser } from "@/lib/mock-data";
 import type { Message, Room } from "@/lib/types";
@@ -341,7 +341,7 @@ export default function RoomPage({ roomId }: RoomPageProps) {
         {/* Video call area */}
         {isVideoCallActive && (
           <div className="p-4 bg-slate-100 dark:bg-slate-800">
-            <VideoCall roomId={roomId} onEndCall={endVideoCall} />
+            <VideoCallTest roomId={roomId} onLeaveCall={endVideoCall} />
           </div>
         )}
 

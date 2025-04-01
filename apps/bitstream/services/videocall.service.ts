@@ -31,7 +31,7 @@ async function handleIceCandidate(candidate: RTCIceCandidateInit) {
 }
 
 const socket = new WebSocket(
-  process.env.REALTIME_SERVER_URL ?? "ws://localhost:3001",
+  process.env.NEXT_REALTIME_SERVER_URL ?? "ws://localhost:3001",
 );
 
 socket.onmessage = (event) => {
