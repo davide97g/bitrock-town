@@ -3,7 +3,8 @@ import type { Metadata } from "next"
 import { ThemeProvider } from "next-themes"
 import { Inter } from "next/font/google"
 import type React from "react"
-import "./globals.css"
+import { Suspense } from "react"
+import "../styles/globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -20,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="it" suppressHydrationWarning>
       <body className={inter.className}>
+        <Suspense>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <div className="flex h-screen">
             <Sidebar />
@@ -28,6 +30,7 @@ export default function RootLayout({
             </div>
           </div>
         </ThemeProvider>
+        </Suspense>
       </body>
     </html>
   )
