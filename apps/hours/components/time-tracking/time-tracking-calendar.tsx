@@ -1,186 +1,241 @@
-"use client"
+"use client";
 
-import { useState, useMemo } from "react"
-import { motion } from "framer-motion"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { getTimeEntries, getProjects } from "@/lib/mock-data"
-import AddHoursDialog from "./add-hours-dialog"
+import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { getTimeEntries, getProjects } from "@/lib/mock-data";
+import AddHoursDialog from "./add-hours-dialog";
 
 // Tipo di evento nel calendario
 type TimeEntry = {
-  date: string
-  project: string
-  hours: number
-  description: string
-  status: string
-}
+  date: string;
+  project: string;
+  hours: number;
+  description: string;
+  status: string;
+};
 
 export default function TimeTrackingCalendar() {
-  const [currentDate, setCurrentDate] = useState(new Date())
-  const [selectedProject, setSelectedProject] = useState("all")
-  const [showAddDialog, setShowAddDialog] = useState(false)
-  const [selectedDate, setSelectedDate] = useState<string | null>(null)
-  const [editEntry, setEditEntry] = useState<TimeEntry | null>(null)
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedProject, setSelectedProject] = useState("all");
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [editEntry, setEditEntry] = useState<TimeEntry | null>(null);
 
-  const projects = getProjects()
-  const timeEntries = getTimeEntries()
+  console.log({ selectedDate });
+
+  const projects = getProjects();
+  const timeEntries = getTimeEntries();
 
   // Filtra le voci in base al progetto selezionato
   const filteredEntries = useMemo(() => {
-    return timeEntries.filter((entry) => selectedProject === "all" || entry.project === selectedProject)
-  }, [timeEntries, selectedProject])
+    return timeEntries.filter(
+      (entry) => selectedProject === "all" || entry.project === selectedProject,
+    );
+  }, [timeEntries, selectedProject]);
 
   // Ottieni il primo giorno del mese
   const firstDayOfMonth = useMemo(() => {
-    return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
-  }, [currentDate])
+    return new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+  }, [currentDate]);
 
   // Ottieni l'ultimo giorno del mese
   const lastDayOfMonth = useMemo(() => {
-    return new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
-  }, [currentDate])
+    return new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+  }, [currentDate]);
 
   // Ottieni il numero di giorni nel mese
   const daysInMonth = useMemo(() => {
-    return lastDayOfMonth.getDate()
-  }, [lastDayOfMonth])
+    return lastDayOfMonth.getDate();
+  }, [lastDayOfMonth]);
 
   // Ottieni il giorno della settimana del primo giorno del mese (0 = Domenica, 1 = Lunedì, ...)
   const firstDayOfWeek = useMemo(() => {
-    return firstDayOfMonth.getDay()
-  }, [firstDayOfMonth])
+    return firstDayOfMonth.getDay();
+  }, [firstDayOfMonth]);
 
   // Adatta il primo giorno della settimana per iniziare da Lunedì (0 = Lunedì, 6 = Domenica)
   const adjustedFirstDay = useMemo(() => {
-    return firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1
-  }, [firstDayOfWeek])
+    return firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+  }, [firstDayOfWeek]);
+
+  console.log({
+    firstDayOfMonth,
+    adjustedFirstDay,
+  });
 
   // Organizza le voci per data
   const entriesByDate = useMemo(() => {
-    const result: Record<string, TimeEntry[]> = {}
+    const result: Record<string, TimeEntry[]> = {};
 
     filteredEntries.forEach((entry) => {
       if (!result[entry.date]) {
-        result[entry.date] = []
+        result[entry.date] = [];
       }
-      result[entry.date].push(entry)
-    })
+      result[entry.date].push(entry);
+    });
 
-    return result
-  }, [filteredEntries])
+    return result;
+  }, [filteredEntries]);
 
   // Calcola il totale delle ore per ogni giorno
   const hoursPerDay = useMemo(() => {
-    const result: Record<string, number> = {}
+    const result: Record<string, number> = {};
 
     Object.entries(entriesByDate).forEach(([date, entries]) => {
-      result[date] = entries.reduce((sum, entry) => sum + entry.hours, 0)
-    })
+      result[date] = entries.reduce((sum, entry) => sum + entry.hours, 0);
+    });
 
-    return result
-  }, [entriesByDate])
+    return result;
+  }, [entriesByDate]);
 
   // Funzione per ottenere il nome del mese
   const getMonthName = (date: Date) => {
-    return date.toLocaleString("it-IT", { month: "long" })
-  }
+    return date.toLocaleString("it-IT", { month: "long" });
+  };
 
   // Funzione per passare al mese precedente
   const goToPreviousMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))
-  }
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1),
+    );
+  };
 
   // Funzione per passare al mese successivo
   const goToNextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
-  }
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1),
+    );
+  };
 
   // Funzione per ottenere le voci di un giorno specifico
   const getEntriesForDay = (day: number) => {
-    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
-    const dateKey = date.toISOString().split("T")[0]
-    return entriesByDate[dateKey] || []
-  }
+    const date = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      day,
+    );
+    const dateKey = date.toISOString().split("T")[0];
+    return entriesByDate[dateKey] || [];
+  };
 
   // Funzione per ottenere il totale delle ore di un giorno specifico
   const getHoursForDay = (day: number) => {
-    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
-    const dateKey = date.toISOString().split("T")[0]
-    return hoursPerDay[dateKey] || 0
-  }
+    const date = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      day,
+    );
+    const dateKey = date.toISOString().split("T")[0];
+    return hoursPerDay[dateKey] || 0;
+  };
 
   // Funzione per ottenere il colore di sfondo in base alle ore lavorate
   const getBackgroundColor = (hours: number) => {
-    if (hours === 0) return "bg-transparent"
-    if (hours < 4) return "bg-blue-100 dark:bg-blue-900/20"
-    if (hours < 8) return "bg-blue-200 dark:bg-blue-900/40"
-    return "bg-blue-300 dark:bg-blue-900/60"
-  }
+    if (hours === 0) return "bg-transparent";
+    if (hours < 4) return "bg-blue-100 dark:bg-blue-900/20";
+    if (hours < 8) return "bg-blue-200 dark:bg-blue-900/40";
+    return "bg-blue-300 dark:bg-blue-900/60";
+  };
 
   // Funzione per ottenere il colore del testo in base allo stato
   const getStatusColor = (status: string) => {
     switch (status) {
       case "approved":
-        return "text-green-600 dark:text-green-400"
+        return "text-green-600 dark:text-green-400";
       case "pending":
-        return "text-amber-600 dark:text-amber-400"
+        return "text-amber-600 dark:text-amber-400";
       case "rejected":
-        return "text-red-600 dark:text-red-400"
+        return "text-red-600 dark:text-red-400";
       default:
-        return "text-gray-600 dark:text-gray-400"
+        return "text-gray-600 dark:text-gray-400";
     }
-  }
+  };
 
   // Funzione per aprire il dialog di aggiunta ore
   const handleAddHours = (day: number) => {
-    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
-    const dateKey = date.toISOString().split("T")[0]
-    setSelectedDate(dateKey)
-    setShowAddDialog(true)
-  }
+    const date = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      day,
+    );
+    const dateKey = date.toISOString().split("T")[0];
+    setSelectedDate(dateKey);
+    setShowAddDialog(true);
+  };
 
   // Funzione per modificare una voce esistente
   const handleEditEntry = (entry: TimeEntry) => {
-    setEditEntry(entry)
-    setShowAddDialog(true)
-  }
+    setEditEntry(entry);
+    setShowAddDialog(true);
+  };
+
+  console.log({ adjustedFirstDay, daysInMonth });
 
   // Genera i giorni del calendario
   const calendarDays = useMemo(() => {
-    const days = []
+    const days = [];
 
     // Aggiungi i giorni vuoti all'inizio per allineare con il giorno della settimana
     for (let i = 0; i < adjustedFirstDay; i++) {
-      days.push(null)
+      days.push(null);
     }
 
     // Aggiungi i giorni del mese
     for (let day = 1; day <= daysInMonth; day++) {
-      days.push(day)
+      days.push(day);
     }
 
-    return days
-  }, [adjustedFirstDay, daysInMonth])
+    return days;
+  }, [adjustedFirstDay, daysInMonth]);
+
+  console.log({ calendarDays });
 
   // Nomi dei giorni della settimana
-  const weekDays = ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"]
+  const weekDays = ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"];
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div>
               <CardTitle>Calendario Ore</CardTitle>
-              <CardDescription>Visualizza e gestisci le ore lavorate</CardDescription>
+              <CardDescription>
+                Visualizza e gestisci le ore lavorate
+              </CardDescription>
             </div>
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-              <Select value={selectedProject} onValueChange={setSelectedProject}>
+              <Select
+                value={selectedProject}
+                onValueChange={setSelectedProject}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Seleziona progetto" />
                 </SelectTrigger>
@@ -195,11 +250,16 @@ export default function TimeTrackingCalendar() {
               </Select>
 
               <div className="flex items-center space-x-2">
-                <Button variant="outline" size="icon" onClick={goToPreviousMonth}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={goToPreviousMonth}
+                >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
                 <div className="font-medium min-w-[120px] text-center">
-                  {getMonthName(currentDate).charAt(0).toUpperCase() + getMonthName(currentDate).slice(1)}{" "}
+                  {getMonthName(currentDate).charAt(0).toUpperCase() +
+                    getMonthName(currentDate).slice(1)}{" "}
                   {currentDate.getFullYear()}
                 </div>
                 <Button variant="outline" size="icon" onClick={goToNextMonth}>
@@ -221,23 +281,44 @@ export default function TimeTrackingCalendar() {
             {/* Giorni del calendario */}
             {calendarDays.map((day, index) => {
               if (day === null) {
-                return <div key={`empty-${index}`} className="h-24 p-1 border border-transparent"></div>
+                return (
+                  <div
+                    key={`empty-${index}`}
+                    className="h-24 p-1 border border-transparent"
+                  ></div>
+                );
               }
 
-              const entries = getEntriesForDay(day)
-              const totalHours = getHoursForDay(day)
+              const entries = getEntriesForDay(day);
+              const totalHours = getHoursForDay(day);
               const isToday =
                 new Date().getDate() === day &&
                 new Date().getMonth() === currentDate.getMonth() &&
-                new Date().getFullYear() === currentDate.getFullYear()
+                new Date().getFullYear() === currentDate.getFullYear();
               const isWeekend =
-                new Date(currentDate.getFullYear(), currentDate.getMonth(), day).getDay() === 0 ||
-                new Date(currentDate.getFullYear(), currentDate.getMonth(), day).getDay() === 6
+                new Date(
+                  currentDate.getFullYear(),
+                  currentDate.getMonth(),
+                  day,
+                ).getDay() === 0 ||
+                new Date(
+                  currentDate.getFullYear(),
+                  currentDate.getMonth(),
+                  day,
+                ).getDay() === 6;
+
+              console.log({ entries });
 
               return (
                 <div
                   key={`day-${day}`}
-                  className={`h-24 p-1 border rounded-md ${isToday ? "border-primary" : "border-border"} ${getBackgroundColor(totalHours)} ${isWeekend ? "bg-opacity-50 dark:bg-opacity-50" : ""} overflow-hidden relative`}
+                  className={`h-24 p-1 cursor-pointer border rounded-md ${isToday ? "border-primary" : "border-border"} ${getBackgroundColor(totalHours)} ${isWeekend ? "bg-opacity-50 dark:bg-opacity-50" : ""} overflow-hidden relative`}
+                  onClick={() => {
+                    setSelectedDate(
+                      `${currentDate.getFullYear()}-${currentDate.getMonth() < 10 ? `0${currentDate.getMonth() + 1}` : currentDate.getMonth() + 1}-${day < 10 ? `0${day}` : day}`,
+                    );
+                    setShowAddDialog(true);
+                  }}
                 >
                   <div className="flex justify-between items-start">
                     <span
@@ -260,12 +341,15 @@ export default function TimeTrackingCalendar() {
                               className={`text-xs px-1 py-0.5 rounded bg-background/80 dark:bg-background/80 ${getStatusColor(entry.status)} truncate cursor-pointer`}
                               onClick={() => handleEditEntry(entry)}
                             >
-                              {projects.find((p) => p.id === entry.project)?.name || entry.project}: {entry.hours}h
+                              {projects.find((p) => p.id === entry.project)
+                                ?.name || entry.project}
+                              : {entry.hours}h
                             </div>
                           </TooltipTrigger>
                           <TooltipContent>
                             <p className="font-medium">
-                              {projects.find((p) => p.id === entry.project)?.name || entry.project}
+                              {projects.find((p) => p.id === entry.project)
+                                ?.name || entry.project}
                             </p>
                             <p>Ore: {entry.hours}</p>
                             <p>{entry.description}</p>
@@ -275,7 +359,9 @@ export default function TimeTrackingCalendar() {
                       </TooltipProvider>
                     ))}
                     {entries.length > 2 && (
-                      <div className="text-xs text-muted-foreground">+{entries.length - 2} altre voci</div>
+                      <div className="text-xs text-muted-foreground">
+                        +{entries.length - 2} altre voci
+                      </div>
                     )}
                   </div>
                   <Button
@@ -287,7 +373,7 @@ export default function TimeTrackingCalendar() {
                     <Plus className="h-3 w-3" />
                   </Button>
                 </div>
-              )
+              );
             })}
           </div>
 
@@ -318,11 +404,10 @@ export default function TimeTrackingCalendar() {
         editData={editEntry}
         defaultDate={selectedDate}
         onClose={() => {
-          setEditEntry(null)
-          setSelectedDate(null)
+          setEditEntry(null);
+          setSelectedDate(null);
         }}
       />
     </motion.div>
-  )
+  );
 }
-
