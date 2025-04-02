@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BACKEND_URL = process.env.VITE_SERVER_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 const api = axios.create({
   baseURL: BACKEND_URL,
