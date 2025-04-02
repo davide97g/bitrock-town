@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { PlusCircle } from "lucide-react"
-import AddHoursDialog from "./add-hours-dialog"
-import { useState } from "react"
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
+import AddHoursDialog from "./add-hours-dialog";
+import { useState } from "react";
 
 export default function TimeTrackingHeader() {
-  const [showAddDialog, setShowAddDialog] = useState(false)
+  const [showAddDialog, setShowAddDialog] = useState(false);
 
   return (
     <motion.div
@@ -29,6 +29,5 @@ export default function TimeTrackingHeader() {
 
       <AddHoursDialog open={showAddDialog} onOpenChange={setShowAddDialog} />
     </motion.div>
-  )
+  );
 }
-

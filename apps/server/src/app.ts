@@ -22,6 +22,7 @@ const allowedOrigins = [
   "https://www.bitrock.town",
   "https://hours.bitrock.town",
   "https://stream.bitrock.town",
+  "http://localhost:3002",
 ];
 
 const options = {

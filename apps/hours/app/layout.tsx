@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import type React from "react";
 import { Suspense } from "react";
 import "../styles/globals.css";
+import { AuthProvider } from "./(auth)/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,12 +34,16 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex h-screen">
-              <Sidebar />
-              <div className="flex-1 overflow-auto">
-                <main className="container mx-auto py-6 px-4">{children}</main>
+            <AuthProvider>
+              <div className="flex h-screen">
+                <Sidebar />
+                <div className="flex-1 overflow-auto">
+                  <main className="container mx-auto py-6 px-4">
+                    {children}
+                  </main>
+                </div>
               </div>
-            </div>
+            </AuthProvider>
           </ThemeProvider>
         </Suspense>
       </body>
