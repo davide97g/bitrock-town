@@ -64,7 +64,6 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const { session, user } = useAuth();
-  console.log({ session, user });
 
   return (
     <div className="relative">

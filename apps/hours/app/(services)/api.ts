@@ -1,12 +1,13 @@
 import { ISystemStats, IUser } from "@bitrock/types";
 import { supabase } from "../(config)/supabase";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+const BASE_URL = process.env.NEXT_SERVER_URL;
+const REDIRECT_URL = process.env.NEXT_REDIRECT_URL ?? "http://localhost:3000/";
 
 // *** AUTH
 
 const getURL = () => {
-  let url = process.env?.NEXT_REDIRECT_URL ?? "http://localhost:3000/";
+  let url = REDIRECT_URL;
   url = url.startsWith("http") ? url : `https://${url}`;
   // Make sure to include a trailing `/`.
   url = url.endsWith("/") ? url : `${url}/`;
