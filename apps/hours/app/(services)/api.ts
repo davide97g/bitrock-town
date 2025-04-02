@@ -5,9 +5,20 @@ const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 // *** AUTH
 
+const getURL = () => {
+  let url = process.env?.NEXT_REDIRECT_URL ?? "http://localhost:3000/";
+  url = url.startsWith("http") ? url : `https://${url}`;
+  // Make sure to include a trailing `/`.
+  url = url.endsWith("/") ? url : `${url}/`;
+  return url;
+};
+
 export async function loginUser() {
   const res = await supabase.auth.signInWithOAuth({
     provider: "google",
+    options: {
+      redirectTo: getURL(),
+    },
   });
 
   return res;
