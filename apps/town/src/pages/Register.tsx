@@ -1,4 +1,4 @@
-import { useCreateUser } from "@/api/user/useCreateUser";
+import { useCreateUserProvider } from "@/api/user/useCreateUserProvider";
 import { Loader } from "@/components/custom/Loader";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ export default function RegisterPage() {
   const { session, user, loading } = useAuth();
   const sessionUser = session?.user.user_metadata;
 
-  const createUser = useCreateUser();
+  const createUser = useCreateUserProvider();
 
   const handleContinue = (e: React.FormEvent) => {
     e.preventDefault();
