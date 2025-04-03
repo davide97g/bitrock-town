@@ -1,5 +1,6 @@
 "use client";
 
+import { useGetUsers } from "@/api/useGetUsers";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -27,7 +28,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { getAllUsers } from "@/lib/mock-data";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -44,7 +44,7 @@ export default function AddProjectDialog({
   onOpenChange,
   editData,
 }: AddProjectDialogProps) {
-  const users = getAllUsers();
+  const {users} = useGetUsers();
 
   const form = useForm({
     defaultValues: {
@@ -212,7 +212,7 @@ export default function AddProjectDialog({
                     <FormLabel>Team di Progetto</FormLabel>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {users.map((user) => (
+                    {users?.map((user) => (
                       <FormField
                         key={user.id}
                         control={form.control}
@@ -241,7 +241,7 @@ export default function AddProjectDialog({
                                 />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                {user.name} {user.surname} ({user.role})
+                                {user.name} ({user.role_id})
                               </FormLabel>
                             </FormItem>
                           );

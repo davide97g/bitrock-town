@@ -457,7 +457,6 @@ export const getTimeEntries = () => timeEntries;
 export const getLeaveRequests = () => leaveRequests;
 
 // New functions for detailed data
-export const getAllUsers = () => users;
 export const getProjectsDetailed = () => projectsDetailed;
 export const getUserById = (id: string) => users.find((user) => user.id === id);
 export const getProjectById = (id: string) =>

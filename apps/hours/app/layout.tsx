@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   },
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,7 +35,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <AuthProvider>
+            <AuthProvider>               
               <div className="flex h-screen">
                 <Sidebar />
                 <div className="flex-1 overflow-auto">

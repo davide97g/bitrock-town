@@ -30,7 +30,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getAllUsers } from "@/lib/mock-data";
+
+import { useGetUsers } from "@/api/useGetUsers";
 import { motion } from "framer-motion";
 import { Edit, MoreHorizontal, Trash2, User } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -44,9 +45,9 @@ export default function UsersTable() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [deleteUser, setDeleteUser] = useState<any>(null);
 
-  const users = getAllUsers();
+  const { users } = useGetUsers();
 
-  const getRoleBadge = (role: string) => {
+  const getRoleBadge = (role?: string) => {
     switch (role) {
       case "admin":
         return <Badge className="bg-purple-500">Amministratore</Badge>;
@@ -90,7 +91,7 @@ export default function UsersTable() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {users.length === 0 ? (
+                {users?.length === 0 ? (
                   <TableRow>
                     <TableCell
                       colSpan={6}
@@ -100,7 +101,7 @@ export default function UsersTable() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  users.map((user) => (
+                  users?.map((user) => (
                     <TableRow
                       key={user.id}
                       className="cursor-pointer hover:bg-muted/50"
@@ -111,33 +112,21 @@ export default function UsersTable() {
                           <Avatar className="h-8 w-8">
                             <AvatarImage
                               src={
-                                user.avatar ||
+                                user.avatar_url ||
                                 "/placeholder.svg?height=32&width=32"
                               }
                             />
                             <AvatarFallback>
-                              {user.name.charAt(0)}
-                              {user.surname.charAt(0)}
+                              {user.name.split(" ")?.[0].charAt(0)}
+                              {user.name.split(" ")?.[1].charAt(0)}
                             </AvatarFallback>
                           </Avatar>
-                          <span className="font-medium">
-                            {user.name} {user.surname}
-                          </span>
+                          <span className="font-medium">{user.name}</span>
                         </div>
                       </TableCell>
                       <TableCell>{user.email}</TableCell>
-                      <TableCell>{getRoleBadge(user.role)}</TableCell>
-                      <TableCell>{user.projects?.length || 0}</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={user.active ? "outline" : "secondary"}
-                          className={
-                            user.active ? "border-green-500 text-green-500" : ""
-                          }
-                        >
-                          {user.active ? "Attivo" : "Inattivo"}
-                        </Badge>
-                      </TableCell>
+                      <TableCell>{getRoleBadge(user.role_id)}</TableCell>
+                      {/* <TableCell>{user.projects?.length || 0}</TableCell>                       */}
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger

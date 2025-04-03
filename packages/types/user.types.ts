@@ -4,6 +4,7 @@ export interface IUser {
   name: string;
   email: string;
   avatar_url?: string;
+  role_id?: string;
 }
 
 export interface ICreateUser {
