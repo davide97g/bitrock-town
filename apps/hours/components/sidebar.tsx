@@ -63,7 +63,9 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
 
-  const { session } = useAuth();
+  const { session, user } = useAuth();
+
+  if (!session || !user) return null;
 
   return (
     <div className="relative">

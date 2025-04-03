@@ -21,6 +21,8 @@ const AuthContext = createContext({
   loading: true as boolean,
   isLogged: false as boolean,
   session: undefined as Session | undefined,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setUser: (user: IUser | undefined) => {},
 });
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
@@ -79,6 +81,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       isLogged: !!session,
       session,
       loading,
+      setUser,
     }),
     [loading, session, user],
   );
