@@ -1,5 +1,6 @@
 export interface IUser {
   id: string;
+  auth_id?: string; // authenticator provider ID
   name: string;
   email: string;
   avatar_url: string;
