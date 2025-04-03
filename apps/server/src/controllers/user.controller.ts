@@ -10,6 +10,29 @@ import {
 } from "../repository/user.repository";
 
 export const createUserController = (app: Express) => {
+  /**
+   * @swagger
+   *
+   * /user:
+   *   get:
+   *     summary: Get user by auth ID
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: User retrieved successfully
+   *       403:
+   *         description: Unauthorized
+   *       404:
+   *         description: User not found
+   *       500:
+   *         description: Error performing the request
+   * security:
+   *  - BearerAuth: []
+   * tags:
+   *  - User
+   * description: Get user by auth ID
+   */
   app.get("/user", authenticateToken, async (req: Request, res: Response) => {
     try {
       const user = await extractInfoFromToken(req);
@@ -26,6 +49,19 @@ export const createUserController = (app: Express) => {
     }
   });
 
+  /**
+   * @swagger
+   * /users:
+   *   get:
+   *     summary: Get all users
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: List of users retrieved successfully
+   *       500:
+   *         description: Error performing the request
+   */
   app.get("/users", authenticateToken, async (_req: Request, res: Response) => {
     try {
       const users = await getUsers();
@@ -35,6 +71,26 @@ export const createUserController = (app: Express) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   * /user:
+   *   post:
+   *     summary: Create a new user manually
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: User created successfully
+   *       400:
+   *         description: User not provided
+   *       403:
+   *         description: Unauthorized
+   *       409:
+   *         description: User already exists
+   *       500:
+   *         description: Error performing the request
+   */
   app.post("/user", authenticateToken, async (req: Request, res: Response) => {
     try {
       const user = await extractInfoFromToken(req);
@@ -54,6 +110,31 @@ export const createUserController = (app: Express) => {
     }
   });
 
+  /**
+   * @swagger
+   * /user/provider:
+   *   post:
+   *     summary: Create a new user from provider
+   *     security:
+   *       - bearerAuth: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: "#/components/schemas/ICreateUser"
+   *     responses:
+   *       200:
+   *         description: User created successfully
+   *       400:
+   *         description: User not provided
+   *       403:
+   *         description: Unauthorized
+   *       409:
+   *         description: User already exists
+   *       500:
+   *         description: Error performing the request
+   */
   app.post(
     "/user/provider",
     authenticateToken,
