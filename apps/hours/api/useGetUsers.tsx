@@ -1,36 +1,28 @@
-'use client'
-import { supabase } from "@/app/(config)/supabase";
+"use client";
+import { useAuth } from "@/app/(auth)/AuthProvider";
+import { SERVERL_BASE_URL } from "@/config";
 import { IUser } from "@bitrock/types";
 import { useEffect, useState } from "react";
 
-export const useGetUsers = ()=>{
-    const [users, setUsers] = useState<IUser[]>([]);
-    const [loading, setLoading] = useState(false);
+export const useGetUsers = () => {
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [loading, setLoading] = useState(false);
 
-    useEffect(()=>{
-        setLoading(true);
-        supabase.auth.getSession().then(async (session)=>{
-        try {
-                try {
-                    const res = await fetch("http://localhost:3000/users", {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${session.data.session?.access_token}`,
-                        },
-                    });
-                    const data = await res.json();
-                    return setUsers(data as IUser[]);
-                } finally {
-                    return setLoading(false);
-                }
-            } catch (err) {
-                return console.log(err);
-            }
-        })
-    }
-    ,[]);
-    
-    return {users, loading};
-    
-}
+  const { session } = useAuth();
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`${SERVERL_BASE_URL}/users`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setUsers(data))
+      .finally(() => setLoading(false));
+  }, [session?.access_token]);
+
+  return { users, loading };
+};
