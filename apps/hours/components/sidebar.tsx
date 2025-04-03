@@ -63,7 +63,7 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
 
-  const { session, user } = useAuth();
+  const { session } = useAuth();
 
   return (
     <div className="relative">
@@ -127,11 +127,13 @@ export default function Sidebar() {
                   <Button variant="ghost" className="p-1.5">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src="/placeholder.svg?height=32&width=32" />
-                      <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
+                      <AvatarFallback>
+                        {session.user.user_metadata.name.charAt(0)}
+                      </AvatarFallback>
                     </Avatar>
                     {!collapsed && (
                       <span className="ml-2 text-sm font-medium">
-                        {user?.name}
+                        {session.user.user_metadata.name}
                       </span>
                     )}
                   </Button>

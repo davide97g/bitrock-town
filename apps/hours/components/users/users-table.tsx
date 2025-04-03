@@ -77,106 +77,103 @@ export default function UsersTable() {
       transition={{ duration: 0.5, delay: 0.2 }}
     >
       <Card>
-        <CardContent className="p-0">
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nome</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Ruolo</TableHead>
+                <TableHead>Progetti</TableHead>
+                <TableHead className="text-right">Azioni</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {users?.length === 0 ? (
                 <TableRow>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Ruolo</TableHead>
-                  <TableHead>Progetti</TableHead>
-                  <TableHead>Stato</TableHead>
-                  <TableHead className="text-right">Azioni</TableHead>
+                  <TableCell
+                    colSpan={6}
+                    className="text-center py-6 text-muted-foreground"
+                  >
+                    Nessun utente trovato
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {users?.length === 0 ? (
-                  <TableRow>
-                    <TableCell
-                      colSpan={6}
-                      className="text-center py-6 text-muted-foreground"
-                    >
-                      Nessun utente trovato
+              ) : (
+                users?.map((user) => (
+                  <TableRow
+                    key={user.id}
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleViewUser(user.id)}
+                  >
+                    <TableCell>
+                      <div className="flex items-center space-x-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage
+                            src={
+                              user.avatar_url ||
+                              "/placeholder.svg?height=32&width=32"
+                            }
+                          />
+                          <AvatarFallback>
+                            {user.name.split(" ")?.[0].charAt(0)}
+                            {user.name.split(" ")?.[1].charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium">{user.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{getRoleBadge(user.role_id)}</TableCell>
+                    <TableCell>{0}</TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          asChild
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Azioni</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleViewUser(user.id);
+                            }}
+                          >
+                            <User className="mr-2 h-4 w-4" />
+                            <span>Visualizza</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditUser(user);
+                            }}
+                          >
+                            <Edit className="mr-2 h-4 w-4" />
+                            <span>Modifica</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeleteUser(user);
+                            }}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            <span>Elimina</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
-                ) : (
-                  users?.map((user) => (
-                    <TableRow
-                      key={user.id}
-                      className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => handleViewUser(user.id)}
-                    >
-                      <TableCell>
-                        <div className="flex items-center space-x-3">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage
-                              src={
-                                user.avatar_url ||
-                                "/placeholder.svg?height=32&width=32"
-                              }
-                            />
-                            <AvatarFallback>
-                              {user.name.split(" ")?.[0].charAt(0)}
-                              {user.name.split(" ")?.[1].charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="font-medium">{user.name}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>{getRoleBadge(user.role_id)}</TableCell>
-                      {/* <TableCell>{user.projects?.length || 0}</TableCell>                       */}
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger
-                            asChild
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Azioni</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleViewUser(user.id);
-                              }}
-                            >
-                              <User className="mr-2 h-4 w-4" />
-                              <span>Visualizza</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setEditUser(user);
-                              }}
-                            >
-                              <Edit className="mr-2 h-4 w-4" />
-                              <span>Modifica</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="text-destructive focus:text-destructive"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setDeleteUser(user);
-                              }}
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              <span>Elimina</span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
 
