@@ -4,8 +4,8 @@ import { sql } from "../config/postgres";
 import { authenticateToken } from "../middleware/authMiddleware";
 import { extractInfoFromToken } from "../middleware/extractInfoFromToken";
 import {
-  createUser,
-  getUserById,
+  createUserFromAuth,
+  getUserByAuthId,
   getUsers,
 } from "../repository/user.repository";
 
@@ -32,13 +32,13 @@ export const createUserController = (app: Express) => {
       const user = await extractInfoFromToken(req);
       if (!user) return res.status(403).send("Unauthorized");
 
-      const userAlreadyExists = Boolean(await getUserById(user.id));
+      const userAlreadyExists = Boolean(await getUserByAuthId(user.id));
       if (userAlreadyExists) return res.status(409).send("User already exists");
 
       const userRequest = req.body as ICreateUser;
       if (!userRequest) return res.status(400).send("User not provided");
 
-      const newUser = await createUser(user.id, userRequest);
+      const newUser = await createUserFromAuth(user.id, userRequest);
 
       return res.status(200).send({ user: newUser });
     } catch (error) {
