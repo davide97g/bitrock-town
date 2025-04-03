@@ -3,7 +3,7 @@ import { supabase } from "../(config)/supabase";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 const REDIRECT_URL =
-  process.env.NEXT_PUBLIC_REDIRECT_URL ?? "http://localhost:3000/";
+  process.env.NEXT_PUBLIC_REDIRECT_URL ?? "http://localhost:3002/";
 
 // *** AUTH
 
