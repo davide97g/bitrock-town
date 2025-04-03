@@ -20,9 +20,9 @@ export function AuthenticatedPage({
   }, [isLogged, loading, router, user]);
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <>
       {loading && <Loader />}
       {!loading && isLogged && children}
-    </div>
+    </>
   );
 }

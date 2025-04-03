@@ -6,11 +6,7 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  return (
-    <div>
-      <AuthenticatedPage>{children}</AuthenticatedPage>
-    </div>
-  );
+  return <AuthenticatedPage>{children}</AuthenticatedPage>;
 };
 
 export default Layout;
